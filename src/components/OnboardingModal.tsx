@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { Sparkles, CheckCircle2, ArrowRight, ArrowLeft, Target, BookOpen, Clock, Award } from 'lucide-react';
+import { ArrowRight, ArrowLeft, BookOpen, Target, Clock, Check } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
 const UEH_FACULTIES = [
@@ -83,8 +83,8 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
 
     try {
       confetti({
-        particleCount: 80,
-        spread: 70,
+        particleCount: 50,
+        spread: 60,
         origin: { y: 0.6 }
       });
     } catch {
@@ -95,28 +95,26 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-100 flex flex-col max-h-[90vh]">
-        {/* Header Banner */}
-        <div className="bg-linear-to-r from-[#29B3C2] via-[#49C8D6] to-[#008899] p-6 text-white relative">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-black bg-white/20 uppercase tracking-wider">
-              Khởi tạo hồ sơ UEHer
-            </span>
-            <span className="text-white/80 text-xs font-semibold">Bước {step} / 3</span>
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 max-w-2xl w-full overflow-hidden flex flex-col max-h-[90vh]">
+        {/* Flat Minimal Header */}
+        <div className="p-6 border-b border-slate-100 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">
+                Thiết lập hồ sơ
+              </span>
+              <span className="text-xs text-slate-400 font-normal">• Bước {step} / 3</span>
+            </div>
+            <h2 className="text-base font-semibold text-slate-900 mt-0.5">Hồ sơ sinh viên UEH</h2>
           </div>
-          <h2 className="text-2xl font-black">Chào mừng bạn đến với UEH Tracker</h2>
-          <p className="text-white/90 text-xs sm:text-sm mt-1">
-            Thiết lập mục tiêu học tập, cá nhân hóa thuật toán Smart Schedule & điểm rèn luyện.
-          </p>
 
-          {/* Progress dots */}
-          <div className="flex gap-2 mt-4">
+          <div className="flex gap-1.5">
             {[1, 2, 3].map((s) => (
               <div
                 key={s}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
-                  s === step ? 'w-8 bg-white' : s < step ? 'w-4 bg-white/70' : 'w-4 bg-white/30'
+                className={`h-1.5 rounded-full transition-all ${
+                  s === step ? 'w-6 bg-slate-900' : 'w-2 bg-slate-200'
                 }`}
               />
             ))}
@@ -124,56 +122,56 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
         </div>
 
         {/* Content Body */}
-        <div className="p-6 overflow-y-auto flex-1 space-y-6">
+        <div className="p-6 overflow-y-auto flex-1 space-y-5">
           {/* STEP 1: Khóa, Khoa, Ngành */}
           {step === 1 && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                <BookOpen className="w-5 h-5 text-[#29B3C2]" />
-                <h3 className="font-bold text-slate-800 text-base">Thông tin học tập cá nhân</h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-1 border-b border-slate-100">
+                <BookOpen className="w-4 h-4 text-slate-600" />
+                <h3 className="font-semibold text-slate-900 text-sm">Thông tin học tập cá nhân</h3>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Họ và tên</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Họ và tên</label>
                   <input
                     type="text"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
                     placeholder="Nguyễn Văn An"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Mã số sinh viên (MSSV)</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Mã số sinh viên (MSSV)</label>
                   <input
                     type="text"
                     value={formData.studentId}
                     onChange={(e) => setFormData({ ...formData, studentId: e.target.value })}
-                    className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
                     placeholder="31231021456"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Khóa học</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Khóa</label>
                   <select
                     value={formData.cohort}
                     onChange={(e) => setFormData({ ...formData, cohort: e.target.value })}
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white font-medium"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white"
                   >
-                    <option value="K48">Khóa K48 (2022 - 2026)</option>
-                    <option value="K49">Khóa K49 (2023 - 2027)</option>
-                    <option value="K50">Khóa K50 (2024 - 2028)</option>
-                    <option value="K51">Khóa K51 (2025 - 2029)</option>
+                    <option value="K48">K48 (2022 - 2026)</option>
+                    <option value="K49">K49 (2023 - 2027)</option>
+                    <option value="K50">K50 (2024 - 2028)</option>
+                    <option value="K51">K51 (2025 - 2029)</option>
                   </select>
                 </div>
 
                 <div className="sm:col-span-2">
-                  <label className="block text-xs font-bold text-slate-700 mb-1">Khoa / Viện đào tạo</label>
+                  <label className="block text-xs font-medium text-slate-700 mb-1">Khoa / Viện đào tạo</label>
                   <select
                     value={formData.faculty}
                     onChange={(e) => {
@@ -185,7 +183,7 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
                         major: majors[0]
                       });
                     }}
-                    className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white font-medium"
+                    className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white"
                   >
                     {UEH_FACULTIES.map((fac) => (
                       <option key={fac} value={fac}>
@@ -197,11 +195,11 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Chuyên ngành theo học</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Chuyên ngành</label>
                 <select
                   value={formData.major}
                   onChange={(e) => setFormData({ ...formData, major: e.target.value })}
-                  className="w-full px-3 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white font-medium"
+                  className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white"
                 >
                   {(MAJORS_BY_FACULTY[formData.faculty] || ['Chuyên ngành tổng hợp']).map((m) => (
                     <option key={m} value={m}>
@@ -215,15 +213,15 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
 
           {/* STEP 2: Mục tiêu & Học bổng */}
           {step === 2 && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                <Target className="w-5 h-5 text-[#29B3C2]" />
-                <h3 className="font-bold text-slate-800 text-base">Mục tiêu học tập & ĐRL UEH</h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-1 border-b border-slate-100">
+                <Target className="w-4 h-4 text-slate-600" />
+                <h3 className="font-semibold text-slate-900 text-sm">Mục tiêu học tập & ĐRL</h3>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-2">
-                  Mục tiêu trọng tâm của bạn trong năm nay (chọn nhiều mục)
+                <label className="block text-xs font-medium text-slate-700 mb-2">
+                  Mục tiêu trọng tâm:
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {[
@@ -237,22 +235,22 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
                       <div
                         key={goal.id}
                         onClick={() => toggleGoal(goal.id)}
-                        className={`p-3 rounded-2xl border-2 cursor-pointer transition-all flex items-start gap-3 ${
+                        className={`p-3 rounded-lg border cursor-pointer transition-colors flex items-start gap-2.5 ${
                           active
-                            ? 'border-[#29B3C2] bg-[#E8FAFC]'
-                            : 'border-slate-200 hover:border-slate-300 bg-white'
+                            ? 'border-slate-900 bg-slate-50'
+                            : 'border-slate-200 bg-white hover:border-slate-300'
                         }`}
                       >
                         <div
-                          className={`w-5 h-5 rounded-md flex items-center justify-center mt-0.5 ${
-                            active ? 'bg-[#29B3C2] text-white' : 'border border-slate-300'
+                          className={`w-4 h-4 rounded flex items-center justify-center mt-0.5 shrink-0 ${
+                            active ? 'bg-slate-900 text-white' : 'border border-slate-300'
                           }`}
                         >
-                          {active && <CheckCircle2 className="w-3.5 h-3.5" />}
+                          {active && <Check className="w-3 h-3" />}
                         </div>
                         <div>
-                          <p className="text-xs font-bold text-slate-800">{goal.label}</p>
-                          <p className="text-[11px] text-slate-500 mt-0.5">{goal.desc}</p>
+                          <p className="text-xs font-medium text-slate-900">{goal.label}</p>
+                          <p className="text-[11px] text-slate-500 font-normal mt-0.5">{goal.desc}</p>
                         </div>
                       </div>
                     );
@@ -261,24 +259,23 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5 flex items-center gap-1.5">
-                  <Award className="w-4 h-4 text-amber-500" />
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">
                   Mức Học bổng Khuyến khích UEH hướng tới:
                 </label>
-                <div className="grid grid-cols-3 gap-2.5">
+                <div className="grid grid-cols-3 gap-2">
                   {(['Xuất sắc', 'Giỏi', 'Khá'] as const).map((tier) => (
                     <button
                       key={tier}
                       type="button"
                       onClick={() => setFormData({ ...formData, scholarshipTierTarget: tier })}
-                      className={`p-3 rounded-xl border text-center transition-all ${
+                      className={`p-2.5 rounded-lg border text-center transition-colors ${
                         formData.scholarshipTierTarget === tier
-                          ? 'border-amber-400 bg-amber-50 text-amber-900 font-bold shadow-xs'
-                          : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                          ? 'border-slate-900 bg-slate-900 text-white font-medium'
+                          : 'border-slate-200 text-slate-700 hover:bg-slate-50'
                       }`}
                     >
-                      <div className="text-xs font-bold">{tier}</div>
-                      <div className="text-[10px] text-slate-500 mt-0.5">
+                      <div className="text-xs">{tier}</div>
+                      <div className={`text-[10px] mt-0.5 font-normal ${formData.scholarshipTierTarget === tier ? 'text-slate-300' : 'text-slate-500'}`}>
                         {tier === 'Xuất sắc' ? 'GPA 3.6+ / ĐRL 90+' : tier === 'Giỏi' ? 'GPA 3.2+ / ĐRL 80+' : 'GPA 2.5+ / ĐRL 65+'}
                       </div>
                     </button>
@@ -290,15 +287,15 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
 
           {/* STEP 3: Điểm mạnh, Thói quen học, Thời gian rảnh */}
           {step === 3 && (
-            <div className="space-y-4 animate-in fade-in duration-200">
-              <div className="flex items-center gap-2 pb-2 border-b border-slate-100">
-                <Clock className="w-5 h-5 text-[#29B3C2]" />
-                <h3 className="font-bold text-slate-800 text-base">Thói quen học & Khoảng thời gian rảnh</h3>
+            <div className="space-y-4">
+              <div className="flex items-center gap-2 pb-1 border-b border-slate-100">
+                <Clock className="w-4 h-4 text-slate-600" />
+                <h3 className="font-semibold text-slate-900 text-sm">Thói quen & Khung giờ rảnh</h3>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">Điểm mạnh cá nhân</label>
-                <div className="flex flex-wrap gap-2">
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">Điểm mạnh</label>
+                <div className="flex flex-wrap gap-1.5">
                   {['Tư duy logic', 'Lập trình', 'Làm việc nhóm', 'Thuyết trình', 'Viết báo cáo / NCKH', 'Ngoại ngữ (IELTS)', 'Tổ chức sự kiện'].map(
                     (str) => {
                       const active = formData.strengths.includes(str);
@@ -307,10 +304,10 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
                           key={str}
                           type="button"
                           onClick={() => toggleStrength(str)}
-                          className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition-all ${
+                          className={`px-2.5 py-1 rounded-md text-xs font-medium transition-colors ${
                             active
-                              ? 'bg-[#29B3C2] text-white shadow-xs'
-                              : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                              ? 'bg-slate-900 text-white'
+                              : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                           }`}
                         >
                           {str}
@@ -322,19 +319,19 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">Thói quen học tập</label>
+                <label className="block text-xs font-medium text-slate-700 mb-1">Thói quen học tập</label>
                 <input
                   type="text"
                   value={formData.studyHabits}
                   onChange={(e) => setFormData({ ...formData, studyHabits: e.target.value })}
-                  placeholder="Ví dụ: Học buổi sáng tại Smart Library, tối ôn tập từ 20h"
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+                  placeholder="Ví dụ: Tự học tại thư viện vào buổi sáng, tối ôn tập từ 20h"
+                  className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1.5">
-                  Khoảng trống thường rảnh trong tuần (thuật toán Smart Schedule sẽ ưu tiên lấp):
+                <label className="block text-xs font-medium text-slate-700 mb-1.5">
+                  Khoảng trống thường rảnh trong tuần:
                 </label>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {['Thứ 2 chiều', 'Thứ 3 chiều', 'Thứ 4 sáng', 'Thứ 5 chiều', 'Thứ 6 chiều', 'Thứ 7 trọn ngày', 'Chủ Nhật'].map(
@@ -345,10 +342,10 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
                           key={slot}
                           type="button"
                           onClick={() => toggleFreeTime(slot)}
-                          className={`px-2.5 py-2 rounded-xl text-xs font-medium border transition-all text-center ${
+                          className={`px-2 py-1.5 rounded-lg text-xs font-medium border transition-colors text-center ${
                             active
-                              ? 'border-[#29B3C2] bg-[#E8FAFC] text-[#007D8C] font-bold'
-                              : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                              ? 'border-slate-900 bg-slate-900 text-white'
+                              : 'border-slate-200 text-slate-700 hover:bg-slate-50'
                           }`}
                         >
                           {slot}
@@ -363,36 +360,36 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
         </div>
 
         {/* Footer Navigation */}
-        <div className="p-4 sm:p-6 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+        <div className="px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
           {step > 1 ? (
             <button
               onClick={() => setStep(step - 1)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold text-slate-600 hover:bg-slate-200 transition-colors"
+              className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 hover:bg-slate-200 transition-colors"
             >
-              <ArrowLeft className="w-4 h-4" /> Quay lại
+              <ArrowLeft className="w-3.5 h-3.5" /> Quay lại
             </button>
           ) : (
             <button
               onClick={onClose}
-              className="text-xs sm:text-sm font-medium text-slate-400 hover:text-slate-600 transition-colors"
+              className="text-xs font-normal text-slate-400 hover:text-slate-600"
             >
-              Bỏ qua bước này
+              Bỏ qua
             </button>
           )}
 
           {step < 3 ? (
             <button
               onClick={() => setStep(step + 1)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-[#29B3C2] hover:bg-[#209aa8] text-white shadow-md shadow-cyan-500/20 transition-all"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#49C8D6] hover:bg-[#3db8c6] text-white shadow-xs transition-colors"
             >
-              Tiếp tục <ArrowRight className="w-4 h-4" />
+              Tiếp tục <ArrowRight className="w-3.5 h-3.5" />
             </button>
           ) : (
             <button
               onClick={handleFinish}
-              className="flex items-center gap-2 px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold bg-linear-to-r from-[#29B3C2] to-[#008899] hover:opacity-95 text-white shadow-lg shadow-cyan-500/25 transition-all"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#49C8D6] hover:bg-[#3db8c6] text-white shadow-xs transition-colors"
             >
-              <Sparkles className="w-4 h-4" /> Hoàn tất & Bắt đầu
+              Hoàn tất & Bắt đầu
             </button>
           )}
         </div>

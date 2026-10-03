@@ -52,41 +52,41 @@ export const CourseAddModal: React.FC<CourseAddModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 p-6 space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 max-w-md w-full p-6 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5 text-[#29B3C2]" />
-            <h3 className="font-bold text-slate-800 text-base">Thêm học phần mới</h3>
+            <BookOpen className="w-4 h-4 text-slate-600" />
+            <h3 className="font-semibold text-slate-900 text-sm">Thêm học phần mới</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"
+            className="p-1 text-slate-400 hover:text-slate-600 rounded"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Tên học phần (môn học)</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Tên học phần (môn học)</label>
             <input
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="VD: Kinh tế lượng, Marketing căn bản..."
               required
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Số tín chỉ</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Số tín chỉ</label>
               <select
                 value={credits}
                 onChange={(e) => setCredits(parseInt(e.target.value))}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white font-medium"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white"
               >
                 <option value={1}>1 tín chỉ</option>
                 <option value={2}>2 tín chỉ</option>
@@ -97,11 +97,11 @@ export const CourseAddModal: React.FC<CourseAddModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Trạng thái môn</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Trạng thái môn</label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as CourseStatus)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white font-medium"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white"
               >
                 <option value="Chưa học">Chưa học</option>
                 <option value="Đang học">Đang học</option>
@@ -112,8 +112,8 @@ export const CourseAddModal: React.FC<CourseAddModalProps> = ({
 
           <div>
             <div className="flex justify-between items-center mb-1">
-              <label className="block text-xs font-bold text-slate-700">Mục tiêu điểm số (Aim Hệ 10)</label>
-              <span className="text-sm font-black text-[#29B3C2]">{aimScore10.toFixed(1)}</span>
+              <label className="block text-xs font-medium text-slate-700">Mục tiêu điểm số (Aim Hệ 10)</label>
+              <span className="text-xs font-semibold text-slate-900">{aimScore10.toFixed(1)}</span>
             </div>
             <input
               type="range"
@@ -122,9 +122,9 @@ export const CourseAddModal: React.FC<CourseAddModalProps> = ({
               step="0.1"
               value={aimScore10}
               onChange={(e) => setAimScore10(parseFloat(e.target.value))}
-              className="w-full accent-[#29B3C2] cursor-pointer"
+              className="w-full accent-[#49C8D6] cursor-pointer"
             />
-            <div className="flex justify-between text-[10px] text-slate-400 font-semibold mt-1">
+            <div className="flex justify-between text-[11px] text-slate-400 mt-0.5">
               <span>5.0 (Cần qua)</span>
               <span>7.5 (Khá)</span>
               <span>8.5 (Giỏi)</span>
@@ -132,23 +132,23 @@ export const CourseAddModal: React.FC<CourseAddModalProps> = ({
             </div>
           </div>
 
-          <div className="text-[11px] text-slate-500 bg-slate-50 p-3 rounded-xl border border-slate-100">
-            Học phần sẽ được tự động khởi tạo 3 cột điểm chuẩn UEH (10% - 40% - 50%). Bạn có thể tùy biến thêm/xóa cột điểm sau khi tạo.
-          </div>
+          <p className="text-[11px] text-slate-500 font-normal leading-relaxed">
+            Học phần sẽ tự động có 3 cột điểm chuẩn UEH (10% - 40% - 50%). Bạn có thể tùy chỉnh lại bất kỳ lúc nào.
+          </p>
 
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800"
+              className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold bg-[#29B3C2] hover:bg-[#209aa8] text-white shadow-md shadow-cyan-500/20"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#49C8D6] hover:bg-[#3db8c6] text-white shadow-xs"
             >
-              <Plus className="w-4 h-4" /> Thêm vào học kỳ
+              <Plus className="w-3.5 h-3.5" /> Thêm môn
             </button>
           </div>
         </form>

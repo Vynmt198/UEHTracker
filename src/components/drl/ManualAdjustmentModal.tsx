@@ -40,55 +40,53 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 p-6 space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 max-w-md w-full p-6 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2">
-            <h3 className="font-bold text-slate-800 text-base">Điều chỉnh điểm rèn luyện thủ công</h3>
-          </div>
+          <h3 className="font-semibold text-slate-900 text-sm">Ghi nhận điểm thủ công</h3>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"
+            className="p-1 text-slate-400 hover:text-slate-600 rounded"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           <div className="flex gap-2">
             <button
               type="button"
               onClick={() => setIsNegative(false)}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+              className={`flex-1 py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border transition-colors ${
                 !isNegative
-                  ? 'border-emerald-300 bg-emerald-50 text-emerald-800 shadow-xs'
-                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                  ? 'border-slate-400 bg-slate-100 text-slate-900'
+                  : 'border-slate-200 text-slate-500 hover:bg-slate-50'
               }`}
             >
-              <PlusCircle className="w-4 h-4 text-emerald-600" />
+              <PlusCircle className="w-3.5 h-3.5 text-slate-700" />
               Điểm cộng (+)
             </button>
 
             <button
               type="button"
               onClick={() => setIsNegative(true)}
-              className={`flex-1 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 border transition-all ${
+              className={`flex-1 py-1.5 rounded-lg text-xs font-medium flex items-center justify-center gap-1.5 border transition-colors ${
                 isNegative
-                  ? 'border-red-300 bg-red-50 text-red-800 shadow-xs'
-                  : 'border-slate-200 text-slate-600 hover:bg-slate-50'
+                  ? 'border-red-300 bg-red-50 text-red-800'
+                  : 'border-slate-200 text-slate-500 hover:bg-slate-50'
               }`}
             >
-              <MinusCircle className="w-4 h-4 text-red-600" />
+              <MinusCircle className="w-3.5 h-3.5 text-red-600" />
               Điểm trừ (-) Vi phạm
             </button>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Mục tiêu chí áp dụng</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Mục tiêu chí</label>
             <select
               value={criterionId}
               onChange={(e) => setCriterionId(parseInt(e.target.value))}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white"
             >
               <option value={1}>Mục 1: Chấp hành pháp luật & nội quy (Tối đa 25đ)</option>
               <option value={2}>Mục 2: Học tập & NCKH tại UEH (Tối đa 20đ)</option>
@@ -99,7 +97,7 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Số điểm điều chỉnh</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Số điểm</label>
             <input
               type="number"
               min="0.5"
@@ -107,19 +105,19 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
               step="0.5"
               value={pointsAmount}
               onChange={(e) => setPointsAmount(parseFloat(e.target.value) || 0)}
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm font-bold focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-medium focus:outline-none focus:border-slate-400"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Lý do điều chỉnh</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Lý do</label>
             <input
               type="text"
               value={reason}
               onChange={(e) => setReason(e.target.value)}
-              placeholder="VD: Khen thưởng Ban cán sự lớp / Trừ điểm vi phạm quy chế thi..."
+              placeholder="VD: Khen thưởng Ban cán sự lớp / Trừ điểm vi phạm..."
               required
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
             />
           </div>
 
@@ -127,15 +125,15 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800"
+              className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl text-xs font-bold bg-[#29B3C2] hover:bg-[#209aa8] text-white shadow-md shadow-cyan-500/20"
+              className="px-4 py-1.5 rounded-lg text-xs font-medium bg-[#49C8D6] hover:bg-[#3db8c6] text-white shadow-xs"
             >
-              Xác nhận ghi điểm
+              Xác nhận
             </button>
           </div>
         </form>

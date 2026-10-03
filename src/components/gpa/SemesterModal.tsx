@@ -22,29 +22,29 @@ export const SemesterModal: React.FC<SemesterModalProps> = ({ isOpen, onClose, o
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 p-6 space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 max-w-md w-full p-6 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-[#29B3C2]" />
-            <h3 className="font-bold text-slate-800 text-base">Thêm học kỳ mới</h3>
+            <Calendar className="w-4 h-4 text-slate-600" />
+            <h3 className="font-semibold text-slate-900 text-sm">Thêm học kỳ mới</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"
+            className="p-1 text-slate-400 hover:text-slate-600 rounded"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Năm đào tạo</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Năm đào tạo</label>
               <select
                 value={yearNumber}
                 onChange={(e) => setYearNumber(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white font-medium"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white"
               >
                 <option value="Năm 1">Năm 1</option>
                 <option value="Năm 2">Năm 2</option>
@@ -54,45 +54,45 @@ export const SemesterModal: React.FC<SemesterModalProps> = ({ isOpen, onClose, o
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Học kỳ (HK)</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Học kỳ (HK)</label>
               <select
                 value={term}
                 onChange={(e) => setTerm(e.target.value)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white font-medium"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white"
               >
-                <option value="HK1">HK1 (Kỳ Mùa Thu)</option>
-                <option value="HK2">HK2 (Kỳ Mùa Xuân)</option>
-                <option value="HK Hè">HK Hè (Kỳ Phụ)</option>
+                <option value="HK1">HK1 (Mùa Thu)</option>
+                <option value="HK2">HK2 (Mùa Xuân)</option>
+                <option value="HK Hè">HK Hè (Phụ)</option>
               </select>
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Niên khóa đào tạo</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Niên khóa</label>
             <input
               type="text"
               value={academicYear}
               onChange={(e) => setAcademicYear(e.target.value)}
               placeholder="VD: 2026-2027"
               required
-              className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
             />
-            <p className="text-[11px] text-slate-400 mt-1">Định dạng chuẩn UEH: Năm X - HK1 / HK2 + Niên khóa</p>
+            <p className="text-[11px] text-slate-500 mt-1 font-normal">Quy chuẩn UEH: Năm X - HK1 / HK2 + Niên khóa</p>
           </div>
 
           <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800"
+              className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold bg-[#29B3C2] hover:bg-[#209aa8] text-white shadow-md shadow-cyan-500/20"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#49C8D6] hover:bg-[#3db8c6] text-white shadow-xs"
             >
-              <Plus className="w-4 h-4" /> Khởi tạo học kỳ
+              <Plus className="w-3.5 h-3.5" /> Tạo học kỳ
             </button>
           </div>
         </form>

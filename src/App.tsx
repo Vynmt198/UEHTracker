@@ -33,20 +33,18 @@ const MainLayout: React.FC = () => {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200/80 py-6 mt-12">
+      <footer className="bg-white border-t border-slate-200 py-6 mt-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <div className="w-6 h-6 rounded-lg bg-[#29B3C2] text-white flex items-center justify-center font-bold">
+            <div className="w-6 h-6 rounded-md bg-slate-900 text-white flex items-center justify-center">
               <GraduationCap className="w-3.5 h-3.5" />
             </div>
-            <span className="font-bold text-slate-700">UEH Tracker</span>
+            <span className="font-semibold text-slate-800">UEH Tracker</span>
             <span>• Dành riêng cho sinh viên Đại học Kinh tế TP. Hồ Chí Minh (UEH)</span>
           </div>
 
-          <div className="flex items-center gap-1 text-[11px]">
-            <span>Xây dựng với</span>
-            <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
-            <span>chuẩn hóa thang điểm 4.0 & quy chế rèn luyện UEH</span>
+          <div className="flex items-center gap-1 text-xs text-slate-500">
+            <span>Chuẩn hóa thang điểm 4.0 & quy chế ĐRL Đại học Kinh tế TP. Hồ Chí Minh</span>
           </div>
         </div>
       </footer>

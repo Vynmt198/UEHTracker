@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ScheduleBlock } from '../../types';
-import { Calendar, Clock, MapPin, X, Plus } from 'lucide-react';
+import { Calendar, X, Plus } from 'lucide-react';
 import { DAY_NAMES } from '../../utils/scheduleMatcher';
 
 interface AddBlockModalProps {
@@ -51,41 +51,41 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-      <div className="bg-white rounded-3xl shadow-2xl max-w-md w-full overflow-hidden border border-slate-100 p-6 space-y-5">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
+      <div className="bg-white rounded-xl shadow-sm border border-slate-200 max-w-md w-full p-6 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div className="flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-[#29B3C2]" />
-            <h3 className="font-bold text-slate-800 text-base">Thêm khối lịch cá nhân</h3>
+            <Calendar className="w-4 h-4 text-slate-600" />
+            <h3 className="font-semibold text-slate-900 text-sm">Thêm sự kiện lịch biểu</h3>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"
+            className="p-1 text-slate-400 hover:text-slate-600 rounded"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-3.5">
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Tên môn học / Sự kiện</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Tên môn học / Sự kiện</label>
             <input
               type="text"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="VD: Toán ứng dụng, Đi làm thêm, Tự học thư viện..."
+              placeholder="VD: Toán ứng dụng, Đi làm thêm, Tự học..."
               required
-              className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Thứ trong tuần</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Thứ trong tuần</label>
               <select
                 value={dayOfWeek}
                 onChange={(e) => setDayOfWeek(parseInt(e.target.value))}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white font-medium"
               >
                 {[1, 2, 3, 4, 5, 6, 7].map((d) => (
                   <option key={d} value={d}>
@@ -96,11 +96,11 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Loại sự kiện</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Loại sự kiện</label>
               <select
                 value={type}
                 onChange={(e) => setType(e.target.value as any)}
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-[#49C8D6] bg-white"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white font-medium"
               >
                 <option value="class">Lịch học chính khóa</option>
                 <option value="personal">Việc riêng / Tự học</option>
@@ -111,36 +111,36 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
 
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Giờ bắt đầu</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Giờ bắt đầu</label>
               <input
                 type="time"
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 required
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-medium focus:outline-none focus:border-slate-400"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Giờ kết thúc</label>
+              <label className="block text-xs font-medium text-slate-700 mb-1">Giờ kết thúc</label>
               <input
                 type="time"
                 value={endTime}
                 onChange={(e) => setEndTime(e.target.value)}
                 required
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+                className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs font-medium focus:outline-none focus:border-slate-400"
               />
             </div>
           </div>
 
           <div>
-            <label className="block text-xs font-bold text-slate-700 mb-1">Địa điểm</label>
+            <label className="block text-xs font-medium text-slate-700 mb-1">Địa điểm</label>
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
-              placeholder="VD: B1.302 Cơ sở B, Smart Library, Online..."
-              className="w-full px-3.5 py-2 rounded-xl border border-slate-200 text-xs focus:outline-none focus:ring-2 focus:ring-[#49C8D6]"
+              placeholder="VD: B1.302 Cơ sở B, Thư viện..."
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
             />
           </div>
 
@@ -148,15 +148,15 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-xs font-semibold text-slate-500 hover:text-slate-800"
+              className="px-3 py-1.5 text-xs font-medium text-slate-600 hover:text-slate-900"
             >
               Hủy
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 px-5 py-2.5 rounded-xl text-xs font-bold bg-[#29B3C2] hover:bg-[#209aa8] text-white shadow-md shadow-cyan-500/20"
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#49C8D6] hover:bg-[#3db8c6] text-white shadow-xs"
             >
-              <Plus className="w-4 h-4" /> Thêm vào thời khóa biểu
+              <Plus className="w-3.5 h-3.5" /> Thêm lịch
             </button>
           </div>
         </form>
