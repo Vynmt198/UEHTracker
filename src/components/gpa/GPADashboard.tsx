@@ -64,63 +64,88 @@ export const GPADashboard: React.FC = () => {
 
   return (
     <div className="space-y-6">
-      {/* 3 Clear Top Metric Cards */}
+      {/* 3 Top Metric Cards with Vivid Hover Effects & Animations */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Card 1: GPA Tích lũy */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-1.5">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+        <div className="group relative overflow-hidden bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1.5 hover:border-[#49C8D6] transition-all duration-300 ease-out cursor-pointer">
+          {/* Top accent highlight bar on hover */}
+          <div className="absolute inset-x-0 top-0 h-1 bg-transparent group-hover:bg-[#49C8D6] transition-colors duration-300" />
+          {/* Ambient subtle glow blob */}
+          <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-[#49C8D6]/10 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500 blur-xl pointer-events-none" />
+
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 group-hover:text-slate-800 transition-colors">
               GPA Tích lũy (Hệ 4)
             </span>
-            <GraduationCap className="w-4 h-4 text-slate-400" />
+            <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 group-hover:border-[#49C8D6]/40 group-hover:bg-[#49C8D6]/10 flex items-center justify-center transition-all duration-300 group-hover:rotate-6">
+              <GraduationCap className="w-4 h-4 text-slate-400 group-hover:text-[#49C8D6] group-hover:scale-110 transition-all duration-300" />
+            </div>
           </div>
+
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-semibold text-slate-900">
+            <span className="text-3xl font-semibold text-slate-900 group-hover:text-[#49C8D6] transition-colors duration-300">
               {overallStats.actualGPA4 > 0 ? overallStats.actualGPA4.toFixed(2) : '0.00'}
             </span>
-            <span className="text-xs text-slate-500">/ 4.00</span>
+            <span className="text-xs text-slate-400 group-hover:text-slate-600 transition-colors">/ 4.00</span>
           </div>
+
           <p className="text-xs text-slate-500 mt-2 font-normal">
-            Điểm hệ 10: <span className="text-slate-800 font-medium">{overallStats.actualScore10.toFixed(2)}</span>
+            Điểm hệ 10: <span className="text-slate-800 font-semibold group-hover:text-[#007D8C] transition-colors">{overallStats.actualScore10.toFixed(2)}</span>
           </p>
         </div>
 
         {/* Card 2: Tiến độ Tín chỉ */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-1.5">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+        <div className="group relative overflow-hidden bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1.5 hover:border-[#49C8D6] transition-all duration-300 ease-out cursor-pointer">
+          <div className="absolute inset-x-0 top-0 h-1 bg-transparent group-hover:bg-[#49C8D6] transition-colors duration-300" />
+          <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-[#49C8D6]/10 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500 blur-xl pointer-events-none" />
+
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 group-hover:text-slate-800 transition-colors">
               Tín chỉ tích lũy
             </span>
-            <BookOpen className="w-4 h-4 text-slate-400" />
+            <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 group-hover:border-[#49C8D6]/40 group-hover:bg-[#49C8D6]/10 flex items-center justify-center transition-all duration-300 group-hover:-rotate-6">
+              <BookOpen className="w-4 h-4 text-slate-400 group-hover:text-[#49C8D6] group-hover:scale-110 transition-all duration-300" />
+            </div>
           </div>
+
           <div className="flex items-baseline gap-2">
-            <span className="text-3xl font-semibold text-slate-900">
+            <span className="text-3xl font-semibold text-slate-900 group-hover:text-[#49C8D6] transition-colors duration-300">
               {overallStats.completedCredits}
             </span>
-            <span className="text-xs text-slate-500">/ 125 TC</span>
+            <span className="text-xs text-slate-400 group-hover:text-slate-600 transition-colors">/ 125 TC</span>
           </div>
-          <div className="w-full bg-slate-100 h-1.5 rounded-full mt-2.5 overflow-hidden">
+
+          <div className="w-full bg-slate-100 h-1.5 group-hover:h-2 rounded-full mt-2.5 overflow-hidden transition-all duration-300">
             <div
-              className="bg-[#49C8D6] h-full rounded-full transition-all duration-300"
+              className="bg-[#49C8D6] h-full rounded-full transition-all duration-500 group-hover:brightness-105"
               style={{ width: `${Math.min(100, (overallStats.completedCredits / 125) * 100)}%` }}
             />
           </div>
         </div>
 
         {/* Card 3: Học bổng UEH */}
-        <div className="bg-white p-5 rounded-xl border border-slate-200 shadow-xs">
-          <div className="flex items-center justify-between text-slate-500 mb-1.5">
-            <span className="text-xs font-medium uppercase tracking-wider text-slate-500">
+        <div className="group relative overflow-hidden bg-white p-5 rounded-2xl border border-slate-200/90 shadow-xs hover:shadow-xl hover:-translate-y-1.5 hover:border-[#49C8D6] transition-all duration-300 ease-out cursor-pointer">
+          <div className="absolute inset-x-0 top-0 h-1 bg-transparent group-hover:bg-[#49C8D6] transition-colors duration-300" />
+          <div className="absolute -right-6 -bottom-6 w-24 h-24 rounded-full bg-[#49C8D6]/10 opacity-0 group-hover:opacity-100 group-hover:scale-125 transition-all duration-500 blur-xl pointer-events-none" />
+
+          <div className="flex items-center justify-between text-slate-500 mb-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 group-hover:text-slate-800 transition-colors">
               Học bổng dự kiến
             </span>
-            <Award className="w-4 h-4 text-slate-400" />
+            <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-100 group-hover:border-[#49C8D6]/40 group-hover:bg-[#49C8D6]/10 flex items-center justify-center transition-all duration-300 group-hover:rotate-6">
+              <Award className="w-4 h-4 text-slate-400 group-hover:text-[#49C8D6] group-hover:scale-110 transition-all duration-300" />
+            </div>
           </div>
+
           <div className="flex items-center gap-2">
-            <span className="text-2xl font-semibold text-slate-900">{scholarship.tier}</span>
-            <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+            <span className="text-2xl font-semibold text-slate-900 group-hover:text-[#49C8D6] transition-colors duration-300">
+              {scholarship.tier}
+            </span>
+            <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200 group-hover:border-[#49C8D6]/40 group-hover:bg-[#49C8D6]/10 transition-colors">
               ĐRL: {drlProgress.totalDRL}đ
             </span>
           </div>
+
           <p className="text-xs text-slate-500 mt-2 truncate font-normal">
             {scholarship.description}
           </p>
@@ -134,7 +159,7 @@ export const GPADashboard: React.FC = () => {
       <div className="space-y-3 pt-2">
         {/* Header Actions */}
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          {/* Semester Selector Tabs */}
+          {/* Semester Selector Tabs with Hover elevation */}
           <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full">
             {semesters.map((sem) => {
               const isSelected = sem.id === currentSemester?.id;
@@ -145,10 +170,10 @@ export const GPADashboard: React.FC = () => {
                 <div
                   key={sem.id}
                   onClick={() => setSelectedSemesterId(sem.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs cursor-pointer shrink-0 transition-colors flex items-center gap-2 ${
+                  className={`px-3 py-1.5 rounded-xl text-xs cursor-pointer shrink-0 transition-all duration-200 flex items-center gap-2 ${
                     isSelected
-                      ? 'bg-slate-900 text-white font-medium'
-                      : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                      ? 'bg-slate-900 text-white font-medium shadow-xs scale-102'
+                      : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:-translate-y-0.5'
                   }`}
                 >
                   <span>{sem.name}</span>
@@ -164,7 +189,7 @@ export const GPADashboard: React.FC = () => {
                           deleteSemester(sem.id);
                         }
                       }}
-                      className={`p-0.5 rounded ${
+                      className={`p-0.5 rounded transition-colors ${
                         isSelected ? 'text-slate-300 hover:text-white' : 'text-slate-400 hover:text-red-500'
                       }`}
                       title="Xóa kỳ này"
@@ -178,7 +203,7 @@ export const GPADashboard: React.FC = () => {
 
             <button
               onClick={() => setShowSemesterModal(true)}
-              className="px-2.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 shrink-0"
+              className="px-2.5 py-1.5 rounded-xl text-xs font-medium text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-200 shrink-0"
               title="Thêm học kỳ mới"
             >
               + Thêm kỳ
@@ -188,7 +213,7 @@ export const GPADashboard: React.FC = () => {
           {/* Action button */}
           <button
             onClick={() => setShowCourseAddModal(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#49C8D6] hover:bg-[#3db8c6] transition-colors shadow-xs shrink-0 self-end sm:self-auto"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium text-white bg-[#49C8D6] hover:bg-[#3db8c6] hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200 shrink-0 self-end sm:self-auto"
           >
             <Plus className="w-3.5 h-3.5" /> Thêm môn học
           </button>
@@ -211,31 +236,31 @@ export const GPADashboard: React.FC = () => {
           </div>
         )}
 
-        {/* Clean, Readable Courses Table */}
+        {/* Clean, Readable Courses Table with Row Interactions */}
         {semesterCourses.length === 0 ? (
-          <div className="text-center py-10 px-4 bg-white rounded-xl border border-slate-200">
+          <div className="text-center py-10 px-4 bg-white rounded-2xl border border-slate-200 shadow-xs">
             <BookOpen className="w-8 h-8 text-slate-300 mx-auto mb-2" />
             <p className="text-sm font-medium text-slate-700">Chưa có môn học trong học kỳ này</p>
             <button
               onClick={() => setShowCourseAddModal(true)}
-              className="mt-3 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#49C8D6] hover:bg-[#3db8c6]"
+              className="mt-3 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium text-white bg-[#49C8D6] hover:bg-[#3db8c6] hover:scale-105 active:scale-95 transition-all"
             >
               <Plus className="w-3.5 h-3.5" /> Thêm môn học
             </button>
           </div>
         ) : (
-          <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+          <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition-shadow duration-300">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
                   <tr className="border-b border-slate-200 bg-slate-50 text-slate-600 font-medium">
-                    <th className="py-2.5 px-4">Tên môn học</th>
-                    <th className="py-2.5 px-3 text-center">Tín chỉ</th>
-                    <th className="py-2.5 px-3 text-center">Trạng thái</th>
-                    <th className="py-2.5 px-3 text-center">Mục tiêu (Aim)</th>
-                    <th className="py-2.5 px-3 text-center">Điểm hệ 10</th>
-                    <th className="py-2.5 px-3 text-center">Quy đổi</th>
-                    <th className="py-2.5 px-4 text-right">Thao tác</th>
+                    <th className="py-3 px-4">Tên môn học</th>
+                    <th className="py-3 px-3 text-center">Tín chỉ</th>
+                    <th className="py-3 px-3 text-center">Trạng thái</th>
+                    <th className="py-3 px-3 text-center">Mục tiêu (Aim)</th>
+                    <th className="py-3 px-3 text-center">Điểm hệ 10</th>
+                    <th className="py-3 px-3 text-center">Quy đổi</th>
+                    <th className="py-3 px-4 text-right">Thao tác</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -243,32 +268,36 @@ export const GPADashboard: React.FC = () => {
                     const uehGrade = convertScore10ToUEH(course.finalScore10);
 
                     return (
-                      <tr key={course.id} className="hover:bg-slate-50/70 transition-colors">
-                        {/* Course Name */}
-                        <td className="py-3 px-4">
+                      <tr
+                        key={course.id}
+                        className="group hover:bg-slate-50/80 transition-all duration-200 relative"
+                      >
+                        {/* Course Name with Left Glow Bar */}
+                        <td className="py-3.5 px-4 relative">
+                          <span className="absolute left-0 top-2 bottom-2 w-1 bg-transparent group-hover:bg-[#49C8D6] transition-all duration-200 rounded-r" />
                           <button
                             onClick={() => setActiveGradeModalCourse(course)}
-                            className="text-left font-semibold text-slate-900 hover:text-[#49C8D6] transition-colors"
+                            className="text-left font-semibold text-slate-900 group-hover:text-[#49C8D6] group-hover:translate-x-0.5 transition-all duration-200"
                           >
                             {course.name}
                           </button>
                         </td>
 
                         {/* Credits */}
-                        <td className="py-3 px-3 text-center text-slate-600 font-normal">
+                        <td className="py-3.5 px-3 text-center text-slate-600 font-normal">
                           {course.credits} TC
                         </td>
 
                         {/* Status */}
-                        <td className="py-3 px-3 text-center">
+                        <td className="py-3.5 px-3 text-center">
                           <button
                             onClick={() => handleToggleStatus(course)}
                             title="Bấm để đổi trạng thái"
-                            className={`px-2 py-0.5 rounded text-[11px] font-medium border transition-colors ${
+                            className={`px-2.5 py-0.5 rounded-full text-[11px] font-medium border transition-all duration-200 hover:scale-105 active:scale-95 ${
                               course.status === 'Đã hoàn thành'
                                 ? 'bg-slate-100 text-slate-800 border-slate-300'
                                 : course.status === 'Đang học'
-                                ? 'bg-slate-50 text-slate-600 border-slate-200'
+                                ? 'bg-slate-50 text-slate-600 border-slate-200 hover:border-slate-300'
                                 : 'bg-white text-slate-400 border-slate-200'
                             }`}
                           >
@@ -277,21 +306,21 @@ export const GPADashboard: React.FC = () => {
                         </td>
 
                         {/* Aim */}
-                        <td className="py-3 px-3 text-center font-medium text-slate-700">
+                        <td className="py-3.5 px-3 text-center font-medium text-slate-700">
                           {course.aimScore10 ? course.aimScore10.toFixed(1) : '8.0'}
                         </td>
 
                         {/* Score 10 */}
-                        <td className="py-3 px-3 text-center font-semibold text-slate-900">
+                        <td className="py-3.5 px-3 text-center font-semibold text-slate-900 group-hover:text-slate-950 transition-colors">
                           {course.finalScore10 !== null && course.finalScore10 !== undefined
                             ? course.finalScore10.toFixed(1)
                             : '--'}
                         </td>
 
                         {/* Converted Grade */}
-                        <td className="py-3 px-3 text-center">
+                        <td className="py-3.5 px-3 text-center">
                           {course.finalScore10 !== null && course.finalScore10 !== undefined ? (
-                            <span className="font-semibold text-slate-900">
+                            <span className="font-semibold text-slate-900 group-hover:text-[#007D8C] transition-colors">
                               {uehGrade.letter}{' '}
                               <span className="text-slate-500 text-[11px] font-normal">({uehGrade.gpa4.toFixed(1)})</span>
                             </span>
@@ -301,11 +330,11 @@ export const GPADashboard: React.FC = () => {
                         </td>
 
                         {/* Actions */}
-                        <td className="py-3 px-4 text-right">
+                        <td className="py-3.5 px-4 text-right">
                           <div className="flex items-center justify-end gap-2">
                             <button
                               onClick={() => setActiveGradeModalCourse(course)}
-                              className="px-2.5 py-1 rounded-md text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors"
+                              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:!bg-[#49C8D6] hover:!text-white hover:!border-[#49C8D6] hover:shadow-md hover:scale-105 active:scale-95 transition-all duration-200"
                             >
                               Nhập điểm
                             </button>
@@ -316,7 +345,7 @@ export const GPADashboard: React.FC = () => {
                                   deleteCourse(course.id);
                                 }
                               }}
-                              className="p-1 text-slate-400 hover:text-red-500 rounded"
+                              className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95"
                               title="Xóa môn này"
                             >
                               <Trash2 className="w-3.5 h-3.5" />
