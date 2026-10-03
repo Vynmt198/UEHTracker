@@ -1,0 +1,477 @@
+[
+  {
+    "id": "act-001",
+    "code": "UEH-IT-01",
+    "title": "Hội thảo Công nghệ Trí tuệ Nhân tạo & FinTech 2026",
+    "organizer": "Khoa CNTT Kinh Doanh & CLB BIT",
+    "facultyTarget": "Công nghệ thông tin kinh doanh",
+    "date": "2026-10-06",
+    "dayOfWeek": 2,
+    "startTime": "08:00",
+    "endTime": "10:30",
+    "location": "Hội trường B1.302 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 3.0 },
+      { "criterionCode": "2.3", "points": 1.0 }
+    ],
+    "totalPoints": 4.0,
+    "tags": ["Học thuật", "Công nghệ", "AI", "Fintech"],
+    "description": "Chia sẻ về ứng dụng GenAI và LLM trong ngành ngân hàng tài chính tại Việt Nam."
+  },
+  {
+    "id": "act-002",
+    "code": "UEH-MKT-02",
+    "title": "Chung kết Cuộc thi Marketing Arena 2026",
+    "organizer": "Khoa Kinh doanh quốc tế - Marketing & Margroup",
+    "facultyTarget": "Kinh doanh quốc tế - Marketing",
+    "date": "2026-10-06",
+    "dayOfWeek": 2,
+    "startTime": "13:30",
+    "endTime": "16:30",
+    "location": "Hội trường A.103 - Cơ sở A",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 4.0 },
+      { "criterionCode": "3.1", "points": 1.5 }
+    ],
+    "totalPoints": 5.5,
+    "tags": ["Marketing", "Học thuật", "Case Study"],
+    "description": "Vòng chung kết giải bài toán thực tế từ tập đoàn đa quốc gia Unilever & Shopee."
+  },
+  {
+    "id": "act-003",
+    "code": "UEH-GRN-03",
+    "title": "Tọa đàm UEH Green Campus: Phân loại rác & Lối sống bền vững",
+    "organizer": "Ban Quản lý KTX & Đoàn Trường UEH",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-07",
+    "dayOfWeek": 3,
+    "startTime": "09:00",
+    "endTime": "11:00",
+    "location": "Sảnh B2 - Cơ sở B (Nguyễn Tri Phương)",
+    "allocations": [
+      { "criterionCode": "3.2", "points": 3.5 },
+      { "criterionCode": "1.2", "points": 1.0 }
+    ],
+    "totalPoints": 4.5,
+    "tags": ["Green Campus", "Môi trường", "Cộng đồng"],
+    "description": "Tập huấn và thực hành trạm thu gom rác điện tử, rác tái chế tại các cơ sở UEH."
+  },
+  {
+    "id": "act-004",
+    "code": "UEH-FIN-04",
+    "title": "Tập huấn Phân tích Báo cáo Tài chính & Dữ liệu FiinGroup",
+    "organizer": "Khoa Tài chính & CLB Chứng khoán SCUE",
+    "facultyTarget": "Tài chính - Ngân hàng",
+    "date": "2026-10-07",
+    "dayOfWeek": 3,
+    "startTime": "14:00",
+    "endTime": "16:30",
+    "location": "Phòng máy Lab B1.405 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 3.0 },
+      { "criterionCode": "2.3", "points": 2.0 }
+    ],
+    "totalPoints": 5.0,
+    "tags": ["Tài chính", "Thực hành", "Kỹ năng số"],
+    "description": "Hướng dẫn thực chiến bóc tách chỉ số tài chính và sử dụng terminal phân tích dữ liệu chứng khoán."
+  },
+  {
+    "id": "act-005",
+    "code": "UEH-VOL-05",
+    "title": "Ngày hội Hiến máu Tình nguyện 'Giọt Hồng UEHer đợt 2'",
+    "organizer": "Hội Chữ thập đỏ & Hội Sinh viên UEH",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-08",
+    "dayOfWeek": 4,
+    "startTime": "07:30",
+    "endTime": "11:30",
+    "location": "Khu thể thao Cơ sở N - Nam Sài Gòn",
+    "allocations": [
+      { "criterionCode": "4.1", "points": 5.0 },
+      { "criterionCode": "4.2", "points": 2.0 }
+    ],
+    "totalPoints": 7.0,
+    "tags": ["Hiến máu", "Tình nguyện", "Nhân đạo"],
+    "description": "Chương trình hiến máu cứu người lan tỏa tinh thần nghĩa tình của sinh viên UEH."
+  },
+  {
+    "id": "act-006",
+    "code": "UEH-LAW-06",
+    "title": "Phiên tòa giả định: Tranh chấp Sở hữu Trí tuệ trong Kỷ nguyên Số",
+    "organizer": "Khoa Luật & CLB Thực thi Pháp luật",
+    "facultyTarget": "Luật",
+    "date": "2026-10-08",
+    "dayOfWeek": 4,
+    "startTime": "13:30",
+    "endTime": "16:00",
+    "location": "Phòng xử án mô phỏng B1.101 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "1.1", "points": 3.0 },
+      { "criterionCode": "2.2", "points": 2.0 }
+    ],
+    "totalPoints": 5.0,
+    "tags": ["Luật pháp", "Moot Court", "Bản quyền"],
+    "description": "Mô phỏng phiên tòa sơ thẩm xử lý tranh chấp bản quyền tác phẩm do AI tạo sinh."
+  },
+  {
+    "id": "act-007",
+    "code": "UEH-ACC-07",
+    "title": "Workshop ACCA & Con đường chinh phục Big4 Kiểm toán",
+    "organizer": "Khoa Kế toán & CLB Kế toán - Kiểm toán A²C",
+    "facultyTarget": "Kế toán - Kiểm toán",
+    "date": "2026-10-09",
+    "dayOfWeek": 5,
+    "startTime": "08:30",
+    "endTime": "11:00",
+    "location": "Hội trường H.001 - Cơ sở H (Hoàng Diệu)",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 2.5 },
+      { "criterionCode": "2.3", "points": 2.0 }
+    ],
+    "totalPoints": 4.5,
+    "tags": ["Kế toán", "ACCA", "Career", "Big4"],
+    "description": "Giao lưu cùng Senior Manager từ PwC và Deloitte chia sẻ kinh nghiệm ứng tuyển Internship."
+  },
+  {
+    "id": "act-008",
+    "code": "UEH-SPO-08",
+    "title": "Giải Chạy Bộ Vì Môi Trường UEH Green Run 2026",
+    "organizer": "Ban Thể thao & Đoàn Thanh niên UEH",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-09",
+    "dayOfWeek": 5,
+    "startTime": "16:30",
+    "endTime": "18:30",
+    "location": "Khuôn viên Cơ sở N (Nguyễn Văn Linh)",
+    "allocations": [
+      { "criterionCode": "3.1", "points": 4.0 },
+      { "criterionCode": "3.2", "points": 2.0 }
+    ],
+    "totalPoints": 6.0,
+    "tags": ["Thể thao", "Green Run", "Rèn luyện"],
+    "description": "Giải chạy cự ly 5km gây quỹ trồng rừng và trao học bổng UEH Vươn Cao."
+  },
+  {
+    "id": "act-009",
+    "code": "UEH-INN-09",
+    "title": "Ngày hội Đổi mới Sáng tạo & Khởi nghiệp Khối ngành Kinh tế UII Demo Day",
+    "organizer": "Viện Đổi mới Sáng tạo (UII) UEH",
+    "facultyTarget": "Kinh tế - Quản trị",
+    "date": "2026-10-10",
+    "dayOfWeek": 6,
+    "startTime": "08:00",
+    "endTime": "11:30",
+    "location": "Không gian Sáng tạo UII - Cơ sở B (B2.101)",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 4.5 },
+      { "criterionCode": "5.2", "points": 2.0 }
+    ],
+    "totalPoints": 6.5,
+    "tags": ["Khởi nghiệp", "Pitching", "Sáng tạo"],
+    "description": "Trình diễn 15 dự án khởi nghiệp sinh viên xuất sắc nhận vốn ươm tạo 500 triệu đồng."
+  },
+  {
+    "id": "act-010",
+    "code": "UEH-ART-10",
+    "title": "Đêm Nhạc Hội UEH Youth Festival & Chào đón Tân Sinh viên",
+    "organizer": "Đoàn Thanh niên - Hội Sinh viên UEH",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-10",
+    "dayOfWeek": 6,
+    "startTime": "18:00",
+    "endTime": "21:30",
+    "location": "Sân vận động Cơ sở N - Nam Sài Gòn",
+    "allocations": [
+      { "criterionCode": "3.1", "points": 5.0 },
+      { "criterionCode": "1.2", "points": 1.0 }
+    ],
+    "totalPoints": 6.0,
+    "tags": ["Văn nghệ", "Festival", "Tuổi trẻ"],
+    "description": "Đại nhạc hội truyền thống thường niên hội tụ các nghệ sĩ nổi tiếng và CLB Giai Điệu Trẻ UEH."
+  },
+  {
+    "id": "act-011",
+    "code": "UEH-RES-11",
+    "title": "Tập huấn Viết Báo cáo Nghiên cứu Khoa học Sinh viên UEH500",
+    "organizer": "Ban Quản lý Khoa học & Hợp tác Quốc tế",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-11",
+    "dayOfWeek": 7,
+    "startTime": "08:30",
+    "endTime": "11:30",
+    "location": "Phòng Smart Classroom B1.205 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 5.0 },
+      { "criterionCode": "2.3", "points": 1.5 }
+    ],
+    "totalPoints": 6.5,
+    "tags": ["NCKH", "UEH500", "Phương pháp luận"],
+    "description": "Hướng dẫn sử dụng SPSS/Stata, trích dẫn chuẩn APA 7th và bố cục công trình NCKH."
+  },
+  {
+    "id": "act-012",
+    "code": "UEH-SKL-12",
+    "title": "Chuyên đề Kỹ năng Thuyết trình & Giao tiếp Đa Văn hóa",
+    "organizer": "Viện Đào tạo Quốc tế ISB - UEH",
+    "facultyTarget": "Kinh doanh quốc tế - Marketing",
+    "date": "2026-10-11",
+    "dayOfWeek": 7,
+    "startTime": "14:00",
+    "endTime": "16:30",
+    "location": "Hội trường 17 Phạm Ngọc Thạch - Cơ sở V",
+    "allocations": [
+      { "criterionCode": "2.3", "points": 3.0 },
+      { "criterionCode": "3.1", "points": 1.5 }
+    ],
+    "totalPoints": 4.5,
+    "tags": ["Kỹ năng mềm", "Thuyết trình", "Tiếng Anh"],
+    "description": "Thực hành phản xạ đàm phán thương mại và thuyết trình giải pháp kinh doanh trước hội đồng."
+  },
+  {
+    "id": "act-013",
+    "code": "UEH-POL-13",
+    "title": "Học tập Chuyên đề Tư tưởng Hồ Chí Minh & Bảo vệ Chủ quyền Biển đảo",
+    "organizer": "Đoàn Trường & Khoa Lý luận Chính trị",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-12",
+    "dayOfWeek": 1,
+    "startTime": "08:00",
+    "endTime": "10:30",
+    "location": "Hội trường A.103 - Cơ sở A",
+    "allocations": [
+      { "criterionCode": "1.1", "points": 4.0 },
+      { "criterionCode": "3.1", "points": 2.0 }
+    ],
+    "totalPoints": 6.0,
+    "tags": ["Chính trị", "Tư tưởng", "Biển đảo"],
+    "description": "Bồi dưỡng nhận thức lý luận chính trị và trách nhiệm bảo vệ biển đảo quê hương."
+  },
+  {
+    "id": "act-014",
+    "code": "UEH-DAT-14",
+    "title": "Bootcamp SQL & Power BI trong Phân tích Kinh doanh Thực chiến",
+    "organizer": "Khoa CNTT Kinh Doanh & CLB BAP",
+    "facultyTarget": "Công nghệ thông tin kinh doanh",
+    "date": "2026-10-12",
+    "dayOfWeek": 1,
+    "startTime": "13:30",
+    "endTime": "16:00",
+    "location": "Phòng máy B1.408 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 3.0 },
+      { "criterionCode": "2.3", "points": 2.0 }
+    ],
+    "totalPoints": 5.0,
+    "tags": ["Data Analytics", "Power BI", "SQL"],
+    "description": "Thực hành xây dựng dashboard kinh doanh trực quan cho hệ thống chuỗi bán lẻ."
+  },
+  {
+    "id": "act-015",
+    "code": "UEH-SOC-15",
+    "title": "Chương trình 'Tủ sách Yêu thương' - Trao quà cho học sinh vùng khó khăn",
+    "organizer": "Đội Công tác Xã hội UEH",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-13",
+    "dayOfWeek": 2,
+    "startTime": "13:30",
+    "endTime": "17:00",
+    "location": "Cơ sở B - Sảnh B1",
+    "allocations": [
+      { "criterionCode": "4.1", "points": 4.0 },
+      { "criterionCode": "4.2", "points": 2.5 }
+    ],
+    "totalPoints": 6.5,
+    "tags": ["Công tác xã hội", "Tình nguyện", "Quyên góp"],
+    "description": "Phân loại sách vở và đóng gói 500 phần quà hỗ trợ điểm trường tiểu học Cần Giờ."
+  },
+  {
+    "id": "act-016",
+    "code": "UEH-FIN-16",
+    "title": "Tọa đàm Quản lý Gia sản Cá nhân (Wealth Management) cho Gen Z",
+    "organizer": "Khoa Ngân hàng & Công ty Quản lý Quỹ Dragon Capital",
+    "facultyTarget": "Tài chính - Ngân hàng",
+    "date": "2026-10-13",
+    "dayOfWeek": 2,
+    "startTime": "08:30",
+    "endTime": "11:00",
+    "location": "Hội trường B1.302 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 3.0 },
+      { "criterionCode": "1.2", "points": 1.0 }
+    ],
+    "totalPoints": 4.0,
+    "tags": ["Tài chính cá nhân", "Đầu tư", "Gen Z"],
+    "description": "Kiến thức phân bổ tài sản, quỹ mở ETF và quản trị rủi ro chi tiêu cá nhân."
+  },
+  {
+    "id": "act-017",
+    "code": "UEH-LDR-17",
+    "title": "Khóa Huấn luyện Kỹ năng Lãnh đạo & Tổ chức Sự kiện cho Cán bộ Đoàn - Hội",
+    "organizer": "Văn phòng Đoàn TN - Hội Sinh viên UEH",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-14",
+    "dayOfWeek": 3,
+    "startTime": "08:00",
+    "endTime": "11:30",
+    "location": "Phòng Hội thảo A.205 - Cơ sở A",
+    "allocations": [
+      { "criterionCode": "5.1", "points": 5.0 },
+      { "criterionCode": "5.2", "points": 2.0 }
+    ],
+    "totalPoints": 7.0,
+    "tags": ["Cán bộ lớp", "Đoàn Hội", "Lãnh đạo"],
+    "description": "Bồi dưỡng nghiệp vụ quản trị nhân sự sự kiện và kỹ năng làm việc nhóm hiệu quả."
+  },
+  {
+    "id": "act-018",
+    "code": "UEH-ETH-18",
+    "title": "Tuyên truyền Văn hóa Ứng xử trên Không gian Mạng & Chống Gian lận Thi cử",
+    "organizer": "Phòng Chăm sóc và Hỗ trợ Người học (DSA)",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-14",
+    "dayOfWeek": 3,
+    "startTime": "14:00",
+    "endTime": "16:00",
+    "location": "Hội trường Trực tuyến UEH LMS",
+    "allocations": [
+      { "criterionCode": "1.2", "points": 4.0 },
+      { "criterionCode": "3.2", "points": 2.0 }
+    ],
+    "totalPoints": 6.0,
+    "tags": ["Nội quy", "Văn hóa mạng", "DSA"],
+    "description": "Phổ biến quy định liêm chính học thuật và ứng xử văn minh trong cộng đồng sinh viên."
+  },
+  {
+    "id": "act-019",
+    "code": "UEH-MAN-19",
+    "title": "Case Competition 'UEH BizTech Innovator 2026'",
+    "organizer": "Khoa Quản trị & CLB Quản trị Kinh doanh Dynamic",
+    "facultyTarget": "Kinh tế - Quản trị",
+    "date": "2026-10-15",
+    "dayOfWeek": 4,
+    "startTime": "08:30",
+    "endTime": "11:30",
+    "location": "Hội trường B1.302 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 4.0 },
+      { "criterionCode": "5.2", "points": 2.5 }
+    ],
+    "totalPoints": 6.5,
+    "tags": ["Quản trị", "Case Crack", "BizTech"],
+    "description": "Cuộc thi giải case chuyển đổi số mô hình kinh doanh cho doanh nghiệp SME Việt Nam."
+  },
+  {
+    "id": "act-020",
+    "code": "UEH-CLM-20",
+    "title": "Hội thảo Thích ứng Biến đổi Khí hậu & ESG trong Chuỗi Cung ứng",
+    "organizer": "Khoa Kinh doanh quốc tế - Marketing & Viện ESG UEH",
+    "facultyTarget": "Kinh doanh quốc tế - Marketing",
+    "date": "2026-10-15",
+    "dayOfWeek": 4,
+    "startTime": "13:30",
+    "endTime": "16:00",
+    "location": "Hội trường A.103 - Cơ sở A",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 3.0 },
+      { "criterionCode": "3.2", "points": 2.5 }
+    ],
+    "totalPoints": 5.5,
+    "tags": ["ESG", "Logistics", "Bền vững"],
+    "description": "Giải pháp giảm phát thải carbon và tuân thủ tiêu chuẩn xanh trong xuất nhập khẩu."
+  },
+  {
+    "id": "act-021",
+    "code": "UEH-TAX-21",
+    "title": "Tư vấn Thuế & Kê khai Thuế Điện tử cho Doanh nghiệp Khởi nghiệp",
+    "organizer": "Khoa Tài chính Công & CLB Thuế UEH",
+    "facultyTarget": "Tài chính - Ngân hàng",
+    "date": "2026-10-16",
+    "dayOfWeek": 5,
+    "startTime": "08:30",
+    "endTime": "11:00",
+    "location": "Phòng B1.206 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "1.1", "points": 2.5 },
+      { "criterionCode": "2.2", "points": 2.5 }
+    ],
+    "totalPoints": 5.0,
+    "tags": ["Thuế", "Pháp luật", "Học thuật"],
+    "description": "Tìm hiểu luật quản lý thuế hiện hành và các quy định ưu đãi thuế cho startup đổi mới sáng tạo."
+  },
+  {
+    "id": "act-022",
+    "code": "UEH-VOL-22",
+    "title": "Chiến dịch Xuân Tình Nguyện UEH 2027: Lễ Ra Quân & Tập huấn Kỹ năng",
+    "organizer": "Ban Thường vụ Đoàn Trường - Hội Sinh viên",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-16",
+    "dayOfWeek": 5,
+    "startTime": "13:30",
+    "endTime": "17:00",
+    "location": "Hội trường A.103 - Cơ sở A",
+    "allocations": [
+      { "criterionCode": "4.1", "points": 5.0 },
+      { "criterionCode": "3.1", "points": 2.0 }
+    ],
+    "totalPoints": 7.0,
+    "tags": ["Xuân tình nguyện", "Đoàn Hội", "Cộng đồng"],
+    "description": "Ra quân chiến dịch hỗ trợ bà con nghèo và trẻ em có hoàn cảnh khó khăn tại các tỉnh Tây Nam Bộ."
+  },
+  {
+    "id": "act-023",
+    "code": "UEH-AUD-23",
+    "title": "Chuyên đề Kiểm toán Hệ thống Thông tin (IT Audit) & An toàn Dữ liệu",
+    "organizer": "Khoa Kế toán & ISACA Chapter TP.HCM",
+    "facultyTarget": "Kế toán - Kiểm toán",
+    "date": "2026-10-17",
+    "dayOfWeek": 6,
+    "startTime": "09:00",
+    "endTime": "11:30",
+    "location": "Hội trường B1.302 - Cơ sở B",
+    "allocations": [
+      { "criterionCode": "2.2", "points": 3.0 },
+      { "criterionCode": "2.3", "points": 2.0 }
+    ],
+    "totalPoints": 5.0,
+    "tags": ["IT Audit", "Kế toán", "An ninh mạng"],
+    "description": "Tổng quan khung đánh giá COBIT và kiểm toán tuân thủ bảo mật thông tin ngân hàng."
+  },
+  {
+    "id": "act-024",
+    "code": "UEH-SPT-24",
+    "title": "Hội thao Sinh viên UEH Traditional Games: Kéo co & Cầu lông Đồng đội",
+    "organizer": "CLB Thể thao & Đoàn Thanh niên",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-17",
+    "dayOfWeek": 6,
+    "startTime": "14:30",
+    "endTime": "17:30",
+    "location": "Nhà thi đấu Đa năng Cơ sở N (Nguyễn Văn Linh)",
+    "allocations": [
+      { "criterionCode": "3.1", "points": 4.5 },
+      { "criterionCode": "4.2", "points": 1.5 }
+    ],
+    "totalPoints": 6.0,
+    "tags": ["Hội thao", "Cầu lông", "Sức khỏe"],
+    "description": "Thi đấu giao lưu thể thao giữa các liên chi đoàn khoa/viện nâng cao thể lực và đoàn kết."
+  },
+  {
+    "id": "act-025",
+    "code": "UEH-5T-25",
+    "title": "Tập huấn Tiêu chí & Hồ sơ Bình xét Danh hiệu Sinh viên 5 Tốt UEH",
+    "organizer": "Hội Sinh viên Trường UEH",
+    "facultyTarget": "Tất cả",
+    "date": "2026-10-18",
+    "dayOfWeek": 7,
+    "startTime": "08:30",
+    "endTime": "11:00",
+    "location": "Hội trường A.103 - Cơ sở A",
+    "allocations": [
+      { "criterionCode": "5.2", "points": 4.0 },
+      { "criterionCode": "1.2", "points": 2.0 }
+    ],
+    "totalPoints": 6.0,
+    "tags": ["Sinh viên 5 tốt", "Danh hiệu", "Khen thưởng"],
+    "description": "Hướng dẫn cụ thể lộ trình đạt 5 tiêu chí: Đạo đức tốt, Học tập tốt, Thể lực tốt, Tình nguyện tốt, Hội nhập tốt."
+  }
+]
