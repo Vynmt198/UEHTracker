@@ -207,17 +207,21 @@ export interface AdaptiveAimFeedback {
  * - Nằm trong khoảng ±0.3 -> Giữ nguyên Aim (On track).
  */
 export function evaluateAdaptiveAim(course: Course): AdaptiveAimFeedback | null {
-  const finalResult = calculateCourseFinalScore(course.components);
-  const actualScore = course.finalScore10 ?? finalResult.score10;
-
-  if (actualScore === null || actualScore === undefined || !course.aimScore10) {
+  // Only evaluate if course has final score or is completed and has an aim
+  if (course.finalScore10 === null || course.finalScore10 === undefined || !course.aimScore10) {
     return null;
   }
 
-  const currentAim = course.aimScore10;
-  const diff = Math.round((actualScore - currentAim) * 100) / 100;
+  // If course status is not completed, don't trigger noisy warnings
+  if (course.status !== 'Đã hoàn thành') {
+    return null;
+  }
 
-  if (diff >= 0.3) {
+  const actualScore = course.finalScore10;
+  const currentAim = course.aimScore10;
+  const diff = Math.round((actualScore - currentAim) * 10) / 10;
+
+  if (diff >= 0.5) {
     const suggestedAim = Math.min(10, Math.round((currentAim + 0.5) * 10) / 10);
     return {
       courseId: course.id,
@@ -227,10 +231,10 @@ export function evaluateAdaptiveAim(course: Course): AdaptiveAimFeedback | null 
       diff,
       status: 'upgrade',
       suggestedAim,
-      title: `Phong độ bứt phá ở môn ${course.name}!`,
-      message: `Điểm hiện tại (${actualScore}) cao hơn mục tiêu ban đầu (${currentAim}) +${diff} điểm. Hãy cân nhắc nâng Aim lên ${suggestedAim} để kéo mạnh GPA tích lũy.`
+      title: `Điểm môn ${course.name} vượt mục tiêu`,
+      message: `Đạt ${actualScore} (Mục tiêu ${currentAim}). Bạn có thể tăng Aim lên ${suggestedAim} để nâng GPA tích lũy.`
     };
-  } else if (diff <= -0.3) {
+  } else if (diff <= -0.5) {
     const suggestedAim = Math.max(5.0, Math.round((currentAim - 0.5) * 10) / 10);
     return {
       courseId: course.id,
@@ -240,22 +244,12 @@ export function evaluateAdaptiveAim(course: Course): AdaptiveAimFeedback | null 
       diff,
       status: 'downgrade',
       suggestedAim,
-      title: `Cảnh báo hụt chỉ tiêu ở môn ${course.name}`,
-      message: `Điểm hiện tại (${actualScore}) thấp hơn mục tiêu (${currentAim}) ${Math.abs(diff)} điểm. Bạn có thể hạ Aim an toàn về ${suggestedAim} và dồn sức cho các môn tín chỉ cao khác để giữ vững học bổng!`
+      title: `Điểm môn ${course.name} chưa đạt kỳ vọng`,
+      message: `Đạt ${actualScore} (Mục tiêu ${currentAim}). Điều chỉnh Aim về ${suggestedAim} để tính toán lại học bổng.`
     };
   }
 
-  return {
-    courseId: course.id,
-    courseName: course.name,
-    currentAim,
-    actualScore,
-    diff,
-    status: 'on_track',
-    suggestedAim: currentAim,
-    title: `Môn ${course.name} đang đi đúng lộ trình`,
-    message: `Điểm số hiện tại bám sát mục tiêu đã đề ra (chênh lệch ${diff >= 0 ? '+' : ''}${diff}). Hãy duy trì phong độ!`
-  };
+  return null;
 }
 
 /**

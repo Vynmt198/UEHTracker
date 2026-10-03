@@ -29,32 +29,22 @@ export const Navigation: React.FC<{ onOpenOnboarding: () => void }> = ({ onOpenO
         <div className="flex items-center justify-between h-16">
           {/* Logo & Brand */}
           <div
-            className="flex items-center gap-3 cursor-pointer select-none"
+            className="flex items-center gap-2.5 cursor-pointer select-none"
             onClick={() => setActiveTab('gpa')}
           >
-            <div className="w-9 h-9 rounded-lg bg-slate-900 text-white flex items-center justify-center">
-              <GraduationCap className="w-5 h-5 text-[#49C8D6]" />
+            <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center">
+              <GraduationCap className="w-4 h-4 text-[#49C8D6]" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-base font-bold tracking-tight text-slate-900">
-                  UEH Tracker
-                </span>
-                <span className="hidden sm:inline-block px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                  UEHer
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-500 hidden sm:block font-normal">
-                GPA • Điểm Rèn Luyện • Smart Schedule
-              </p>
-            </div>
+            <span className="text-sm sm:text-base font-semibold text-slate-900">
+              UEH Tracker
+            </span>
           </div>
 
           {/* Center Tabs Navigation */}
-          <nav className="flex items-center gap-1 sm:gap-2">
+          <nav className="flex items-center gap-1 sm:gap-1.5">
             <button
               onClick={() => setActiveTab('gpa')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'gpa'
                   ? 'bg-slate-100 text-slate-900 font-semibold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -66,7 +56,7 @@ export const Navigation: React.FC<{ onOpenOnboarding: () => void }> = ({ onOpenO
 
             <button
               onClick={() => setActiveTab('drl')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'drl'
                   ? 'bg-slate-100 text-slate-900 font-semibold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -78,30 +68,26 @@ export const Navigation: React.FC<{ onOpenOnboarding: () => void }> = ({ onOpenO
 
             <button
               onClick={() => setActiveTab('schedule')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'schedule'
                   ? 'bg-slate-100 text-slate-900 font-semibold'
                   : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
               <Calendar className="w-4 h-4 text-slate-500" />
-              <span className="hidden sm:inline">Smart Schedule</span>
-              <span className="sm:hidden">Lịch</span>
+              <span>Thời khóa biểu</span>
             </button>
 
             <button
               onClick={() => setActiveTab('forum')}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                 activeTab === 'forum'
                   ? 'bg-slate-100 text-slate-900 font-semibold'
                   : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
               }`}
             >
               <MessageSquare className="w-4 h-4 text-slate-400" />
-              <span className="hidden sm:inline">Diễn đàn</span>
-              <span className="px-1.5 py-0.2 rounded text-[10px] bg-slate-100 text-slate-500 border border-slate-200">
-                Sắp có
-              </span>
+              <span>Diễn đàn</span>
             </button>
           </nav>
 
