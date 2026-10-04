@@ -122,7 +122,7 @@ export const DrlCriteriaTree: React.FC<DrlCriteriaTreeProps> = ({ criteriaList }
             <div className="w-16 text-right">
               {sub.isCapped ? (
                 <span className="text-[10px] text-emerald-700 font-semibold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">
-                  Đạt trần
+                  Tối đa
                 </span>
               ) : isPenalty ? (
                 <span className="text-[10px] text-slate-400 font-mono">
@@ -206,11 +206,11 @@ export const DrlCriteriaTree: React.FC<DrlCriteriaTreeProps> = ({ criteriaList }
                 {crit.currentPoints}/{crit.maxPoints}đ
               </div>
 
-              {/* Col 4: Badge Đạt trần / Thiếu hụt & Nút mở rộng */}
+              {/* Col 4: Badge Tối đa / Thiếu hụt & Nút mở rộng */}
               <div className="w-24 flex items-center justify-end gap-2 shrink-0">
                 {crit.isCapped ? (
                   <span className="bg-slate-100 text-slate-700 text-xs px-2 py-0.5 rounded-full font-semibold border border-slate-200">
-                    Đạt trần
+                    Tối đa
                   </span>
                 ) : (
                   <span className="text-[11px] text-slate-400 font-mono">
