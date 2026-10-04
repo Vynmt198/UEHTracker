@@ -39,7 +39,7 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
   const [isNegative, setIsNegative] = useState<boolean>(false);
   const [selectedMainId, setSelectedMainId] = useState<number>(1);
   const [selectedSubId, setSelectedSubId] = useState<string>('');
-  const [pointsAmount, setPointsAmount] = useState<number>(3);
+  const [pointsAmount, setPointsAmount] = useState<number | ''>(3);
   const [reason, setReason] = useState('');
 
   // Extract all selectable 2nd & 3rd level sub-criteria options from drlCriteria.json
@@ -135,7 +135,8 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
     }
 
     const matched = allOptions.find((o) => o.subId === selectedSubId);
-    const finalPoints = isNegative ? -Math.abs(pointsAmount) : Math.abs(pointsAmount);
+    const numPoints = typeof pointsAmount === 'number' ? pointsAmount : Number(pointsAmount) || 0;
+    const finalPoints = isNegative ? -Math.abs(numPoints) : Math.abs(numPoints);
 
     onAdd({
       reason: reason.trim(),
@@ -261,12 +262,29 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
                   {isNegative ? '-' : '+'}
                 </span>
                 <input
-                  type="number"
-                  min="0.5"
-                  max="20"
-                  step="0.5"
+                  type="text"
+                  inputMode="decimal"
                   value={pointsAmount}
-                  onChange={(e) => setPointsAmount(parseFloat(e.target.value) || 0)}
+                  onChange={(e) => {
+                    const val = e.target.value;
+                    if (val === '') {
+                      setPointsAmount('');
+                      return;
+                    }
+                    if (val.endsWith('.') || val.endsWith(',')) {
+                      setPointsAmount(val as any);
+                      return;
+                    }
+                    const clean = val.replace(',', '.');
+                    const num = Number(clean);
+                    if (!isNaN(num)) {
+                      if (clean.length > 1 && clean.startsWith('0') && !clean.startsWith('0.')) {
+                        setPointsAmount(num);
+                      } else {
+                        setPointsAmount(clean as any);
+                      }
+                    }
+                  }}
                   className={`w-full pl-7 pr-3 py-2 rounded-lg border text-xs font-bold font-mono focus:outline-none ${
                     isNegative
                       ? 'border-rose-200 bg-rose-50/30 text-rose-700 focus:border-rose-400'

@@ -10,24 +10,32 @@ interface CourseGradeModalProps {
   onSave: (updatedComponents: ScoreComponent[]) => void;
 }
 
+interface EditableComponent {
+  id: string;
+  name: string;
+  weight: number | '';
+  score: number | string | null;
+  isAbsent?: boolean;
+}
+
 export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOpen, onClose, onSave }) => {
-  const [components, setComponents] = useState<ScoreComponent[]>(() =>
+  const [components, setComponents] = useState<EditableComponent[]>(() =>
     course.components && course.components.length > 0
       ? JSON.parse(JSON.stringify(course.components))
       : [
-          { id: 'c-1', name: 'Điểm quá trình', weight: 50, score: null },
-          { id: 'c-2', name: 'Điểm kết thúc học phần', weight: 50, score: null }
+          { id: 'c-1', name: 'Điểm quá trình', weight: 50, score: '' },
+          { id: 'c-2', name: 'Điểm kết thúc học phần', weight: 50, score: '' }
         ]
   );
 
   if (!isOpen) return null;
 
   const handleAddComponent = () => {
-    const newComp: ScoreComponent = {
+    const newComp: EditableComponent = {
       id: `comp-${Date.now()}`,
       name: `Thành phần điểm ${components.length + 1}`,
       weight: 10,
-      score: null
+      score: ''
     };
     setComponents([...components, newComp]);
   };
@@ -40,7 +48,7 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
     setComponents(components.filter((c) => c.id !== id));
   };
 
-  const handleUpdate = (id: string, field: keyof ScoreComponent, value: any) => {
+  const handleUpdate = (id: string, field: keyof EditableComponent, value: any) => {
     setComponents(
       components.map((c) => {
         if (c.id !== id) return c;
@@ -49,16 +57,63 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
     );
   };
 
-  // Validation
-  const weightVal = validateWeights(components);
-  const finalCalc = calculateCourseFinalScore(components);
+  const handleWeightChange = (id: string, value: string) => {
+    // Nếu người dùng xóa hết (chuỗi rỗng), cho phép hiển thị ô trống
+    if (value === '') {
+      handleUpdate(id, 'weight', '');
+      return;
+    }
+
+    // Parse số và loại bỏ số 0 ở đầu (ví dụ: "09" -> 9)
+    const numericValue = Number(value);
+    if (!isNaN(numericValue)) {
+      handleUpdate(id, 'weight', numericValue);
+    }
+  };
+
+  const handleScoreChange = (id: string, value: string) => {
+    // Nếu người dùng xóa hết (chuỗi rỗng), cho phép hiển thị ô trống
+    if (value === '') {
+      handleUpdate(id, 'score', '');
+      return;
+    }
+
+    // Cho phép nhập dấu chấm/phẩy thập phân khi đang gõ ví dụ: "8." hoặc "0."
+    if (value.endsWith('.') || value.endsWith(',')) {
+      handleUpdate(id, 'score', value);
+      return;
+    }
+
+    const cleanValue = value.replace(',', '.');
+    const numericValue = Number(cleanValue);
+    if (!isNaN(numericValue)) {
+      // Loại bỏ số 0 ở đầu nếu là số nguyên (ví dụ: "09" -> 9), giữ nguyên "0" hoặc "0.5"
+      if (cleanValue.length > 1 && cleanValue.startsWith('0') && !cleanValue.startsWith('0.')) {
+        handleUpdate(id, 'score', numericValue);
+      } else {
+        handleUpdate(id, 'score', cleanValue);
+      }
+    }
+  };
+
+  // Convert components to valid ScoreComponent[] for calculation and saving
+  const normalizedComponents: ScoreComponent[] = components.map((c) => ({
+    id: c.id,
+    name: c.name,
+    weight: typeof c.weight === 'number' ? c.weight : Number(c.weight) || 0,
+    score: c.score === '' || c.score === null || c.score === undefined ? null : Number(c.score),
+    isAbsent: c.isAbsent
+  }));
+
+  const weightVal = validateWeights(normalizedComponents);
+  const finalCalc = calculateCourseFinalScore(normalizedComponents);
   const uehGrade = convertScore10ToUEH(finalCalc.score10);
 
   // Check process weight <= 70%
-  const finalExamComponent = components.find(
+  const finalExamComponent = normalizedComponents.find(
     (c) => c.name.toLowerCase().includes('kết thúc') || c.name.toLowerCase().includes('cuối kỳ')
   );
-  const processWeight = components
+  const processWeight = normalizedComponents
     .filter((c) => c !== finalExamComponent)
     .reduce((sum, c) => sum + (Number(c.weight) || 0), 0);
   const isProcessWeightValid = processWeight <= 70;
@@ -73,7 +128,7 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
       alert('Quy chế UEH: Tổng trọng số điểm quá trình không được vượt quá 70%!');
       return;
     }
-    onSave(components);
+    onSave(normalizedComponents);
     onClose();
   };
 
@@ -139,12 +194,11 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
                 {/* Weight */}
                 <div className="w-24 shrink-0 flex items-center gap-1">
                   <input
-                    type="number"
-                    min="1"
-                    max="100"
-                    step="1"
+                    type="text"
+                    inputMode="numeric"
                     value={comp.weight}
-                    onChange={(e) => handleUpdate(comp.id, 'weight', parseFloat(e.target.value) || 0)}
+                    onChange={(e) => handleWeightChange(comp.id, e.target.value)}
+                    placeholder="0"
                     className="w-full px-2 py-1 text-xs text-center font-medium rounded border border-slate-200 focus:outline-none focus:border-slate-400"
                   />
                   <span className="text-xs text-slate-500 font-medium">%</span>
@@ -153,19 +207,11 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
                 {/* Score */}
                 <div className="w-24 shrink-0 flex items-center gap-1">
                   <input
-                    type="number"
-                    min="0"
-                    max="10"
-                    step="0.1"
+                    type="text"
+                    inputMode="decimal"
                     disabled={comp.isAbsent}
                     value={comp.score === null || comp.score === undefined ? '' : comp.score}
-                    onChange={(e) =>
-                      handleUpdate(
-                        comp.id,
-                        'score',
-                        e.target.value === '' ? null : parseFloat(e.target.value)
-                      )
-                    }
+                    onChange={(e) => handleScoreChange(comp.id, e.target.value)}
                     placeholder="Chưa có"
                     className="w-full px-2 py-1 text-xs text-center font-medium rounded border border-slate-200 focus:outline-none focus:border-slate-400 disabled:bg-slate-100 disabled:text-slate-400"
                   />
