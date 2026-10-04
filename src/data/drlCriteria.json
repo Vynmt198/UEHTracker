@@ -7,16 +7,16 @@
       {
         "id": "1.1",
         "code": "1.1",
-        "title": "Chấp hành pháp luật Nhà nước & văn bản quy phạm",
-        "description": "Nghiêm chỉnh chấp hành chủ trương đường lối của Đảng, pháp luật Nhà nước",
-        "maxPoints": 10
+        "title": "Chấp hành pháp luật Nhà nước & nội quy, quy chế UEH",
+        "description": "Nghiêm chỉnh chấp hành chủ trương của Đảng, pháp luật Nhà nước và quy chế đào tạo UEH",
+        "maxPoints": 15
       },
       {
         "id": "1.2",
         "code": "1.2",
-        "title": "Chấp hành nội quy, quy chế UEH & nếp sống văn minh",
-        "description": "Thực hiện tốt quy chế đào tạo, nội quy giảng đường, quy định trang phục và thẻ sinh viên",
-        "maxPoints": 15
+        "title": "Nếp sống văn minh, trang phục & thẻ sinh viên",
+        "description": "Thực hiện tốt nội quy giảng đường, trang phục lịch sự và đeo thẻ sinh viên",
+        "maxPoints": 10
       }
     ]
   },
@@ -30,7 +30,7 @@
         "code": "2.1",
         "title": "Ý thức, thái độ học tập & dự giờ nghiêm túc",
         "description": "Đi học chuyên cần, chấp hành giờ giấc, tham gia các buổi sinh hoạt học thuật",
-        "maxPoints": 5
+        "maxPoints": 10
       },
       {
         "id": "2.2",
@@ -38,13 +38,6 @@
         "title": "Nghiên cứu khoa học, cuộc thi học thuật & hội thảo chuyên đề",
         "description": "Tham gia đề tài NCKH sinh viên UEH500, Nhà nghiên cứu trẻ, Eureka, Hội thảo quốc tế/khoa",
         "maxPoints": 10
-      },
-      {
-        "id": "2.3",
-        "code": "2.3",
-        "title": "Ngoại ngữ, Tin học & Chứng chỉ kỹ năng số",
-        "description": "Nâng cao năng lực TOEIC/IELTS, IC3/MOS hoặc các kỹ năng công nghệ bổ trợ",
-        "maxPoints": 5
       }
     ]
   },

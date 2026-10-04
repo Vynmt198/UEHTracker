@@ -97,6 +97,17 @@ export interface DRLManualAdjustment {
   date: string;
 }
 
+export interface DRLSemesterData {
+  id: string;
+  name: string;
+  year: string;
+  basePoints: { m1: number; m2: number; m3: number; m4: number; m5: number };
+  completedActivityIds: string[];
+  manualAdjustments: DRLManualAdjustment[];
+  totalScore: number;
+  rank: 'Kém' | 'Yếu' | 'Trung bình' | 'Khá' | 'Tốt' | 'Xuất sắc';
+}
+
 export interface ScheduleBlock {
   id: string;
   dayOfWeek: number; // 1: Thứ 2, 2: Thứ 3, ..., 7: Chủ Nhật

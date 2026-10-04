@@ -26,8 +26,13 @@ export const ActivityList: React.FC = () => {
     getDRLProgress,
     scheduleBlocks,
     checkActivityScheduleConflict,
-    addActivityToSchedule
+    addActivityToSchedule,
+    currentDrlSemesterId,
+    setCurrentDrlSemesterId,
+    semesters
   } = useApp();
+
+  const currentSemester = semesters.find((s) => s.id === currentDrlSemesterId) || semesters[0];
 
   const [searchTerm, setSearchTerm] = useState('');
   const [facultyFilter, setFacultyFilter] = useState(() => profile.faculty || 'Tất cả');
@@ -107,15 +112,32 @@ export const ActivityList: React.FC = () => {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
             <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-              HOẠT ĐỘNG RÈN LUYỆN
+              HOẠT ĐỘNG RÈN LUYỆN • {currentSemester?.name || 'Học kỳ hiện tại'}
             </div>
             <h2 className="text-base font-bold text-slate-900 mt-0.5">
               Danh mục hoạt động ({filteredActivities.length}/{allActivities.length})
             </h2>
           </div>
 
-          <div className="text-xs font-medium text-slate-600 px-3 py-1 rounded-lg bg-slate-50 border border-slate-200">
-            ĐÃ TÍCH LŨY: <strong className="text-slate-900 font-semibold">{registeredActivityIds.length}</strong>
+          <div className="flex items-center gap-2 flex-wrap">
+            <div className="flex items-center gap-1.5 text-xs text-slate-600">
+              <span className="text-[11px] text-slate-400">Học kỳ:</span>
+              <select
+                value={currentDrlSemesterId}
+                onChange={(e) => setCurrentDrlSemesterId(e.target.value)}
+                className="px-2 py-1 rounded-lg border border-slate-200 text-xs font-semibold text-slate-800 bg-white"
+              >
+                {semesters.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="text-xs font-medium text-slate-600 px-3 py-1 rounded-lg bg-slate-50 border border-slate-200">
+              ĐÃ TÍCH LŨY: <strong className="text-slate-900 font-semibold">{registeredActivityIds.length}</strong>
+            </div>
           </div>
         </div>
 
