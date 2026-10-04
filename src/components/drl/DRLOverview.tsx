@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { ManualAdjustmentModal } from './ManualAdjustmentModal';
 import { SemesterModal } from '../gpa/SemesterModal';
+import { DrlCriteriaTree } from './DrlCriteriaTree';
 import {
   Award,
-  ChevronDown,
-  ChevronUp,
   Plus,
   Trash2,
   Sparkles,
@@ -32,7 +31,6 @@ export const DRLOverview: React.FC<{ onSwitchToActivities: () => void }> = ({
     deleteManualAdjustment
   } = useApp();
 
-  const [expandedCriteria, setExpandedCriteria] = useState<Record<number, boolean>>({});
   const [showManualModal, setShowManualModal] = useState(false);
   const [showSemesterModal, setShowSemesterModal] = useState(false);
 
@@ -49,10 +47,6 @@ export const DRLOverview: React.FC<{ onSwitchToActivities: () => void }> = ({
   const prevSemester =
     currentIndex > 0 ? allSemestersProgress[currentIndex - 1] : null;
   const delta = prevSemester ? totalDRL - prevSemester.totalDRL : null;
-
-  const toggleExpand = (id: number) => {
-    setExpandedCriteria((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
 
   const getRankBadgeClass = (r: string) => {
     switch (r) {
@@ -354,143 +348,8 @@ export const DRLOverview: React.FC<{ onSwitchToActivities: () => void }> = ({
         </div>
       </div>
 
-      {/* 3. 5 Main Criteria Cards with Clear Base Points & Hover Elevation */}
-      <div className="space-y-3">
-        {criteriaList.map((crit) => {
-          const isExpanded = !!expandedCriteria[crit.id];
-          const percent = Math.min(100, Math.round((crit.currentPoints / crit.maxPoints) * 100));
-
-          // Base points description per criterion
-          const baseDesc =
-            crit.id === 1
-              ? 'Sẵn 15đ nội quy'
-              : crit.id === 2
-              ? 'Sẵn 10đ học tập'
-              : crit.id === 3
-              ? 'Sẵn 5đ văn thể mỹ'
-              : crit.id === 4
-              ? 'Sẵn 10đ quan hệ CĐ'
-              : 'Sẵn 10đ cán bộ lớp';
-
-          return (
-            <div key={crit.id} className="interactive-card !p-0 overflow-hidden">
-              {/* Header Row - Clean 4-column Scannable Progress Bar */}
-              <div
-                onClick={() => toggleExpand(crit.id)}
-                className="p-4 cursor-pointer hover:bg-slate-50 transition-colors flex flex-col md:flex-row items-start md:items-center justify-between gap-4"
-              >
-                {/* Col 1: Tên ngắn & Base Points Tag */}
-                <div className="flex items-center gap-3 flex-1 min-w-0">
-                  <span className="w-6 h-6 rounded bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs shrink-0 font-mono">
-                    {crit.id}
-                  </span>
-                  <div className="truncate">
-                    <h3 className="font-semibold text-slate-900 text-sm truncate">
-                      {crit.title.replace(/^Mục\s*\d+:\s*/i, '')}
-                    </h3>
-                    <span className="text-[10px] text-cyan-700 font-medium">
-                      ✓ {baseDesc}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Col 2: Thanh tiến độ siêu mỏng (h-2 bg-slate-100, bar màu #49C8D6) */}
-                <div className="w-full md:w-52 shrink-0 flex items-center gap-3">
-                  <div className="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div
-                      className="h-full rounded-full bg-[#49C8D6] transition-all duration-300"
-                      style={{ width: `${percent}%` }}
-                    />
-                  </div>
-                </div>
-
-                {/* Col 3: Tỉ lệ điểm: 15/25đ */}
-                <div className="text-xs font-semibold text-slate-900 w-20 text-left md:text-right shrink-0 font-mono">
-                  {crit.currentPoints}/{crit.maxPoints}đ
-                </div>
-
-                {/* Col 4: Khi đạt trần: Badge nhỏ bo tròn "Đạt trần" */}
-                <div className="w-24 flex items-center justify-end gap-2 shrink-0">
-                  {crit.isCapped ? (
-                    <span className="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full font-medium border border-slate-200">
-                      Đạt trần
-                    </span>
-                  ) : (
-                    <span className="text-[11px] text-slate-400 font-mono">
-                      -{Math.max(0, crit.maxPoints - crit.currentPoints)}đ
-                    </span>
-                  )}
-
-                  <span className="text-slate-400 p-0.5 hover:text-slate-700 transition-transform duration-200">
-                    {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
-                  </span>
-                </div>
-              </div>
-
-              {/* Sub-Criteria Progressive Detail Rows */}
-              {isExpanded && (
-                <div className="bg-slate-50/60 px-4 sm:px-6 py-2.5 border-t border-slate-100 divide-y divide-slate-100 animate-in fade-in duration-150">
-                  {crit.subCriteriaProgress.map((sub) => {
-                    const isBaseSub =
-                      (crit.id === 1 && sub.code === '1.1') ||
-                      (crit.id === 2 && sub.code === '2.1') ||
-                      (crit.id === 3 && sub.code === '3.1') ||
-                      (crit.id === 4 && sub.code === '4.1') ||
-                      (crit.id === 5 && sub.code === '5.1');
-
-                    return (
-                      <div
-                        key={sub.code}
-                        className="py-2.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="px-1.5 py-0.2 rounded text-[10px] font-mono bg-white text-slate-600 border border-slate-200">
-                              {sub.code}
-                            </span>
-                            <span className="text-xs font-medium text-slate-800 truncate">
-                              {sub.title}
-                            </span>
-                            {isBaseSub && (
-                              <span className="text-[9px] bg-cyan-50 text-cyan-800 border border-cyan-200 px-1 rounded font-medium">
-                                Điểm sàn
-                              </span>
-                            )}
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-3 shrink-0 self-end sm:self-center">
-                          <div className="w-20 bg-slate-200 h-1.5 rounded-full overflow-hidden hidden sm:block">
-                            <div
-                              className="h-full rounded-full bg-[#49C8D6]"
-                              style={{
-                                width: `${Math.min(100, (sub.currentPoints / sub.maxPoints) * 100)}%`
-                              }}
-                            />
-                          </div>
-
-                          <div className="text-xs font-medium text-slate-900 w-14 text-right">
-                            {sub.currentPoints}{' '}
-                            <span className="text-slate-400 text-[10px]">/{sub.maxPoints}đ</span>
-                          </div>
-
-                          <span className="text-[10px] text-slate-500 w-16 text-right font-mono">
-                            {sub.isCapped ? (
-                              <span className="text-emerald-700 font-medium">Đạt trần</span>
-                            ) : (
-                              `-${(sub.maxPoints - sub.currentPoints).toFixed(1)}đ`
-                            )}
-                          </span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
-          );
-        })}
-      </div>
+      {/* 3. Cây tiêu chí đánh giá ĐRL chuẩn quy chế UEH (5 Mục lớn & đầy đủ mục con cấp 2, 3) */}
+      <DrlCriteriaTree criteriaList={criteriaList} />
 
       {/* 4. Manual Adjustments History - Flat & Minimal */}
       {manualAdjustments.length > 0 && (
@@ -509,15 +368,22 @@ export const DRLOverview: React.FC<{ onSwitchToActivities: () => void }> = ({
                 className="p-3 bg-white flex items-center justify-between text-xs"
               >
                 <div>
-                  <span className="font-medium text-slate-800">{adj.reason}</span>
-                  <span className="text-slate-400 text-[11px] ml-2">
-                    (Mục {adj.criterionId} • {adj.date})
-                  </span>
+                  <span className="font-semibold text-slate-900">{adj.reason}</span>
+                  <div className="flex items-center gap-1.5 mt-0.5 text-slate-500 text-[11px]">
+                    {adj.subCriterionId && (
+                      <span className="font-mono px-1.5 py-0.2 rounded bg-slate-100 text-slate-700 font-bold border border-slate-200">
+                        {adj.subCriterionId}
+                      </span>
+                    )}
+                    <span>
+                      {adj.subCriterionName ? adj.subCriterionName : `Mục ${adj.criterionId}`} • {adj.date}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <span
-                    className={`font-semibold text-xs ${
+                    className={`font-semibold text-xs font-mono ${
                       adj.points >= 0 ? 'text-slate-900' : 'text-red-600'
                     }`}
                   >
