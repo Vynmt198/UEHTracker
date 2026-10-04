@@ -3,39 +3,41 @@ import { useApp } from '../context/AppContext';
 import { User, X, Check } from 'lucide-react';
 import { Mascot } from './common/Mascot';
 
-const UEH_FACULTIES = [
-  'Công nghệ thông tin kinh doanh',
-  'Kinh doanh quốc tế - Marketing',
-  'Tài chính - Ngân hàng',
-  'Kế toán - Kiểm toán',
-  'Kinh tế - Quản trị',
-  'Luật',
-  'Khoa Ngoại ngữ',
-  'Viện Đào tạo Quốc tế (ISB)'
-];
-
-const MAJORS_BY_FACULTY: Record<string, string[]> = {
-  'Công nghệ thông tin kinh doanh': ['Hệ thống thông tin quản lý', 'Khoa học dữ liệu', 'Kỹ thuật phần mềm', 'Công nghệ tài chính (FinTech)'],
-  'Kinh doanh quốc tế - Marketing': ['Kinh doanh quốc tế', 'Marketing', 'Logistics và Quản lý Chuỗi cung ứng', 'Thương mại điện tử'],
-  'Tài chính - Ngân hàng': ['Tài chính doanh nghiệp', 'Ngân hàng', 'Thị trường chứng khoán', 'Tài chính công'],
-  'Kế toán - Kiểm toán': ['Kế toán doanh nghiệp', 'Kiểm toán', 'Kế toán công'],
-  'Kinh tế - Quản trị': ['Quản trị kinh doanh', 'Kinh tế học', 'Quản trị nhân lực', 'Bất động sản'],
-  'Luật': ['Luật kinh tế', 'Luật kinh doanh quốc tế'],
-  'Khoa Ngoại ngữ': ['Tiếng Anh thương mại'],
-  'Viện Đào tạo Quốc tế (ISB)': ['Cử nhân Kinh doanh ISB BBus', 'Tài chính Ứng dụng']
-};
+import { UEH_FACULTIES, MAJORS_BY_FACULTY } from '../data/uehFaculties';
 
 export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { profile, updateProfile } = useApp();
   const [isCompleted, setIsCompleted] = useState(false);
 
-  const [formData, setFormData] = useState({
+  // Match existing profile faculty with full official list
+  const initialFaculty =
+    UEH_FACULTIES.find(
+      (f) =>
+        f.toLowerCase() === (profile.faculty || '').toLowerCase() ||
+        f.toLowerCase().includes((profile.faculty || '').toLowerCase()) ||
+        (profile.faculty || '').toLowerCase().includes(f.toLowerCase())
+    ) || UEH_FACULTIES[12];
+
+  const availableInitialMajors = MAJORS_BY_FACULTY[initialFaculty] || ['Chuyên ngành tổng hợp'];
+  const initialMajor = availableInitialMajors.find((m) => m === profile.major) || availableInitialMajors[0];
+
+  const [formData, setFormData] = useState<{
+    name: string;
+    studentId: string;
+    email: string;
+    cohort: string;
+    faculty: string;
+    major: string;
+    scholarshipTierTarget: 'Xuất sắc' | 'Giỏi' | 'Khá' | 'Không đặt';
+    targetGPA: number;
+    targetDRL: number;
+  }>({
     name: profile.name || '',
     studentId: profile.studentId || '',
     email: profile.email || '',
     cohort: profile.cohort || 'K49',
-    faculty: profile.faculty || UEH_FACULTIES[0],
-    major: profile.major || MAJORS_BY_FACULTY[UEH_FACULTIES[0]][0],
+    faculty: initialFaculty,
+    major: initialMajor,
     scholarshipTierTarget: profile.scholarshipTierTarget || 'Xuất sắc',
     targetGPA: profile.targetGPA || 3.6,
     targetDRL: profile.targetDRL || 85

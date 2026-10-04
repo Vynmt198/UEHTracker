@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { Mascot } from '../common/Mascot';
 import { IconAcademicCap, IconGPABook, IconDRLMedal } from '../common/EduIcons';
+import { UEH_FACULTIES } from '../../data/uehFaculties';
 
 type PlannerSubTab = 'gpa' | 'drl' | 'growth';
 type SelfDevelopmentGoal = 'scientific_research' | 'career' | 'soft_skills' | 'networking';
@@ -238,22 +239,25 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
       const matchesGoal = a.goalCategory === selectedGoal;
 
       // Faculty filter
+      const cleanFac = facultyFilter.replace(/^(Khoa|Viện)\s+/i, '').toLowerCase();
       const matchesFaculty =
         facultyFilter === 'Tất cả' ||
         a.facultyTarget === 'Tất cả' ||
-        a.facultyTarget.toLowerCase().includes(facultyFilter.toLowerCase());
+        a.facultyTarget.toLowerCase().includes(cleanFac) ||
+        a.organizer.toLowerCase().includes(cleanFac);
 
       return matchesGoal && matchesFaculty;
     });
 
     // Profile-driven boost: activities matching student's faculty get priority
+    const cleanStudent = studentFaculty.replace(/^(Khoa|Viện)\s+/i, '').toLowerCase();
     return [...list].sort((a, b) => {
       const aMatches =
-        a.facultyTarget.toLowerCase().includes(studentFaculty.toLowerCase()) ||
-        a.organizer.toLowerCase().includes(studentFaculty.toLowerCase());
+        a.facultyTarget.toLowerCase().includes(cleanStudent) ||
+        a.organizer.toLowerCase().includes(cleanStudent);
       const bMatches =
-        b.facultyTarget.toLowerCase().includes(studentFaculty.toLowerCase()) ||
-        b.organizer.toLowerCase().includes(studentFaculty.toLowerCase());
+        b.facultyTarget.toLowerCase().includes(cleanStudent) ||
+        b.organizer.toLowerCase().includes(cleanStudent);
       if (aMatches && !bMatches) return -1;
       if (!aMatches && bMatches) return 1;
       return 0;
@@ -870,15 +874,14 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                 <select
                   value={facultyFilter}
                   onChange={(e) => setFacultyFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 bg-white font-medium focus:outline-none focus:border-slate-400"
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 bg-white font-medium focus:outline-none focus:border-slate-400 max-w-[240px]"
                 >
                   <option value="Tất cả">Tất cả Khoa / Viện</option>
-                  <option value="Công nghệ thông tin">Khoa CNTT Kinh doanh</option>
-                  <option value="Marketing">Khoa KDQT - Marketing</option>
-                  <option value="Tài chính">Khoa Tài chính - Ngân hàng</option>
-                  <option value="Kế toán">Khoa Kế toán - Kiểm toán</option>
-                  <option value="Kinh tế">Khoa Kinh tế - Quản trị</option>
-                  <option value="Luật">Khoa Luật</option>
+                  {UEH_FACULTIES.map((fac) => (
+                    <option key={fac} value={fac}>
+                      {fac}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>
