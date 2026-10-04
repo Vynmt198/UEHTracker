@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { ManualAdjustmentModal } from './ManualAdjustmentModal';
+import { ManualAdjustmentModal, cleanCriterionTitle } from './ManualAdjustmentModal';
 import { SemesterModal } from '../gpa/SemesterModal';
 import { DrlCriteriaTree } from './DrlCriteriaTree';
 import {
@@ -376,7 +376,7 @@ export const DRLOverview: React.FC<{ onSwitchToActivities: () => void }> = ({
                       </span>
                     )}
                     <span>
-                      {adj.subCriterionName ? adj.subCriterionName : `Mục ${adj.criterionId}`} • {adj.date}
+                      {adj.subCriterionName ? cleanCriterionTitle(adj.subCriterionName, adj.subCriterionId) : `Mục ${adj.criterionId}`} • {adj.date}
                     </span>
                   </div>
                 </div>

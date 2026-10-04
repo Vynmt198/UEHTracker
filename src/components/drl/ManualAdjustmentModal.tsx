@@ -21,6 +21,16 @@ interface SelectableOption {
   maxPoints?: number;
 }
 
+// Helper to remove redundant prefix codes like "1.1. " or "1.2.1. " from titles
+export const cleanCriterionTitle = (title: string, code?: string): string => {
+  if (!title) return '';
+  if (code) {
+    const escaped = code.replace(/\./g, '\\.');
+    return title.replace(new RegExp(`^${escaped}\\.?\\s*`, 'i'), '').trim();
+  }
+  return title.replace(/^(\d+(\.\d+)*)\.?\s*/, '').trim();
+};
+
 export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
   isOpen,
   onClose,
@@ -45,12 +55,13 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
           c2.children.forEach((c3: DRLCriterionNode) => {
             const isPen = !!c3.isPenalty || !!c2.isPenalty;
             const pts = c3.points ?? (c3.range ? c3.range[0] : isPen ? -2 : 2);
+            const cleanTitle = cleanCriterionTitle(c3.name, c3.id);
             list.push({
               mainId: mId,
               mainName: mName,
               subId: c3.id,
-              label: `${c3.name}`,
-              fullTitle: c3.name,
+              label: cleanTitle,
+              fullTitle: cleanTitle,
               suggestedPoints: pts,
               isPenalty: isPen,
               minPoints: c3.minPoints,
@@ -61,12 +72,13 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
           // Leaf level 2
           const isPen = !!c2.isPenalty;
           const pts = c2.points ?? (isPen ? -2 : 2);
+          const cleanTitle = cleanCriterionTitle(c2.name, c2.id);
           list.push({
             mainId: mId,
             mainName: mName,
             subId: c2.id,
-            label: `${c2.name}`,
-            fullTitle: c2.name,
+            label: cleanTitle,
+            fullTitle: cleanTitle,
             suggestedPoints: pts,
             isPenalty: isPen,
             minPoints: c2.minPoints,

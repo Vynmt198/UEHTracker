@@ -15,6 +15,15 @@ interface DrlCriteriaTreeProps {
   criteriaList: CriteriaProgress[];
 }
 
+const cleanCriterionTitle = (title: string, code?: string): string => {
+  if (!title) return '';
+  if (code) {
+    const escaped = code.replace(/\./g, '\\.');
+    return title.replace(new RegExp(`^${escaped}\\.?\\s*`, 'i'), '').trim();
+  }
+  return title.replace(/^(\d+(\.\d+)*)\.?\s*/, '').trim();
+};
+
 export const DrlCriteriaTree: React.FC<DrlCriteriaTreeProps> = ({ criteriaList }) => {
   const [expandedMain, setExpandedMain] = useState<Record<number, boolean>>({ 1: true });
   const [expandedSub, setExpandedSub] = useState<Record<string, boolean>>({
@@ -73,7 +82,7 @@ export const DrlCriteriaTree: React.FC<DrlCriteriaTreeProps> = ({ criteriaList }
                 isPenalty ? 'text-rose-700' : 'text-slate-800'
               }`}
             >
-              {sub.title}
+              {cleanCriterionTitle(sub.title, sub.code)}
             </span>
 
             {isDefault && (
