@@ -181,8 +181,8 @@ export const ActivityList: React.FC = () => {
 
       {/* Flat Activity Table - 1 Line per Activity, Click to open Slide-over Drawer */}
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-xs min-w-[640px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                 <th className="py-2.5 px-3 w-10 text-center">#</th>
@@ -255,9 +255,9 @@ export const ActivityList: React.FC = () => {
                         {act.date.slice(5)} • {act.startTime}
                       </td>
 
-                      {/* Cột 5: Điểm rèn luyện nổi bật: Badge xanh mint */}
+                      {/* Cột 5: Điểm rèn luyện nổi bật: Pill xanh emerald */}
                       <td className="py-3 px-4 text-right whitespace-nowrap">
-                        <span className="px-2 py-0.5 rounded text-xs font-semibold bg-[#49C8D6]/10 text-[#007D8C] border border-[#49C8D6]/30 font-mono">
+                        <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold px-2 py-0.5 rounded-full text-xs font-mono inline-block">
                           +{act.totalPoints.toFixed(1)}đ
                         </span>
                       </td>
@@ -290,7 +290,7 @@ export const ActivityList: React.FC = () => {
             <div className="p-5 border-b border-slate-100 flex items-start justify-between gap-4">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200">
+                  <span className="text-[10px] text-slate-400 bg-slate-50 font-mono px-1.5 py-0.5 rounded border border-slate-100">
                     {selectedActivity.code}
                   </span>
                   <span

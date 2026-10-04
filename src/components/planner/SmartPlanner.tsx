@@ -459,6 +459,10 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
               <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 overflow-hidden bg-white">
                 {freshmanActivities.map((act) => {
                   const isRegistered = registeredActivityIds.includes(act.id);
+                  const conflict = checkActivityScheduleConflict(act);
+                  const isScheduled = scheduleBlocks.some((b) => b.activityId === act.id);
+                  const isConflict = conflict.hasConflict && !isScheduled;
+
                   return (
                     <div
                       key={act.id}
@@ -466,7 +470,7 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                     >
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-600 border border-slate-200">
+                          <span className="text-[10px] text-slate-400 bg-slate-50 font-mono px-1.5 py-0.5 rounded border border-slate-100">
                             {act.code}
                           </span>
                           <span className="font-semibold text-slate-900 hover:text-slate-950">
@@ -487,13 +491,16 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                        <span className="px-2 py-0.5 rounded font-semibold text-[#007D8C] bg-cyan-50 border border-cyan-100 text-xs">
-                          +{act.totalPoints}đ ĐRL
+                        <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold px-2 py-0.5 rounded-full text-xs">
+                          +{act.totalPoints}đ
                         </span>
                         {renderScheduleButton(act)}
                         <button
                           onClick={() => toggleActivityRegistration(act.id)}
-                          className={isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'}
+                          className={`${isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'} ${
+                            isConflict && !isRegistered ? 'opacity-70 hover:opacity-100 transition-opacity' : ''
+                          }`}
+                          title={isConflict && !isRegistered ? 'Hoạt động này trùng với giờ học của bạn, cân nhắc sắp xếp lại TKB' : undefined}
                         >
                           <span>{isRegistered ? 'Đã đăng ký' : 'Đăng ký ngay'}</span>
                         </button>
@@ -595,6 +602,10 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
               <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 overflow-hidden bg-white">
                 {deficitActivities.map((act) => {
                   const isRegistered = registeredActivityIds.includes(act.id);
+                  const conflict = checkActivityScheduleConflict(act);
+                  const isScheduled = scheduleBlocks.some((b) => b.activityId === act.id);
+                  const isConflict = conflict.hasConflict && !isScheduled;
+
                   return (
                     <div
                       key={act.id}
@@ -602,7 +613,7 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                     >
                       <div className="space-y-1 flex-1">
                         <div className="flex items-center gap-2">
-                          <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-600 border border-slate-200">
+                          <span className="text-[10px] text-slate-400 bg-slate-50 font-mono px-1.5 py-0.5 rounded border border-slate-100">
                             {act.code}
                           </span>
                           <span className="font-semibold text-slate-900">{act.title}</span>
@@ -618,13 +629,16 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                       </div>
 
                       <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                        <span className="px-2 py-0.5 rounded font-semibold text-[#007D8C] bg-cyan-50 border border-cyan-100 text-xs">
+                        <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold px-2 py-0.5 rounded-full text-xs">
                           +{act.totalPoints}đ
                         </span>
                         {renderScheduleButton(act)}
                         <button
                           onClick={() => toggleActivityRegistration(act.id)}
-                          className={isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'}
+                          className={`${isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'} ${
+                            isConflict && !isRegistered ? 'opacity-70 hover:opacity-100 transition-opacity' : ''
+                          }`}
+                          title={isConflict && !isRegistered ? 'Hoạt động này trùng với giờ học của bạn, cân nhắc sắp xếp lại TKB' : undefined}
                         >
                           <span>{isRegistered ? 'Đã đăng ký' : 'Đăng ký ngay'}</span>
                         </button>
@@ -642,8 +656,8 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
         {/* ========================================================================= */}
         {effectiveState === 'achieved' && (
           <div className="pt-4 space-y-4">
-            {/* Kipo Mascot Proud Announcement */}
-            <div className="p-5 bg-cyan-50/50 border border-[#49C8D6]/30 rounded-2xl flex items-center gap-4">
+            {/* Kipo Mascot Proud Announcement - Pure White with #49C8D6 left border */}
+            <div className="p-5 bg-white border border-slate-200/80 border-l-4 border-l-[#49C8D6] rounded-2xl shadow-xs flex items-center gap-4">
               <Mascot pose="proud" size="md" />
               <div>
                 <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium bg-[#49C8D6]/15 text-[#0c727d]">
@@ -702,11 +716,11 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                       onClick={() => setSelectedGoal(pill.id as any)}
                       className={`px-3.5 py-1.5 rounded-xl text-xs font-medium transition-all flex items-center justify-center gap-1.5 ${
                         isSelected
-                          ? 'bg-slate-900 text-white shadow-xs font-semibold scale-102'
+                          ? 'bg-[#49C8D6] text-white shadow-xs font-semibold scale-102'
                           : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50 hover:border-slate-300'
                       }`}
                     >
-                      <Icon className={`w-4 h-4 ${isSelected ? 'text-[#49C8D6]' : 'text-slate-500'}`} />
+                      <Icon className={`w-4 h-4 ${isSelected ? 'text-white' : 'text-slate-500'}`} />
                       <span>{pill.label}</span>
                     </button>
                   );
@@ -722,6 +736,10 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                 ) : (
                   selfDevActivities.map((act) => {
                     const isRegistered = registeredActivityIds.includes(act.id);
+                    const conflict = checkActivityScheduleConflict(act);
+                    const isScheduled = scheduleBlocks.some((b) => b.activityId === act.id);
+                    const isConflict = conflict.hasConflict && !isScheduled;
+
                     return (
                       <div
                         key={act.id}
@@ -729,7 +747,7 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                       >
                         <div className="space-y-1 flex-1">
                           <div className="flex items-center gap-2">
-                            <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-600 border border-slate-200">
+                            <span className="text-[10px] text-slate-400 bg-slate-50 font-mono px-1.5 py-0.5 rounded border border-slate-100">
                               {act.code}
                             </span>
                             <span className="font-semibold text-slate-900">{act.title}</span>
@@ -749,16 +767,18 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
+                          <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold px-2 py-0.5 rounded-full text-xs">
+                            +{act.totalPoints}đ
+                          </span>
                           {renderScheduleButton(act)}
                           <button
                             onClick={() => toggleActivityRegistration(act.id)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                              isRegistered
-                                ? 'bg-slate-900 text-white'
-                                : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                            className={`${isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'} ${
+                              isConflict && !isRegistered ? 'opacity-70 hover:opacity-100 transition-opacity' : ''
                             }`}
+                            title={isConflict && !isRegistered ? 'Hoạt động này trùng với giờ học của bạn, cân nhắc sắp xếp lại TKB' : undefined}
                           >
-                            {isRegistered ? 'Đã đăng ký' : 'Tham gia'}
+                            <span>{isRegistered ? 'Đã đăng ký' : 'Tham gia'}</span>
                           </button>
                         </div>
                       </div>
