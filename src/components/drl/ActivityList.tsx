@@ -35,10 +35,8 @@ export const ActivityList: React.FC = () => {
   const currentSemester = semesters.find((s) => s.id === currentDrlSemesterId) || semesters[0];
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [facultyFilter, setFacultyFilter] = useState(() => profile.faculty || 'Tất cả');
   const [criterionFilter, setCriterionFilter] = useState('all');
-  const [activityTypeFilter, setActivityTypeFilter] = useState<'all' | 'chuyen_mon' | 'trai_nghiem'>('all');
-  const [audienceFilter, setAudienceFilter] = useState('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'open' | 'ongoing' | 'closed'>('all');
   const [scheduleFeedback, setScheduleFeedback] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
 
   // Slide-over Panel state
@@ -54,56 +52,49 @@ export const ActivityList: React.FC = () => {
   };
 
   const { criteriaList } = getDRLProgress();
-  const cappedMainIds = new Set(criteriaList.filter((c) => c.isCapped).map((c) => c.id.toString()));
+
+  // Activity operational status helper
+  const getActivityStatus = (act: UEHActivity) => {
+    const todayStr = '2026-10-04';
+    if (act.date < todayStr) {
+      return {
+        key: 'closed' as const,
+        label: 'Đã kết thúc',
+        badgeClass: 'bg-slate-100 text-slate-500 border-slate-200'
+      };
+    }
+    if (act.date === todayStr || act.date === '2026-10-05') {
+      return {
+        key: 'ongoing' as const,
+        label: 'Đang diễn ra',
+        badgeClass: 'bg-sky-50 text-sky-700 border-sky-200'
+      };
+    }
+    return {
+      key: 'open' as const,
+      label: 'Mở đăng ký',
+      badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+    };
+  };
 
   const filteredActivities = allActivities.filter((act) => {
     const matchesSearch =
+      !searchTerm.trim() ||
       act.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       act.organizer.toLowerCase().includes(searchTerm.toLowerCase()) ||
       act.tags.some((t) => t.toLowerCase().includes(searchTerm.toLowerCase())) ||
       act.code.toLowerCase().includes(searchTerm.toLowerCase());
 
-    const matchesFaculty =
-      facultyFilter === 'Tất cả' ||
-      act.facultyTarget === 'Tất cả' ||
-      act.facultyTarget.toLowerCase().includes(facultyFilter.toLowerCase());
-
     const matchesCriterion =
       criterionFilter === 'all' ||
       act.allocations.some((alloc) => alloc.criterionCode.startsWith(criterionFilter));
 
-    const matchesType =
-      activityTypeFilter === 'all' || act.activityType === activityTypeFilter;
+    const statusInfo = getActivityStatus(act);
+    const matchesStatus =
+      statusFilter === 'all' || statusInfo.key === statusFilter;
 
-    const matchesAudience =
-      audienceFilter === 'all' ||
-      act.audienceCategory === audienceFilter ||
-      (audienceFilter === 'freshman' && act.tags.some((t) => t.includes('Tân sinh viên')));
-
-    return matchesSearch && matchesFaculty && matchesCriterion && matchesType && matchesAudience;
+    return matchesSearch && matchesCriterion && matchesStatus;
   });
-
-  const getActivityStatus = (act: UEHActivity) => {
-    const isRegistered = registeredActivityIds.includes(act.id);
-    if (!isRegistered) {
-      return {
-        label: 'Mở',
-        badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200'
-      };
-    }
-    // Simulate approval vs completed for visual scan
-    const isPending = act.code.charCodeAt(act.code.length - 1) % 3 === 0;
-    if (isPending) {
-      return {
-        label: 'Chờ duyệt',
-        badgeClass: 'bg-amber-50 text-amber-700 border-amber-200'
-      };
-    }
-    return {
-      label: 'Hoàn thành',
-      badgeClass: 'bg-slate-100 text-slate-700 border-slate-200'
-    };
-  };
 
   return (
     <div className="space-y-4">
@@ -141,61 +132,47 @@ export const ActivityList: React.FC = () => {
           </div>
         </div>
 
-        {/* Filter Controls Row */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pt-1">
+        {/* Filter Controls Row - 3 Core Filters */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 pt-1">
+          {/* 1. Search Input */}
           <div className="relative">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Tìm theo tên, BTC, mã..."
+              placeholder="Tìm theo tên hoạt động, đơn vị tổ chức..."
               className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
             />
           </div>
 
-          <div>
-            <select
-              value={facultyFilter}
-              onChange={(e) => setFacultyFilter(e.target.value)}
-              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-slate-400 bg-white font-medium"
-            >
-              <option value="Tất cả">Tất cả Khoa / Viện</option>
-              <option value="Công nghệ thông tin kinh doanh">Khoa CNTT Kinh doanh</option>
-              <option value="Kinh doanh quốc tế - Marketing">Khoa KDQT - Marketing</option>
-              <option value="Tài chính - Ngân hàng">Khoa Tài chính - Ngân hàng</option>
-              <option value="Kế toán - Kiểm toán">Khoa Kế toán - Kiểm toán</option>
-              <option value="Kinh tế - Quản trị">Khoa Kinh tế - Quản trị</option>
-              <option value="Luật">Khoa Luật</option>
-              <option value="Khoa Ngoại ngữ">Khoa Ngoại ngữ</option>
-              <option value="Khoa Du lịch">Khoa Du lịch</option>
-            </select>
-          </div>
-
+          {/* 2. Category Filter (5 Main Criteria) */}
           <div>
             <select
               value={criterionFilter}
               onChange={(e) => setCriterionFilter(e.target.value)}
               className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-slate-400 bg-white font-medium"
             >
-              <option value="all">Tất cả 5 Mục tiêu chí</option>
-              <option value="1">Mục 1: Pháp luật & Nội quy</option>
-              <option value="2">Mục 2: Học tập & NCKH</option>
-              <option value="3">Mục 3: Chính trị, Thể thao, MT</option>
+              <option value="all">Tất cả 5 mục tiêu chí</option>
+              <option value="1">Mục 1: Chấp hành pháp luật & nội quy</option>
+              <option value="2">Mục 2: Trách nhiệm & thái độ học tập</option>
+              <option value="3">Mục 3: Hoạt động chính trị, xã hội & môi trường</option>
               <option value="4">Mục 4: Ý thức cộng đồng</option>
               <option value="5">Mục 5: Cán bộ lớp & Thành tích</option>
             </select>
           </div>
 
+          {/* 3. Status Filter */}
           <div>
             <select
-              value={activityTypeFilter}
-              onChange={(e) => setActivityTypeFilter(e.target.value as any)}
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value as any)}
               className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-slate-400 bg-white font-medium"
             >
-              <option value="all">Tất cả loại hoạt động</option>
-              <option value="chuyen_mon">Chuyên môn / Học thuật</option>
-              <option value="trai_nghiem">Trải nghiệm Văn hóa - Xã hội</option>
+              <option value="all">Tất cả tình trạng</option>
+              <option value="open">Đang mở đăng ký</option>
+              <option value="ongoing">Đang tổ chức</option>
+              <option value="closed">Đã hoàn thành / Đã đóng</option>
             </select>
           </div>
         </div>
@@ -204,12 +181,13 @@ export const ActivityList: React.FC = () => {
       {/* Flat Activity Table - 1 Line per Activity, Click to open Slide-over Drawer */}
       <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
         <div className="overflow-x-auto w-full">
-          <table className="w-full text-left text-xs min-w-[640px]">
+          <table className="w-full text-left text-xs min-w-[700px]">
             <thead>
               <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
                 <th className="py-2.5 px-3 w-10 text-center">#</th>
                 <th className="py-2.5 px-3">TÊN HOẠT ĐỘNG</th>
-                <th className="py-2.5 px-3 w-32">KHOA / ĐƠN VỊ</th>
+                <th className="py-2.5 px-3 w-28 text-center">TIÊU CHÍ</th>
+                <th className="py-2.5 px-3 w-32 text-center">TÌNH TRẠNG</th>
                 <th className="py-2.5 px-3 w-28 text-center">THỜI GIAN</th>
                 <th className="py-2.5 px-4 w-24 text-right">ĐIỂM ĐRL</th>
                 <th className="py-2.5 px-3 w-10 text-center"></th>
@@ -218,14 +196,14 @@ export const ActivityList: React.FC = () => {
             <tbody className="divide-y divide-slate-100 bg-white">
               {filteredActivities.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="py-12 text-center">
+                  <td colSpan={7} className="py-12 text-center">
                     <div className="flex flex-col items-center justify-center">
                       <Mascot pose="inspect" size="md" />
                       <p className="mt-3 text-xs font-semibold text-slate-800">
                         Không tìm thấy hoạt động phù hợp với bộ lọc hiện tại.
                       </p>
                       <p className="text-[11px] text-slate-400 mt-1 max-w-sm">
-                        Thử điều chỉnh từ khóa tìm kiếm hoặc chọn lại Khoa / Tiêu chí rèn luyện để xem thêm các hoạt động khác nhé!
+                        Thử điều chỉnh từ khóa tìm kiếm hoặc chọn lại Tiêu chí / Tình trạng hoạt động để xem thêm các hoạt động khác nhé!
                       </p>
                     </div>
                   </td>
@@ -233,6 +211,10 @@ export const ActivityList: React.FC = () => {
               ) : (
                 filteredActivities.map((act) => {
                   const isRegistered = registeredActivityIds.includes(act.id);
+                  const statusInfo = getActivityStatus(act);
+                  const mainCategories = Array.from(
+                    new Set((act.allocations || []).map((alloc) => alloc.criterionCode.split('.')[0]))
+                  ).filter(Boolean);
 
                   return (
                     <tr
@@ -253,38 +235,56 @@ export const ActivityList: React.FC = () => {
                           checked={isRegistered}
                           onChange={() => {}}
                           className="rounded border-slate-300 text-[#49C8D6] focus:ring-[#49C8D6] cursor-pointer"
+                          title={isRegistered ? 'Bỏ chọn hoạt động này' : 'Xác nhận tham gia để cộng điểm'}
                         />
                       </td>
 
-                      {/* Cột 2: Tên hoạt động (cắt ngắn bằng CSS truncate max-w-md, font-medium text-slate-800 text-sm) */}
-                      <td className="py-3 px-3 max-w-[280px] sm:max-w-md">
+                      {/* Cột 2: Tên hoạt động & Đơn vị tổ chức */}
+                      <td className="py-3 px-3 max-w-[260px] sm:max-w-sm md:max-w-md">
                         <div className="font-medium text-slate-800 text-sm group-hover:text-[#49C8D6] transition-colors truncate">
                           {act.title}
                         </div>
+                        <div className="text-[11px] text-slate-400 truncate mt-0.5">
+                          {act.organizer}
+                        </div>
                       </td>
 
-                      {/* Cột 3: Tag phân loại nhỏ dạng badge xám nhạt */}
-                      <td className="py-3 px-3">
-                        <span className="bg-slate-100 text-slate-600 text-[11px] px-2 py-0.5 rounded-md font-medium border border-slate-200/80 truncate inline-block max-w-[130px]">
-                          {act.facultyTarget === 'Tất cả'
-                            ? (act.tags[0] || 'Chung UEH')
-                            : act.facultyTarget.replace('Khoa ', '')}
+                      {/* Cột 3: Tiêu chí (Tag ngắn gọn của mục chính: Mục 1, Mục 2...) */}
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        <div className="flex items-center justify-center gap-1 flex-wrap">
+                          {mainCategories.map((mId) => (
+                            <span
+                              key={mId}
+                              className="bg-slate-100 text-slate-700 text-xs px-2 py-0.5 rounded-md font-medium border border-slate-200/80"
+                            >
+                              Mục {mId}
+                            </span>
+                          ))}
+                        </div>
+                      </td>
+
+                      {/* Cột 4: Tình trạng (Mở đăng ký, Đang diễn ra, Đã kết thúc) */}
+                      <td className="py-3 px-3 text-center whitespace-nowrap">
+                        <span
+                          className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium border inline-block ${statusInfo.badgeClass}`}
+                        >
+                          {statusInfo.label}
                         </span>
                       </td>
 
-                      {/* Cột 4: Thời gian rút gọn */}
+                      {/* Cột 5: Thời gian rút gọn */}
                       <td className="py-3 px-3 text-center text-slate-500 font-mono text-[11px] whitespace-nowrap">
                         {act.date.slice(5)} • {act.startTime}
                       </td>
 
-                      {/* Cột 5: Điểm rèn luyện nổi bật: Pill xanh emerald */}
+                      {/* Cột 6: Điểm rèn luyện nổi bật: Pill xanh emerald */}
                       <td className="py-3 px-4 text-right whitespace-nowrap">
                         <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold px-2 py-0.5 rounded-full text-xs font-mono inline-block">
                           +{act.totalPoints.toFixed(1)}đ
                         </span>
                       </td>
 
-                      {/* Cột 6: Nút hoặc icon trượt mở xem chi tiết (Drawer / Slide-over từ bên phải) */}
+                      {/* Cột 7: Nút xem chi tiết (Drawer / Slide-over) */}
                       <td className="py-3 px-3 text-center text-slate-400 group-hover:text-slate-700">
                         <ChevronRight className="w-4 h-4 ml-auto" />
                       </td>
