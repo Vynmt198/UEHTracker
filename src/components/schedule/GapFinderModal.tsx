@@ -99,12 +99,12 @@ export const GapFinderModal: React.FC<GapFinderModalProps> = ({ isOpen, onClose 
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
               }`}
             >
-              <div className="flex items-center gap-1.5 text-xs font-medium">
+              <div className="flex items-center gap-1.5 text-xs font-semibold">
                 <Compass className="w-3.5 h-3.5" />
-                Chuyên môn Khoa
+                Option 1: Phát triển cá nhân
               </div>
               <p className={`text-[10px] mt-0.5 font-normal truncate ${strategy === 'faculty' ? 'text-slate-300' : 'text-slate-500'}`}>
-                Ưu tiên {profile.faculty.split(' ')[0]}
+                Ưu tiên đúng Khoa/Viện: {profile.faculty.split(' ')[0]}
               </p>
             </button>
 
@@ -117,12 +117,12 @@ export const GapFinderModal: React.FC<GapFinderModalProps> = ({ isOpen, onClose 
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
               }`}
             >
-              <div className="flex items-center gap-1.5 text-xs font-medium">
+              <div className="flex items-center gap-1.5 text-xs font-semibold">
                 <Target className="w-3.5 h-3.5" />
-                Tối ưu ĐRL
+                Option 2: Tối ưu ĐRL
               </div>
               <p className={`text-[10px] mt-0.5 font-normal truncate ${strategy === 'drl_deficit' ? 'text-slate-300' : 'text-slate-500'}`}>
-                Bù tiêu chí thiếu điểm nhất
+                Bù tiêu chí còn thiếu nhiều nhất
               </p>
             </button>
 
@@ -135,12 +135,12 @@ export const GapFinderModal: React.FC<GapFinderModalProps> = ({ isOpen, onClose 
                   : 'bg-white text-slate-700 border-slate-200 hover:bg-slate-50'
               }`}
             >
-              <div className="flex items-center gap-1.5 text-xs font-medium">
+              <div className="flex items-center gap-1.5 text-xs font-semibold">
                 <Layers className="w-3.5 h-3.5" />
-                Kết hợp cân bằng
+                Option 3: Kết hợp
               </div>
               <p className={`text-[10px] mt-0.5 font-normal truncate ${strategy === 'balanced' ? 'text-slate-300' : 'text-slate-500'}`}>
-                Cân đối chuyên môn & ĐRL
+                Cân bằng cả chuyên môn & điểm số
               </p>
             </button>
           </div>
@@ -229,11 +229,11 @@ export const GapFinderModal: React.FC<GapFinderModalProps> = ({ isOpen, onClose 
                         className={`w-full sm:w-auto px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5 shadow-xs ${
                           isRegistered
                             ? 'bg-slate-900 text-white hover:bg-slate-800'
-                            : 'bg-[#49C8D6] hover:bg-[#3db8c6] text-white'
+                            : 'btn-ueh'
                         }`}
                       >
-                        <Check className="w-3.5 h-3.5" />
-                        {isRegistered ? 'Đã thêm vào lịch' : 'Thêm vào Lịch & Đăng ký'}
+                        <div className="svg-wrapper shrink-0"><Check className="w-3.5 h-3.5" /></div>
+                        <span>{isRegistered ? 'Đã thêm vào lịch' : 'Thêm vào Lịch & Đăng ký'}</span>
                       </button>
                     </div>
                   </div>

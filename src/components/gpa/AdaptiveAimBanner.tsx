@@ -62,6 +62,14 @@ export const AdaptiveAimBanner: React.FC<AdaptiveAimBannerProps> = ({ courses, o
               </button>
 
               <button
+                onClick={() => handleOpenStrategy(fb.courseId)}
+                className="px-2.5 py-1 rounded-md text-xs font-medium bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 transition-colors inline-flex items-center gap-1"
+              >
+                <Sliders className="w-3 h-3 text-slate-500" />
+                Đổi chiến lược
+              </button>
+
+              <button
                 onClick={() => setDismissed((prev) => ({ ...prev, [fb.courseId]: true }))}
                 className="p-1 text-slate-400 hover:text-slate-600 rounded"
                 title="Bỏ qua"

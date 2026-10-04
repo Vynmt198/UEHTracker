@@ -15,9 +15,8 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
     course.components && course.components.length > 0
       ? JSON.parse(JSON.stringify(course.components))
       : [
-          { id: 'c-1', name: 'Chuyên cần', weight: 10, score: 9.0 },
-          { id: 'c-2', name: 'Quá trình / Thuyết trình', weight: 40, score: 8.0 },
-          { id: 'c-3', name: 'Thi kết thúc học phần', weight: 50, score: null }
+          { id: 'c-1', name: 'Điểm quá trình', weight: 50, score: null },
+          { id: 'c-2', name: 'Điểm kết thúc học phần', weight: 50, score: null }
         ]
   );
 
@@ -26,7 +25,7 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
   const handleAddComponent = () => {
     const newComp: ScoreComponent = {
       id: `comp-${Date.now()}`,
-      name: `Đầu điểm ${components.length + 1}`,
+      name: `Thành phần điểm ${components.length + 1}`,
       weight: 10,
       score: null
     };
@@ -55,10 +54,23 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
   const finalCalc = calculateCourseFinalScore(components);
   const uehGrade = convertScore10ToUEH(finalCalc.score10);
 
+  // Check process weight <= 70%
+  const finalExamComponent = components.find(
+    (c) => c.name.toLowerCase().includes('kết thúc') || c.name.toLowerCase().includes('cuối kỳ')
+  );
+  const processWeight = components
+    .filter((c) => c !== finalExamComponent)
+    .reduce((sum, c) => sum + (Number(c.weight) || 0), 0);
+  const isProcessWeightValid = processWeight <= 70;
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!weightVal.isValid) {
-      alert(`Lỗi: ${weightVal.message}`);
+      alert(`Lỗi trọng số: ${weightVal.message}`);
+      return;
+    }
+    if (finalExamComponent && processWeight > 70) {
+      alert('Quy chế UEH: Tổng trọng số điểm quá trình không được vượt quá 70%!');
       return;
     }
     onSave(components);
@@ -268,11 +280,11 @@ export const CourseGradeModal: React.FC<CourseGradeModalProps> = ({ course, isOp
             disabled={!weightVal.isValid}
             className={`px-4 py-2 rounded-lg text-xs font-medium shadow-xs transition-colors ${
               weightVal.isValid
-                ? 'bg-[#49C8D6] hover:bg-[#3db8c6] text-white'
+                ? 'btn-ueh'
                 : 'bg-slate-200 text-slate-400 cursor-not-allowed'
             }`}
           >
-            Lưu bảng điểm
+            <span>Lưu bảng điểm</span>
           </button>
         </div>
       </div>

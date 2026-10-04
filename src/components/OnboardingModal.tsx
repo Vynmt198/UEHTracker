@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { User, X, Check } from 'lucide-react';
+import { Mascot } from './common/Mascot';
 
 const UEH_FACULTIES = [
   'Công nghệ thông tin kinh doanh',
@@ -26,6 +27,7 @@ const MAJORS_BY_FACULTY: Record<string, string[]> = {
 
 export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const { profile, updateProfile } = useApp();
+  const [isCompleted, setIsCompleted] = useState(false);
 
   const [formData, setFormData] = useState({
     name: profile.name || '',
@@ -34,7 +36,9 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
     cohort: profile.cohort || 'K49',
     faculty: profile.faculty || UEH_FACULTIES[0],
     major: profile.major || MAJORS_BY_FACULTY[UEH_FACULTIES[0]][0],
-    scholarshipTierTarget: profile.scholarshipTierTarget || 'Xuất sắc'
+    scholarshipTierTarget: profile.scholarshipTierTarget || 'Xuất sắc',
+    targetGPA: profile.targetGPA || 3.6,
+    targetDRL: profile.targetDRL || 85
   });
 
   if (!isOpen) return null;
@@ -45,8 +49,55 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
       ...formData,
       isOnboarded: true
     });
+    setIsCompleted(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsCompleted(false);
     onClose();
   };
+
+  if (isCompleted) {
+    return (
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs">
+        <div className="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-xl border border-slate-100 animate-in zoom-in-95 duration-200">
+          <Mascot pose="proud" size="lg" className="mx-auto justify-center" />
+          <h3 className="mt-4 font-bold text-slate-900 text-lg">Thiết lập hồ sơ thành công!</h3>
+          <p className="text-xs text-slate-600 mt-2 leading-relaxed max-w-xs mx-auto">
+            Kipo đã ghi nhận mục tiêu GPA <strong className="text-slate-900">{formData.targetGPA.toFixed(2)}</strong> và ĐRL <strong className="text-slate-900">{formData.targetDRL}đ</strong> của bạn ({formData.faculty}).
+          </p>
+          <div className="mt-3 p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-left text-xs space-y-1">
+            <div className="flex justify-between text-slate-600">
+              <span>Học bổng mục tiêu:</span>
+              <strong className="text-slate-900 font-semibold">{formData.scholarshipTierTarget}</strong>
+            </div>
+            <div className="flex justify-between text-slate-600">
+              <span>Chuyên ngành:</span>
+              <strong className="text-slate-900 font-semibold">{formData.major}</strong>
+            </div>
+          </div>
+          <button
+            onClick={handleCloseModal}
+            className="btn-uiverse-fly mt-6 w-full py-2.5 px-4 text-xs font-semibold shadow-xs"
+          >
+            <div className="svg-wrapper shrink-0">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                width="16"
+                height="16"
+                fill="currentColor"
+              >
+                <path fill="none" d="M0 0h24v24H0z"></path>
+                <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
+              </svg>
+            </div>
+            <span>Bắt đầu cùng Kipo ngay 🚀</span>
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40">
@@ -172,7 +223,16 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
                   <button
                     key={item.tier}
                     type="button"
-                    onClick={() => setFormData({ ...formData, scholarshipTierTarget: item.tier as 'Xuất sắc' | 'Giỏi' | 'Khá' })}
+                    onClick={() => {
+                      const newTargetGPA = item.tier === 'Xuất sắc' ? 3.6 : item.tier === 'Giỏi' ? 3.2 : 2.5;
+                      const newTargetDRL = item.tier === 'Xuất sắc' ? 90 : item.tier === 'Giỏi' ? 80 : 65;
+                      setFormData({
+                        ...formData,
+                        scholarshipTierTarget: item.tier as 'Xuất sắc' | 'Giỏi' | 'Khá',
+                        targetGPA: newTargetGPA,
+                        targetDRL: newTargetDRL
+                      });
+                    }}
                     className={`p-2 rounded-lg border text-left transition-colors ${
                       active
                         ? 'border-slate-900 bg-slate-50'
@@ -192,6 +252,33 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
             </div>
           </div>
 
+          {/* Target GPA and Target DRL Numerical inputs */}
+          <div className="grid grid-cols-2 gap-3 pt-1">
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">GPA Mục tiêu (Hệ 4)</label>
+              <input
+                type="number"
+                step="0.05"
+                min="2.0"
+                max="4.0"
+                value={formData.targetGPA}
+                onChange={(e) => setFormData({ ...formData, targetGPA: parseFloat(e.target.value) || 3.6 })}
+                className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 font-medium"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-slate-700 mb-1">ĐRL Mục tiêu (/100)</label>
+              <input
+                type="number"
+                min="50"
+                max="100"
+                value={formData.targetDRL}
+                onChange={(e) => setFormData({ ...formData, targetDRL: parseInt(e.target.value, 10) || 85 })}
+                className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 font-medium"
+              />
+            </div>
+          </div>
+
           {/* Actions */}
           <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2">
             <button
@@ -203,9 +290,9 @@ export const OnboardingModal: React.FC<{ isOpen: boolean; onClose: () => void }>
             </button>
             <button
               type="submit"
-              className="px-4 py-1.5 rounded-lg text-xs font-medium text-white bg-[#49C8D6] hover:bg-[#3db8c6] transition-colors shadow-xs"
+              className="btn-ueh px-4 py-1.5 rounded-lg text-xs font-medium"
             >
-              Lưu hồ sơ
+              <span>Lưu hồ sơ</span>
             </button>
           </div>
         </form>

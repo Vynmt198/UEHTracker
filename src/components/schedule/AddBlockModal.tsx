@@ -154,9 +154,10 @@ export const AddBlockModal: React.FC<AddBlockModalProps> = ({
             </button>
             <button
               type="submit"
-              className="flex items-center gap-1.5 px-4 py-1.5 rounded-lg text-xs font-medium bg-[#49C8D6] hover:bg-[#3db8c6] text-white shadow-xs"
+              className="btn-ueh text-xs font-medium px-4 py-1.5"
             >
-              <Plus className="w-3.5 h-3.5" /> Thêm lịch
+              <div className="svg-wrapper"><Plus className="w-3.5 h-3.5" /></div>
+              <span>Thêm lịch</span>
             </button>
           </div>
         </form>

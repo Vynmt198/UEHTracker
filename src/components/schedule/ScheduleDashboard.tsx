@@ -60,47 +60,44 @@ export const ScheduleDashboard: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Header Banner & Gap Action - Flat & Clean */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+    <div className="space-y-4">
+      {/* Header Banner & Gap Action - Interactive Card Accent */}
+      <div className="interactive-card-accent !p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider">
-              Smart Schedule
-            </span>
-            <span className="px-1.5 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
-              {validGapTimes.length} Gap Time (&ge;60p)
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+            THỜI KHÓA BIỂU & GAP TIME
+          </div>
+          <div className="flex items-center gap-2 mt-0.5">
+            <h2 className="text-base font-bold text-slate-900">
+              Lịch cá nhân tuần này
+            </h2>
+            <span className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-700 border border-slate-200">
+              {validGapTimes.length} khoảng trống (&ge;60p)
             </span>
           </div>
-
-          <h2 className="text-base sm:text-lg font-semibold text-slate-900 mt-0.5">
-            Thời khóa biểu cá nhân & Tối ưu Gap Time
-          </h2>
-          <p className="text-xs text-slate-500 font-normal mt-0.5 max-w-xl">
-            Tự động phát hiện các khoảng trống từ 60 phút trở lên để đề xuất hoạt động phù hợp.
-          </p>
         </div>
 
         {/* Primary Action Button */}
         <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-xs"
+            className="btn-interactive-outline flex-1 sm:flex-none text-xs"
           >
-            <Plus className="w-3.5 h-3.5" /> Thêm lịch
+            <Plus className="w-3.5 h-3.5" />
+            <span>Thêm lịch</span>
           </button>
 
           <button
             onClick={() => setShowGapModal(true)}
             disabled={validGapTimes.length === 0}
-            className={`flex-1 sm:flex-none flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors shadow-xs ${
+            className={`flex-1 sm:flex-none ${
               validGapTimes.length > 0
-                ? 'bg-[#49C8D6] hover:bg-[#3db8c6] text-white'
-                : 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
+                ? 'btn-interactive-primary'
+                : 'px-3.5 py-1.5 rounded-xl text-xs font-medium bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200'
             }`}
           >
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Tìm hoạt động lấp Gap Time</span>
+            <span>Tối ưu Gap Time</span>
           </button>
         </div>
       </div>
@@ -116,10 +113,10 @@ export const ScheduleDashboard: React.FC = () => {
             <button
               key={day}
               onClick={() => setSelectedDay(day)}
-              className={`min-w-[105px] py-1.5 px-3 rounded-lg text-left transition-colors shrink-0 ${
+              className={`min-w-[105px] py-1.5 px-3 rounded-lg text-left transition-all duration-200 shrink-0 ${
                 isSelected
-                  ? 'bg-slate-900 text-white font-medium shadow-xs'
-                  : 'bg-white border border-slate-200 hover:bg-slate-50 text-slate-700'
+                  ? 'bg-slate-900 text-white font-medium shadow-xs scale-102'
+                  : 'bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 hover:-translate-y-0.5 text-slate-700'
               }`}
             >
               <div className="text-xs font-medium">{DAY_NAMES[day]}</div>
@@ -138,8 +135,8 @@ export const ScheduleDashboard: React.FC = () => {
         })}
       </div>
 
-      {/* Daily Timeline - Flat & Clean */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-4">
+      {/* Daily Timeline - Flat & Clean Tactile Container */}
+      <div className="bg-white rounded-2xl border border-slate-200/80 p-5 shadow-xs space-y-4 hover:border-slate-300 transition-colors">
         <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <div>
             <h3 className="font-semibold text-slate-900 text-sm">
@@ -152,9 +149,10 @@ export const ScheduleDashboard: React.FC = () => {
 
           <button
             onClick={() => setShowAddModal(true)}
-            className="flex items-center gap-1 px-2.5 py-1 rounded text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-xs"
+            className="btn-interactive-outline text-xs"
           >
-            <Plus className="w-3 h-3" /> Thêm lịch
+            <Plus className="w-3.5 h-3.5" />
+            <span>Thêm lịch</span>
           </button>
         </div>
 
@@ -167,9 +165,10 @@ export const ScheduleDashboard: React.FC = () => {
             </p>
             <button
               onClick={() => setShowAddModal(true)}
-              className="mt-3.5 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium text-white bg-[#49C8D6] hover:bg-[#3db8c6] shadow-xs"
+              className="btn-ueh mt-3.5 text-xs font-medium px-3 py-1.5"
             >
-              <Plus className="w-3.5 h-3.5" /> Thêm sự kiện đầu tiên
+              <div className="svg-wrapper"><Plus className="w-3.5 h-3.5" /></div>
+              <span>Thêm sự kiện đầu tiên</span>
             </button>
           </div>
         ) : (
@@ -182,21 +181,21 @@ export const ScheduleDashboard: React.FC = () => {
                 return (
                   <div
                     key={`b-${block.id}-${idx}`}
-                    className="p-3.5 rounded-lg border border-slate-200 bg-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs"
+                    className="p-3 rounded-xl border border-slate-200/90 bg-cyan-50/50 border-l-4 border-l-[#49C8D6] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs hover:brightness-95 hover:shadow-sm cursor-pointer transition-all duration-200"
                   >
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center gap-2">
-                        <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
+                        <span className="px-1.5 py-0.5 rounded text-[10px] font-medium bg-white text-slate-700 border border-slate-200">
                           {typeLabel}
                         </span>
 
-                        <span className="text-xs font-medium text-slate-800 flex items-center gap-1">
-                          <Clock className="w-3 h-3 text-slate-400" />
+                        <span className="text-xs font-semibold text-slate-900 flex items-center gap-1 font-mono">
+                          <Clock className="w-3 h-3 text-[#007D8C]" />
                           {block.startTime} - {block.endTime}
                         </span>
                       </div>
 
-                      <h4 className="text-xs sm:text-sm font-medium text-slate-900">{block.title}</h4>
+                      <h4 className="text-xs sm:text-sm font-semibold text-slate-900">{block.title}</h4>
 
                       {block.location && (
                         <div className="flex items-center gap-1.5 text-xs text-slate-500 font-normal">
@@ -224,35 +223,25 @@ export const ScheduleDashboard: React.FC = () => {
                 return (
                   <div
                     key={`g-${gap.id}-${idx}`}
-                    className="p-3.5 rounded-lg border border-dashed border-slate-300 bg-slate-50/70 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                    className="p-3 rounded-lg border border-dashed border-slate-300 bg-slate-50/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 group transition-colors"
                   >
-                    <div className="flex items-start gap-3">
-                      <div className="w-6 h-6 rounded bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+                    <div className="flex items-center gap-2.5">
+                      <div className="w-6 h-6 rounded-md bg-slate-200/70 text-slate-500 flex items-center justify-center shrink-0">
                         <Clock className="w-3.5 h-3.5" />
                       </div>
 
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold text-slate-900">
-                            Khoảng trống: {gap.startTime} - {gap.endTime}
-                          </span>
-                          <span className="text-[11px] text-slate-500 font-normal">
-                            ({gap.durationMinutes} phút trống)
-                          </span>
-                        </div>
-
-                        <p className="text-xs text-slate-500 font-normal mt-0.5">
-                          Thời gian thích hợp để tham gia hoạt động rèn luyện hoặc tự học.
-                        </p>
+                      <div className="text-xs font-medium text-slate-700">
+                        <span className="font-semibold text-slate-900">{gap.startTime} - {gap.endTime}</span>
+                        <span className="text-[11px] text-slate-400 font-mono ml-2">({gap.durationMinutes}p trống)</span>
                       </div>
                     </div>
 
                     <div className="shrink-0 self-end sm:self-center">
                       <button
                         onClick={() => setShowGapModal(true)}
-                        className="px-2.5 py-1 rounded text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 transition-colors shadow-xs"
+                        className="px-3 py-1 rounded-md text-xs font-medium text-slate-700 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-100 transition-all opacity-85 group-hover:opacity-100 shadow-xs flex items-center gap-1.5"
                       >
-                        Tìm hoạt động lấp chỗ này
+                        + Tìm hoạt động lấp {gap.durationMinutes}p trống
                       </button>
                     </div>
                   </div>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import {
+  Brain,
   GraduationCap,
   Award,
   Calendar,
@@ -14,6 +15,7 @@ import {
   Sliders,
   LogOut
 } from 'lucide-react';
+import { IconAcademicCap, IconGPABook, IconDRLMedal } from './common/EduIcons';
 
 interface SidebarProps {
   isCollapsed: boolean;
@@ -32,32 +34,35 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const navItems = [
     {
+      id: 'planner' as const,
+      label: 'Smart Planner',
+      shortLabel: 'Planner',
+      icon: IconAcademicCap
+    },
+    {
       id: 'gpa' as const,
       label: 'Quản lý GPA',
       shortLabel: 'GPA',
-      icon: GraduationCap,
-      description: 'Hệ 4.0 & Mục tiêu Aim'
+      icon: IconGPABook
     },
     {
       id: 'drl' as const,
       label: 'Điểm rèn luyện',
       shortLabel: 'ĐRL',
-      icon: Award,
-      description: '5 tiêu chí & Minh chứng'
+      icon: IconDRLMedal
     },
     {
       id: 'schedule' as const,
       label: 'Thời khóa biểu',
-      shortLabel: 'Lịch',
-      icon: Calendar,
-      description: 'Gap Time Optimizer'
+      shortLabel: 'TKB',
+      icon: Calendar
     },
     {
       id: 'forum' as const,
       label: 'Diễn đàn UEH',
       shortLabel: 'Diễn đàn',
       icon: MessageSquare,
-      description: 'Học thuật & Đội thi'
+      badge: 'Coming Soon'
     }
   ];
 
@@ -74,20 +79,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
       <div>
         <div className={`flex items-center ${isCollapsed ? 'justify-center' : 'justify-between'} p-4 border-b border-slate-100`}>
           <div
-            onClick={() => setActiveTab('gpa')}
+            onClick={() => setActiveTab('planner')}
             className="flex items-center gap-2.5 cursor-pointer group"
           >
-            <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:bg-slate-800 transition-all duration-300">
-              <GraduationCap className="w-5 h-5 text-[#49C8D6]" />
-            </div>
+            {/* Logo */}
+            <img 
+              src="/logo.png" 
+              alt="UEH Tracker Logo" 
+              className="w-8 h-8 rounded-lg object-contain group-hover:scale-105 transition-transform shrink-0" 
+            />
             {!isCollapsed && (
               <div>
-                <h1 className="text-sm font-bold text-slate-900 tracking-tight leading-tight">
-                  UEH Tracker
-                </h1>
-                <p className="text-[10px] text-slate-400 font-normal">
-                  Cổng học tập sinh viên
-                </p>
+                <span className="font-semibold text-slate-800 text-sm tracking-tight block">UEH Tracker</span>
+                <span className="block text-[10px] text-[#49C8D6] font-semibold tracking-wider">FOR UEHER</span>
               </div>
             )}
           </div>
@@ -96,14 +100,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={onToggleCollapse}
             className="hidden md:flex p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors"
-            title={isCollapsed ? 'Mở rộng thanh điều hướng' : 'Thu gọn thanh điều hướng'}
+            title={isCollapsed ? 'Mở rộng thanh điều hướng (Expanded)' : 'Thu gọn thanh điều hướng (Collapsed)'}
           >
             {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </button>
         </div>
 
         {/* Navigation Items */}
-        <nav className="p-3 space-y-1.5">
+        <nav className="p-3 space-y-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = activeTab === item.id;
@@ -115,13 +119,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   setActiveTab(item.id);
                   setMobileOpen(false);
                 }}
-                title={isCollapsed ? `${item.label} (${item.description})` : undefined}
-                className={`w-full flex items-center ${
-                  isCollapsed ? 'justify-center px-0 py-3' : 'px-3 py-2.5'
-                } rounded-xl text-xs font-medium transition-all duration-200 group relative ${
+                title={isCollapsed ? item.label : undefined}
+                className={`w-full flex items-center h-10 ${
+                  isCollapsed ? 'justify-center px-0' : 'gap-2.5 px-3'
+                } rounded-xl text-sm font-medium transition-colors group relative ${
                   isActive
                     ? 'bg-slate-900 text-white shadow-xs'
-                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900 hover:translate-x-0.5'
+                    : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
                 }`}
               >
                 <Icon
@@ -131,21 +135,31 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 />
 
                 {!isCollapsed && (
-                  <div className="ml-3 text-left">
-                    <div className="leading-tight font-semibold">{item.label}</div>
-                    <div
-                      className={`text-[10px] font-normal leading-tight mt-0.5 ${
-                        isActive ? 'text-slate-400' : 'text-slate-400'
-                      }`}
-                    >
-                      {item.description}
-                    </div>
-                  </div>
+                  <>
+                    <span className="truncate whitespace-nowrap">{item.label}</span>
+                    {item.badge && (
+                      <span className="ml-auto text-[9.5px] px-1.5 py-0.5 rounded-md bg-amber-50 text-amber-700 border border-amber-200 font-medium shrink-0">
+                        {item.badge}
+                      </span>
+                    )}
+                  </>
                 )}
 
                 {/* Active indicator dot when collapsed */}
                 {isCollapsed && isActive && (
                   <span className="absolute right-1.5 top-1.5 w-1.5 h-1.5 rounded-full bg-[#49C8D6]" />
+                )}
+
+                {/* Floating Tooltip when collapsed */}
+                {isCollapsed && (
+                  <div className="absolute left-full ml-2.5 px-2.5 py-1.5 bg-slate-900 text-white text-xs rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-150 pointer-events-none whitespace-nowrap z-50 flex items-center gap-1.5">
+                    <span className="font-semibold text-white">{item.label}</span>
+                    {item.badge && (
+                      <span className="text-[9px] px-1.5 py-0.2 rounded bg-amber-400/20 text-amber-300 font-medium">
+                        {item.badge}
+                      </span>
+                    )}
+                  </div>
                 )}
               </button>
             );
@@ -199,7 +213,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className="w-full flex items-center gap-2 px-3 py-1.5 text-xs text-slate-700 hover:bg-slate-50 rounded-lg transition-colors text-left"
               >
                 <Sliders className="w-3.5 h-3.5 text-slate-500" />
-                Cập nhật mục tiêu & ngành
+                Cập nhật mục tiêu & hồ sơ
               </button>
 
               <button
@@ -224,14 +238,21 @@ export const Sidebar: React.FC<SidebarProps> = ({
           <button
             onClick={() => setMobileOpen(true)}
             className="p-1.5 text-slate-600 hover:bg-slate-100 rounded-lg"
+            title="Mở menu"
           >
             <Menu className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-slate-900 text-white flex items-center justify-center">
-              <GraduationCap className="w-4 h-4 text-[#49C8D6]" />
+          <div className="flex items-center gap-2.5">
+            {/* Logo */}
+            <img 
+              src="/logo.png" 
+              alt="UEH Tracker Logo" 
+              className="w-7 h-7 rounded-lg object-contain" 
+            />
+            <div>
+              <span className="font-semibold text-slate-800 text-sm tracking-tight block">UEH Tracker</span>
+              <span className="block text-[10px] text-[#49C8D6] font-semibold tracking-wider">FOR UEHER</span>
             </div>
-            <span className="font-semibold text-slate-900 text-sm">UEH Tracker</span>
           </div>
         </div>
 

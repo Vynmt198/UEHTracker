@@ -38,6 +38,9 @@ export interface UserProfile {
   major: string; // Chuyên ngành
   goals: string[]; // ['Học bổng', 'Tốt nghiệp đúng hạn', 'Cải thiện GPA', 'Tích lũy ĐRL']
   scholarshipTierTarget?: 'Xuất sắc' | 'Giỏi' | 'Khá' | 'Không đặt';
+  targetGPA?: number; // default 3.60
+  targetDRL?: number; // default 85
+  totalGraduationCredits?: number; // default 125
   strengths: string[];
   studyHabits: string;
   freeTimeSlots: string[];
@@ -56,6 +59,7 @@ export interface DRLMainCriteria {
   id: number; // 1, 2, 3, 4, 5
   title: string;
   maxPoints: number;
+  basePoints?: number;
   subCriteria: DRLSubCriteria[];
 }
 
@@ -70,6 +74,9 @@ export interface UEHActivity {
   title: string;
   organizer: string;
   facultyTarget: string; // Khoa/Viện hướng đến hoặc 'Tất cả'
+  activityType: 'chuyen_mon' | 'trai_nghiem'; // Chuyên môn vs. Trải nghiệm văn hóa - xã hội
+  audienceCategory?: 'freshman' | 'all' | 'k48' | 'k49' | 'k50' | 'senior';
+  goalCategory?: 'scientific_research' | 'career' | 'soft_skills' | 'networking' | 'volunteer' | 'academic';
   date: string; // YYYY-MM-DD
   dayOfWeek: number; // 1: Thứ 2, ..., 7: CN
   startTime: string; // "08:00"

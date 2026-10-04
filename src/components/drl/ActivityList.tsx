@@ -1,24 +1,52 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { UEHActivity } from '../../types';
-import { DAY_NAMES } from '../../utils/scheduleMatcher';
 import {
   Search,
   Check,
   Calendar,
   Clock,
   MapPin,
-  AlertTriangle,
-  Award
+  Award,
+  X,
+  FileText,
+  UserCheck,
+  Layers,
+  ChevronRight
 } from 'lucide-react';
+import { Mascot } from '../common/Mascot';
+import { IconScheduleCalendar, IconScheduleAlert } from '../common/EduIcons';
 
 export const ActivityList: React.FC = () => {
-  const { allActivities, registeredActivityIds, toggleActivityRegistration, getDRLProgress } =
-    useApp();
+  const {
+    profile,
+    allActivities,
+    registeredActivityIds,
+    toggleActivityRegistration,
+    getDRLProgress,
+    scheduleBlocks,
+    checkActivityScheduleConflict,
+    addActivityToSchedule
+  } = useApp();
 
   const [searchTerm, setSearchTerm] = useState('');
-  const [facultyFilter, setFacultyFilter] = useState('Tất cả');
+  const [facultyFilter, setFacultyFilter] = useState(() => profile.faculty || 'Tất cả');
   const [criterionFilter, setCriterionFilter] = useState('all');
+  const [activityTypeFilter, setActivityTypeFilter] = useState<'all' | 'chuyen_mon' | 'trai_nghiem'>('all');
+  const [audienceFilter, setAudienceFilter] = useState('all');
+  const [scheduleFeedback, setScheduleFeedback] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
+
+  // Slide-over Panel state
+  const [selectedActivity, setSelectedActivity] = useState<UEHActivity | null>(null);
+
+  const handleAddToSchedule = (activity: UEHActivity) => {
+    const res = addActivityToSchedule(activity);
+    setScheduleFeedback({
+      message: res.message,
+      type: res.success ? 'success' : 'warning'
+    });
+    setTimeout(() => setScheduleFeedback(null), 3500);
+  };
 
   const { criteriaList } = getDRLProgress();
   const cappedMainIds = new Set(criteriaList.filter((c) => c.isCapped).map((c) => c.id.toString()));
@@ -39,38 +67,67 @@ export const ActivityList: React.FC = () => {
       criterionFilter === 'all' ||
       act.allocations.some((alloc) => alloc.criterionCode.startsWith(criterionFilter));
 
-    return matchesSearch && matchesFaculty && matchesCriterion;
+    const matchesType =
+      activityTypeFilter === 'all' || act.activityType === activityTypeFilter;
+
+    const matchesAudience =
+      audienceFilter === 'all' ||
+      act.audienceCategory === audienceFilter ||
+      (audienceFilter === 'freshman' && act.tags.some((t) => t.includes('Tân sinh viên')));
+
+    return matchesSearch && matchesFaculty && matchesCriterion && matchesType && matchesAudience;
   });
+
+  const getActivityStatus = (act: UEHActivity) => {
+    const isRegistered = registeredActivityIds.includes(act.id);
+    if (!isRegistered) {
+      return {
+        label: 'Mở',
+        badgeClass: 'bg-emerald-50 text-emerald-700 border-emerald-200'
+      };
+    }
+    // Simulate approval vs completed for visual scan
+    const isPending = act.code.charCodeAt(act.code.length - 1) % 3 === 0;
+    if (isPending) {
+      return {
+        label: 'Chờ duyệt',
+        badgeClass: 'bg-amber-50 text-amber-700 border-amber-200'
+      };
+    }
+    return {
+      label: 'Hoàn thành',
+      badgeClass: 'bg-slate-100 text-slate-700 border-slate-200'
+    };
+  };
 
   return (
     <div className="space-y-4">
-      {/* Header & Filter Controls - Flat & Minimal */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-xs space-y-3.5">
+      {/* Header & Controls - Scan-First Minimalist SaaS */}
+      <div className="bg-white rounded-xl border border-slate-200 p-4 shadow-xs space-y-3">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
           <div>
-            <h2 className="text-base font-semibold text-slate-900 flex items-center gap-2">
-              <Award className="w-4 h-4 text-slate-600" />
-              Danh mục Hoạt động Rèn luyện
+            <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+              HOẠT ĐỘNG RÈN LUYỆN
+            </div>
+            <h2 className="text-base font-bold text-slate-900 mt-0.5">
+              Danh mục hoạt động ({filteredActivities.length}/{allActivities.length})
             </h2>
-            <p className="text-xs text-slate-500 mt-0.5 font-normal">
-              Tự động phân bổ điểm vào các tiêu chí con tương ứng và ngăn cộng dồn khi chạm trần.
-            </p>
           </div>
 
-          <div className="text-xs font-medium text-slate-600 px-2.5 py-1 rounded bg-slate-100 border border-slate-200">
-            Đã đăng ký: {registeredActivityIds.length} hoạt động
+          <div className="text-xs font-medium text-slate-600 px-3 py-1 rounded-lg bg-slate-50 border border-slate-200">
+            ĐÃ TÍCH LŨY: <strong className="text-slate-900 font-semibold">{registeredActivityIds.length}</strong>
           </div>
         </div>
 
-        {/* Search & Filter Bar */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
+        {/* Filter Controls Row */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 pt-1">
           <div className="relative">
             <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" />
             <input
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Tìm kiếm theo tên, BTC, mã..."
+              placeholder="Tìm theo tên, BTC, mã..."
               className="w-full pl-8 pr-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
             />
           </div>
@@ -82,12 +139,14 @@ export const ActivityList: React.FC = () => {
               className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-slate-400 bg-white font-medium"
             >
               <option value="Tất cả">Tất cả Khoa / Viện</option>
-              <option value="Công nghệ thông tin">Khoa CNTT Kinh doanh</option>
-              <option value="Marketing">Khoa Kinh doanh quốc tế - Marketing</option>
-              <option value="Tài chính">Khoa Tài chính - Ngân hàng</option>
-              <option value="Kế toán">Khoa Kế toán - Kiểm toán</option>
-              <option value="Quản trị">Khoa Kinh tế - Quản trị</option>
+              <option value="Công nghệ thông tin kinh doanh">Khoa CNTT Kinh doanh</option>
+              <option value="Kinh doanh quốc tế - Marketing">Khoa KDQT - Marketing</option>
+              <option value="Tài chính - Ngân hàng">Khoa Tài chính - Ngân hàng</option>
+              <option value="Kế toán - Kiểm toán">Khoa Kế toán - Kiểm toán</option>
+              <option value="Kinh tế - Quản trị">Khoa Kinh tế - Quản trị</option>
               <option value="Luật">Khoa Luật</option>
+              <option value="Khoa Ngoại ngữ">Khoa Ngoại ngữ</option>
+              <option value="Khoa Du lịch">Khoa Du lịch</option>
             </select>
           </div>
 
@@ -105,121 +164,336 @@ export const ActivityList: React.FC = () => {
               <option value="5">Mục 5: Cán bộ lớp & Thành tích</option>
             </select>
           </div>
+
+          <div>
+            <select
+              value={activityTypeFilter}
+              onChange={(e) => setActivityTypeFilter(e.target.value as any)}
+              className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-700 focus:outline-none focus:border-slate-400 bg-white font-medium"
+            >
+              <option value="all">Tất cả loại hoạt động</option>
+              <option value="chuyen_mon">Chuyên môn / Học thuật</option>
+              <option value="trai_nghiem">Trải nghiệm Văn hóa - Xã hội</option>
+            </select>
+          </div>
         </div>
       </div>
 
-      {/* Activities Grid - Flat clean cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
-        {filteredActivities.map((act) => {
-          const isRegistered = registeredActivityIds.includes(act.id);
-          const touchesCapped = act.allocations.some((alloc) =>
-            cappedMainIds.has(alloc.criterionCode.split('.')[0])
-          );
+      {/* Flat Activity Table - 1 Line per Activity, Click to open Slide-over Drawer */}
+      <div className="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-xs">
+        <div className="overflow-x-auto">
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr className="border-b border-slate-200 bg-slate-50 text-[10px] font-semibold text-slate-400 uppercase tracking-wider">
+                <th className="py-2.5 px-3 w-10 text-center">#</th>
+                <th className="py-2.5 px-3">TÊN HOẠT ĐỘNG</th>
+                <th className="py-2.5 px-3 w-32">KHOA / ĐƠN VỊ</th>
+                <th className="py-2.5 px-3 w-28 text-center">THỜI GIAN</th>
+                <th className="py-2.5 px-4 w-24 text-right">ĐIỂM ĐRL</th>
+                <th className="py-2.5 px-3 w-10 text-center"></th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-slate-100 bg-white">
+              {filteredActivities.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="py-12 text-center">
+                    <div className="flex flex-col items-center justify-center">
+                      <Mascot pose="inspect" size="md" />
+                      <p className="mt-3 text-xs font-semibold text-slate-800">
+                        Không tìm thấy hoạt động phù hợp với bộ lọc hiện tại.
+                      </p>
+                      <p className="text-[11px] text-slate-400 mt-1 max-w-sm">
+                        Thử điều chỉnh từ khóa tìm kiếm hoặc chọn lại Khoa / Tiêu chí rèn luyện để xem thêm các hoạt động khác nhé!
+                      </p>
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                filteredActivities.map((act) => {
+                  const isRegistered = registeredActivityIds.includes(act.id);
 
-          return (
-            <div
-              key={act.id}
-              className={`bg-white rounded-xl border p-4.5 transition-colors flex flex-col justify-between space-y-3 shadow-xs ${
-                isRegistered
-                  ? 'border-slate-400 bg-slate-50/40'
-                  : 'border-slate-200 hover:border-slate-300'
-              }`}
-            >
-              <div className="space-y-2.5">
-                {/* Header line */}
-                <div className="flex items-start justify-between gap-2">
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-600 border border-slate-200">
-                      {act.code}
-                    </span>
-                    <span className="px-1.5 py-0.5 rounded text-[10px] bg-slate-100 text-slate-600 border border-slate-200 font-normal">
-                      {act.facultyTarget}
-                    </span>
-                  </div>
-
-                  <span className="px-2 py-0.5 rounded text-xs font-semibold bg-slate-100 text-slate-800 border border-slate-200 shrink-0">
-                    +{act.totalPoints}đ
-                  </span>
-                </div>
-
-                {/* Title */}
-                <div>
-                  <h3 className="font-semibold text-slate-900 text-sm leading-snug">
-                    {act.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 mt-0.5 font-normal">BTC: {act.organizer}</p>
-                </div>
-
-                <p className="text-xs text-slate-600 font-normal line-clamp-2 leading-relaxed">
-                  {act.description}
-                </p>
-
-                {/* Time & Location */}
-                <div className="space-y-1 text-xs text-slate-500 pt-1 font-normal">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-3.5 h-3.5 text-slate-400" />
-                    <span>
-                      {DAY_NAMES[act.dayOfWeek]} ({act.date})
-                    </span>
-                    <span className="text-slate-300">•</span>
-                    <Clock className="w-3.5 h-3.5 text-slate-400" />
-                    <span>
-                      {act.startTime} - {act.endTime}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2">
-                    <MapPin className="w-3.5 h-3.5 text-slate-400" />
-                    <span className="truncate">{act.location}</span>
-                  </div>
-                </div>
-
-                {/* Multi-Criteria Allocation */}
-                <div className="pt-2 border-t border-slate-100">
-                  <span className="text-[10px] text-slate-400 uppercase tracking-wider block font-medium mb-1">
-                    Phân bổ tiêu chí:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {act.allocations.map((alloc) => (
-                      <span
-                        key={alloc.criterionCode}
-                        className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-slate-50 border border-slate-200 text-slate-700 text-[11px] font-medium"
+                  return (
+                    <tr
+                      key={act.id}
+                      onClick={() => setSelectedActivity(act)}
+                      className="group hover:bg-slate-50 cursor-pointer transition-colors relative"
+                    >
+                      {/* Cột 1: [Checkbox] xác nhận tham gia */}
+                      <td
+                        className="py-3 px-3 text-center"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleActivityRegistration(act.id);
+                        }}
                       >
-                        <span>Mục {alloc.criterionCode}:</span>
-                        <span>+{alloc.points}đ</span>
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                        <input
+                          type="checkbox"
+                          checked={isRegistered}
+                          onChange={() => {}}
+                          className="rounded border-slate-300 text-[#49C8D6] focus:ring-[#49C8D6] cursor-pointer"
+                        />
+                      </td>
 
-                {/* Cap Warning */}
-                {touchesCapped && !isRegistered && (
-                  <div className="flex items-center gap-1.5 text-[11px] text-amber-800 bg-amber-50/70 px-2 py-1 rounded border border-amber-200">
-                    <AlertTriangle className="w-3.5 h-3.5 shrink-0 text-amber-600" />
-                    <span>Chứa tiêu chí bạn đã chạm trần (phần điểm đó không cộng dồn)</span>
-                  </div>
-                )}
+                      {/* Cột 2: Tên hoạt động (cắt ngắn bằng CSS truncate max-w-md, font-medium text-slate-800 text-sm) */}
+                      <td className="py-3 px-3 max-w-[280px] sm:max-w-md">
+                        <div className="font-medium text-slate-800 text-sm group-hover:text-[#49C8D6] transition-colors truncate">
+                          {act.title}
+                        </div>
+                      </td>
+
+                      {/* Cột 3: Tag phân loại nhỏ dạng badge xám nhạt */}
+                      <td className="py-3 px-3">
+                        <span className="bg-slate-100 text-slate-600 text-[11px] px-2 py-0.5 rounded-md font-medium border border-slate-200/80 truncate inline-block max-w-[130px]">
+                          {act.facultyTarget === 'Tất cả'
+                            ? (act.tags[0] || 'Chung UEH')
+                            : act.facultyTarget.replace('Khoa ', '')}
+                        </span>
+                      </td>
+
+                      {/* Cột 4: Thời gian rút gọn */}
+                      <td className="py-3 px-3 text-center text-slate-500 font-mono text-[11px] whitespace-nowrap">
+                        {act.date.slice(5)} • {act.startTime}
+                      </td>
+
+                      {/* Cột 5: Điểm rèn luyện nổi bật: Badge xanh mint */}
+                      <td className="py-3 px-4 text-right whitespace-nowrap">
+                        <span className="px-2 py-0.5 rounded text-xs font-semibold bg-[#49C8D6]/10 text-[#007D8C] border border-[#49C8D6]/30 font-mono">
+                          +{act.totalPoints.toFixed(1)}đ
+                        </span>
+                      </td>
+
+                      {/* Cột 6: Nút hoặc icon trượt mở xem chi tiết (Drawer / Slide-over từ bên phải) */}
+                      <td className="py-3 px-3 text-center text-slate-400 group-hover:text-slate-700">
+                        <ChevronRight className="w-4 h-4 ml-auto" />
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Slide-over Panel (Drawer) for Activity Details */}
+      {selectedActivity && (
+        <div className="fixed inset-0 z-50 flex justify-end">
+          {/* Backdrop overlay */}
+          <div
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+            onClick={() => setSelectedActivity(null)}
+          />
+
+          {/* Drawer content */}
+          <div className="relative w-full sm:w-[480px] bg-white h-full shadow-2xl flex flex-col z-10 border-l border-slate-200 animate-in slide-in-from-right duration-200">
+            {/* Header */}
+            <div className="p-5 border-b border-slate-100 flex items-start justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono bg-slate-100 text-slate-700 border border-slate-200">
+                    {selectedActivity.code}
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] font-medium border ${
+                      getActivityStatus(selectedActivity).badgeClass
+                    }`}
+                  >
+                    {getActivityStatus(selectedActivity).label}
+                  </span>
+                </div>
+                <h3 className="text-base font-bold text-slate-900 leading-snug">
+                  {selectedActivity.title}
+                </h3>
               </div>
 
-              {/* Action Button */}
-              <div className="pt-2">
-                <button
-                  type="button"
-                  onClick={() => toggleActivityRegistration(act.id)}
-                  className={`w-full py-1.5 rounded-lg text-xs font-medium transition-colors flex items-center justify-center gap-1.5 shadow-xs ${
-                    isRegistered
-                      ? 'bg-slate-900 text-white hover:bg-slate-800'
-                      : 'bg-[#49C8D6] hover:bg-[#3db8c6] text-white'
+              <button
+                onClick={() => setSelectedActivity(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                title="Đóng chi tiết"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Body */}
+            <div className="flex-1 overflow-y-auto p-5 space-y-5 text-xs text-slate-600">
+              {/* Point Allocation Cards */}
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between">
+                <div>
+                  <span className="text-[10px] uppercase font-semibold text-slate-400">Điểm rèn luyện nhận được</span>
+                  <div className="text-xl font-bold text-slate-900 mt-0.5">
+                    +{selectedActivity.totalPoints} Điểm
+                  </div>
+                </div>
+                <div className="space-y-1 text-right">
+                  {selectedActivity.allocations.map((alloc) => (
+                    <div key={alloc.criterionCode} className="text-[11px] font-mono text-[#007D8C] font-semibold">
+                      Mục {alloc.criterionCode}: +{alloc.points}đ
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Activity Info List */}
+              <div className="space-y-2.5 text-xs">
+                <div className="flex items-start gap-2.5">
+                  <UserCheck className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-slate-400">Đơn vị tổ chức: </span>
+                    <strong className="text-slate-800 font-semibold">{selectedActivity.organizer}</strong>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <Calendar className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-slate-400">Thời gian: </span>
+                    <strong className="text-slate-800 font-semibold">
+                      Thứ {selectedActivity.dayOfWeek === 7 ? 'CN' : selectedActivity.dayOfWeek + 1}, {selectedActivity.date} ({selectedActivity.startTime} - {selectedActivity.endTime})
+                    </strong>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <MapPin className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-slate-400">Địa điểm: </span>
+                    <strong className="text-slate-800 font-semibold">{selectedActivity.location}</strong>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2.5">
+                  <Layers className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
+                  <div>
+                    <span className="text-slate-400">Khoa / Đối tượng: </span>
+                    <strong className="text-slate-800 font-semibold">
+                      {selectedActivity.facultyTarget} • {selectedActivity.audienceCategory || 'Toàn trường'}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                  MÔ TẢ HOẠT ĐỘNG
+                </span>
+                <p className="text-slate-700 leading-relaxed font-normal">
+                  {selectedActivity.description}
+                </p>
+              </div>
+
+              {/* Regulation & Proof Guidelines */}
+              <div className="space-y-1.5 pt-2 border-t border-slate-100">
+                <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+                  QUY CHẾ MINH CHỨNG
+                </span>
+                <p className="text-slate-600 leading-relaxed font-normal">
+                  Điểm rèn luyện được đồng bộ tự động hoặc thông qua mã QR/Biên nhận tham gia do {selectedActivity.organizer} cấp.
+                </p>
+              </div>
+
+              {/* Schedule Feedback / Conflict Status inside drawer */}
+              {(() => {
+                const isScheduled = scheduleBlocks.some((b) => b.activityId === selectedActivity.id);
+                const conflict = checkActivityScheduleConflict(selectedActivity);
+
+                if (isScheduled) {
+                  return (
+                    <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs flex items-center gap-2">
+                      <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <span>Hoạt động này đã được lưu vào Thời khóa biểu của bạn.</span>
+                    </div>
+                  );
+                }
+                if (conflict.hasConflict && conflict.conflictingBlock) {
+                  return (
+                    <div className="p-3 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-xs flex items-start gap-2">
+                      <Clock className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
+                      <div>
+                        <strong>Xung đột lịch rảnh: </strong>
+                        Trùng giờ với <em>"{conflict.conflictingBlock.title}"</em> ({conflict.conflictingBlock.startTime} - {conflict.conflictingBlock.endTime}).
+                      </div>
+                    </div>
+                  );
+                }
+                return null;
+              })()}
+
+              {scheduleFeedback && (
+                <div
+                  className={`p-3 rounded-lg text-xs font-medium border ${
+                    scheduleFeedback.type === 'success'
+                      ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                      : 'bg-amber-50 text-amber-800 border-amber-200'
                   }`}
                 >
-                  <Check className="w-3.5 h-3.5" />
-                  {isRegistered ? 'Đã tham gia (Click để hủy)' : 'Đăng ký tham gia'}
-                </button>
-              </div>
+                  {scheduleFeedback.message}
+                </div>
+              )}
             </div>
-          );
-        })}
-      </div>
+
+            {/* Bottom Actions */}
+            <div className="p-4 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center gap-2.5">
+              {/* Check / Add to schedule button */}
+              {(() => {
+                const isScheduled = scheduleBlocks.some((b) => b.activityId === selectedActivity.id);
+                const conflict = checkActivityScheduleConflict(selectedActivity);
+
+                if (conflict.hasConflict && !isScheduled) {
+                  return (
+                    <div
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl text-xs font-medium bg-amber-50 border border-amber-200 text-amber-700 select-none shrink-0"
+                      title={`Trùng lịch với: ${conflict.conflictingBlock?.title}`}
+                    >
+                      <IconScheduleAlert className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+                      <span>Trùng giờ học</span>
+                    </div>
+                  );
+                }
+
+                if (isScheduled) {
+                  return (
+                    <div
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1 px-3 py-2 rounded-xl text-xs font-medium bg-emerald-50 border border-emerald-200 text-emerald-700 select-none shrink-0"
+                    >
+                      <Calendar className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                      <span>Đã vào TKB</span>
+                    </div>
+                  );
+                }
+
+                return (
+                  <button
+                    onClick={() => handleAddToSchedule(selectedActivity)}
+                    className="btn-interactive-outline w-full sm:w-auto shrink-0"
+                  >
+                    <IconScheduleCalendar className="w-3.5 h-3.5 text-[#007D8C] shrink-0" />
+                    <span>Thêm vào TKB</span>
+                  </button>
+                );
+              })()}
+
+              <button
+                onClick={() => {
+                  toggleActivityRegistration(selectedActivity.id);
+                }}
+                className={`w-full sm:flex-1 ${
+                  registeredActivityIds.includes(selectedActivity.id)
+                    ? 'btn-interactive-outline'
+                    : 'btn-interactive-primary'
+                }`}
+              >
+                <span>
+                  {registeredActivityIds.includes(selectedActivity.id)
+                    ? 'Hủy đăng ký'
+                    : 'Đăng ký ngay'}
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

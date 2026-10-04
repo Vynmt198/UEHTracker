@@ -11,7 +11,7 @@ import {
 } from '../types';
 import drlCriteriaRaw from '../data/drlCriteria.json';
 import activitiesRaw from '../data/uehActivities.json';
-import { findValidGapTimes } from '../utils/scheduleMatcher';
+import { findValidGapTimes, timeToMinutes } from '../utils/scheduleMatcher';
 import { calculateCourseFinalScore, convertScore10ToUEH } from '../utils/gpaCalculator';
 
 const drlCriteriaData = drlCriteriaRaw as DRLMainCriteria[];
@@ -36,8 +36,8 @@ export interface CriteriaProgress {
 }
 
 interface AppContextType {
-  activeTab: 'gpa' | 'drl' | 'schedule' | 'forum';
-  setActiveTab: (tab: 'gpa' | 'drl' | 'schedule' | 'forum') => void;
+  activeTab: 'planner' | 'gpa' | 'drl' | 'schedule' | 'forum';
+  setActiveTab: (tab: 'planner' | 'gpa' | 'drl' | 'schedule' | 'forum') => void;
 
   // Profile
   profile: UserProfile;
@@ -76,6 +76,12 @@ interface AppContextType {
   deleteScheduleBlock: (id: string) => void;
   validGapTimes: GapTimeSlot[];
   allActivities: UEHActivity[];
+  checkActivityScheduleConflict: (activity: UEHActivity) => {
+    hasConflict: boolean;
+    conflictingBlock?: ScheduleBlock;
+    isAlreadyInSchedule: boolean;
+  };
+  addActivityToSchedule: (activity: UEHActivity) => { success: boolean; message: string };
 }
 
 const defaultProfile: UserProfile = {
@@ -210,7 +216,7 @@ const defaultScheduleBlocks: ScheduleBlock[] = [
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [activeTab, setActiveTab] = useState<'gpa' | 'drl' | 'schedule' | 'forum'>('gpa');
+  const [activeTab, setActiveTab] = useState<'planner' | 'gpa' | 'drl' | 'schedule' | 'forum'>('planner');
 
   // Load from localStorage or defaults
   const [profile, setProfile] = useState<UserProfile>(() => {
@@ -409,11 +415,20 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const getDRLProgress = () => {
     const registeredActivities = activitiesData.filter((a) => registeredActivityIds.includes(a.id));
 
-    // Map subcriteria points
+    // Map subcriteria points and main criteria extra points
     const subPointsMap: Record<string, number> = {};
+    const mainCategoryPointsMap: Record<number, number> = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
     registeredActivities.forEach((act) => {
       act.allocations.forEach((alloc) => {
-        subPointsMap[alloc.criterionCode] = (subPointsMap[alloc.criterionCode] || 0) + alloc.points;
+        const rawCode = alloc.criterionCode;
+        subPointsMap[rawCode] = (subPointsMap[rawCode] || 0) + alloc.points;
+
+        // Determine main category id from first digit (e.g., "2" from "2.7.4.2" or "2.2")
+        const mainId = parseInt(rawCode.split('.')[0], 10);
+        if (mainId >= 1 && mainId <= 5) {
+          mainCategoryPointsMap[mainId] = (mainCategoryPointsMap[mainId] || 0) + alloc.points;
+        }
       });
     });
 
@@ -425,8 +440,26 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       let mainRawSum = 0;
       let mainCappedSum = 0;
 
+      // Mục 1 UEH: Có sẵn 15đ sàn (quy định chuẩn UEH)
+      const basePoints = mainCat.id === 1 ? 15 : 0;
+
       const subProgress = mainCat.subCriteria.map((sub) => {
-        const raw = subPointsMap[sub.code] || 0;
+        // Direct matches or prefix matches (e.g., '2.7.4.2' matching under '2.2')
+        let raw = subPointsMap[sub.code] || 0;
+
+        // Base points in sub-criterion 1.2
+        if (sub.code === '1.2') {
+          raw += basePoints;
+        }
+
+        // Also add any special sub-allocations like 2.7.4.2 to 2.2 or 3.4.2.2 to 3.1
+        if (sub.code === '2.2' && subPointsMap['2.7.4.2']) {
+          raw += subPointsMap['2.7.4.2'];
+        }
+        if (sub.code === '3.1' && subPointsMap['3.4.2.2']) {
+          raw += subPointsMap['3.4.2.2'];
+        }
+
         const capped = Math.min(raw, sub.maxPoints);
         const isCapped = raw >= sub.maxPoints;
 
@@ -507,6 +540,48 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   const validGapTimes = findValidGapTimes(scheduleBlocks);
 
+  const checkActivityScheduleConflict = (activity: UEHActivity) => {
+    const isAlreadyInSchedule = scheduleBlocks.some((b) => b.activityId === activity.id);
+    const actStart = timeToMinutes(activity.startTime);
+    const actEnd = timeToMinutes(activity.endTime);
+
+    const conflictingBlock = scheduleBlocks.find((b) => {
+      if (b.dayOfWeek !== activity.dayOfWeek) return false;
+      const bStart = timeToMinutes(b.startTime);
+      const bEnd = timeToMinutes(b.endTime);
+      return actStart < bEnd && actEnd > bStart;
+    });
+
+    return {
+      hasConflict: !!conflictingBlock && !isAlreadyInSchedule,
+      conflictingBlock,
+      isAlreadyInSchedule
+    };
+  };
+
+  const addActivityToSchedule = (activity: UEHActivity) => {
+    const check = checkActivityScheduleConflict(activity);
+    if (check.isAlreadyInSchedule) {
+      return { success: false, message: 'Hoạt động đã có trong TKB của bạn!' };
+    }
+    if (check.hasConflict && check.conflictingBlock) {
+      return {
+        success: false,
+        message: `Trùng giờ với "${check.conflictingBlock.title}" (${check.conflictingBlock.startTime} - ${check.conflictingBlock.endTime})`
+      };
+    }
+    addScheduleBlock({
+      title: activity.title,
+      dayOfWeek: activity.dayOfWeek,
+      startTime: activity.startTime,
+      endTime: activity.endTime,
+      location: activity.location,
+      type: 'activity',
+      activityId: activity.id
+    });
+    return { success: true, message: `Đã thêm vào TKB (Thứ ${activity.dayOfWeek === 7 ? 'CN' : activity.dayOfWeek + 1}, ${activity.startTime} - ${activity.endTime})!` };
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -534,7 +609,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addScheduleBlock,
         deleteScheduleBlock,
         validGapTimes,
-        allActivities: activitiesData
+        allActivities: activitiesData,
+        checkActivityScheduleConflict,
+        addActivityToSchedule
       }}
     >
       {children}

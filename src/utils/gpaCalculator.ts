@@ -221,8 +221,9 @@ export function evaluateAdaptiveAim(course: Course): AdaptiveAimFeedback | null 
   const currentAim = course.aimScore10;
   const diff = Math.round((actualScore - currentAim) * 10) / 10;
 
-  if (diff >= 0.5) {
-    const suggestedAim = Math.min(10, Math.round((currentAim + 0.5) * 10) / 10);
+  // Adaptive Aim (±0.3 rule)
+  if (diff >= 0.3) {
+    const suggestedAim = Math.min(10, Math.round((currentAim + 0.3) * 10) / 10);
     return {
       courseId: course.id,
       courseName: course.name,
@@ -231,11 +232,11 @@ export function evaluateAdaptiveAim(course: Course): AdaptiveAimFeedback | null 
       diff,
       status: 'upgrade',
       suggestedAim,
-      title: `Điểm môn ${course.name} vượt mục tiêu`,
+      title: `Điểm môn ${course.name} vượt mục tiêu (+${diff})`,
       message: `Đạt ${actualScore} (Mục tiêu ${currentAim}). Bạn có thể tăng Aim lên ${suggestedAim} để nâng GPA tích lũy.`
     };
-  } else if (diff <= -0.5) {
-    const suggestedAim = Math.max(5.0, Math.round((currentAim - 0.5) * 10) / 10);
+  } else if (diff <= -0.3) {
+    const suggestedAim = Math.max(5.0, Math.round((currentAim - 0.3) * 10) / 10);
     return {
       courseId: course.id,
       courseName: course.name,
@@ -244,12 +245,76 @@ export function evaluateAdaptiveAim(course: Course): AdaptiveAimFeedback | null 
       diff,
       status: 'downgrade',
       suggestedAim,
-      title: `Điểm môn ${course.name} chưa đạt kỳ vọng`,
-      message: `Đạt ${actualScore} (Mục tiêu ${currentAim}). Điều chỉnh Aim về ${suggestedAim} để tính toán lại học bổng.`
+      title: `Điểm môn ${course.name} chưa đạt kỳ vọng (${diff})`,
+      message: `Đạt ${actualScore} (Mục tiêu ${currentAim}). Điều chỉnh Aim về ${suggestedAim} để tính toán lại học bổng an toàn.`
     };
   }
 
   return null;
+}
+
+/**
+ * Tính GPA cần giữ trong các tín chỉ còn lại để đạt GPA mục tiêu
+ */
+export function calculateRequiredGPA(
+  completedCredits: number,
+  actualGPA4: number,
+  targetGPA: number = 3.6,
+  totalGraduationCredits: number = 125
+): {
+  remainingCredits: number;
+  requiredGPA: number | null;
+  status: 'achievable' | 'impossible' | 'already_achieved';
+  message: string;
+} {
+  const remainingCredits = Math.max(0, totalGraduationCredits - completedCredits);
+  if (completedCredits === 0) {
+    return {
+      remainingCredits,
+      requiredGPA: targetGPA,
+      status: 'achievable',
+      message: `Cần đạt GPA ${targetGPA.toFixed(2)} trong toàn khóa học`
+    };
+  }
+
+  if (remainingCredits === 0) {
+    return {
+      remainingCredits: 0,
+      requiredGPA: actualGPA4,
+      status: actualGPA4 >= targetGPA ? 'already_achieved' : 'impossible',
+      message: actualGPA4 >= targetGPA ? 'Đã hoàn thành toàn bộ tín chỉ và đạt mục tiêu' : 'Đã hoàn thành hết tín chỉ'
+    };
+  }
+
+  const targetTotalPoints = targetGPA * totalGraduationCredits;
+  const currentEarnedPoints = actualGPA4 * completedCredits;
+  const pointsNeeded = targetTotalPoints - currentEarnedPoints;
+  const required = Math.round((pointsNeeded / remainingCredits) * 100) / 100;
+
+  if (required <= 0) {
+    return {
+      remainingCredits,
+      requiredGPA: 0,
+      status: 'already_achieved',
+      message: 'Đã tích lũy đủ điểm đạt mục tiêu'
+    };
+  }
+
+  if (required > 4.0) {
+    return {
+      remainingCredits,
+      requiredGPA: required,
+      status: 'impossible',
+      message: `Cần GPA ${required.toFixed(2)} (> 4.00), nên điều chỉnh lại mục tiêu`
+    };
+  }
+
+  return {
+    remainingCredits,
+    requiredGPA: required,
+    status: 'achievable',
+    message: `Cần duy trì GPA tối thiểu ${required.toFixed(2)} trong ${remainingCredits} tín chỉ còn lại`
+  };
 }
 
 /**

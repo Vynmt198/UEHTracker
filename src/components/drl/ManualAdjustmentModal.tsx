@@ -131,9 +131,9 @@ export const ManualAdjustmentModal: React.FC<ManualAdjustmentModalProps> = ({
             </button>
             <button
               type="submit"
-              className="px-4 py-1.5 rounded-lg text-xs font-medium bg-[#49C8D6] hover:bg-[#3db8c6] text-white shadow-xs"
+              className="btn-ueh text-xs font-medium px-4 py-1.5"
             >
-              Xác nhận
+              <span>Xác nhận</span>
             </button>
           </div>
         </form>

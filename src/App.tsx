@@ -5,6 +5,7 @@ import { OnboardingModal } from './components/OnboardingModal';
 import { GPADashboard } from './components/gpa/GPADashboard';
 import { DRLModule } from './components/drl/DRLModule';
 import { ScheduleDashboard } from './components/schedule/ScheduleDashboard';
+import { SmartPlanner } from './components/planner/SmartPlanner';
 import { ForumPlaceholder } from './components/forum/ForumPlaceholder';
 import { GraduationCap } from 'lucide-react';
 
@@ -22,7 +23,7 @@ const MainLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
-      {/* Collapsible Slide Bar Navigation */}
+      {/* 1. Menu thanh trượt có thể đóng mở (Collapsible Slide Bar) */}
       <Sidebar
         isCollapsed={isCollapsed}
         onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
@@ -36,19 +37,24 @@ const MainLayout: React.FC = () => {
         }`}
       >
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          {activeTab === 'gpa' && <GPADashboard />}
-          {activeTab === 'drl' && <DRLModule />}
-          {activeTab === 'schedule' && <ScheduleDashboard />}
-          {activeTab === 'forum' && <ForumPlaceholder />}
+          <div key={activeTab} className="animate-in fade-in duration-200 ease-in-out">
+            {activeTab === 'planner' && <SmartPlanner isMainView={true} />}
+            {activeTab === 'gpa' && <GPADashboard />}
+            {activeTab === 'drl' && <DRLModule />}
+            {activeTab === 'schedule' && <ScheduleDashboard />}
+            {activeTab === 'forum' && <ForumPlaceholder />}
+          </div>
         </main>
 
         {/* Footer */}
         <footer className="bg-white border-t border-slate-200 py-6 mt-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <div className="flex items-center gap-2">
-              <div className="w-6 h-6 rounded-md bg-slate-900 text-white flex items-center justify-center">
-                <GraduationCap className="w-3.5 h-3.5" />
-              </div>
+            <div className="flex items-center gap-2.5">
+              <img 
+                src="/logo.png" 
+                alt="UEH Tracker Logo" 
+                className="w-6 h-6 rounded-md object-contain" 
+              />
               <span className="font-semibold text-slate-800">UEH Tracker</span>
               <span>• Dành riêng cho sinh viên Đại học Kinh tế TP. Hồ Chí Minh (UEH)</span>
             </div>

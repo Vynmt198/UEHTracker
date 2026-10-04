@@ -8,6 +8,128 @@
   }
 }
 
+@layer components {
+  /* Box tiêu chuẩn có hiệu ứng nâng nhẹ và đổi viền */
+  .interactive-card {
+    @apply relative bg-white border border-slate-200/90 rounded-2xl p-5 
+           shadow-xs transition-all duration-200 ease-out
+           hover:-translate-y-1 hover:shadow-md hover:border-[#49C8D6]/60;
+  }
+
+  /* Card có viền màu accent phía trên (Top Accent Glow) */
+  .interactive-card-accent {
+    @apply relative bg-white border border-slate-200/90 rounded-2xl p-5 
+           shadow-xs transition-all duration-200 ease-out overflow-hidden
+           before:absolute before:top-0 before:left-0 before:right-0 before:h-1 before:bg-gradient-to-r before:from-[#49C8D6] before:to-cyan-400 before:opacity-0 before:transition-opacity before:duration-200
+           hover:-translate-y-1 hover:shadow-md hover:border-[#49C8D6]/50 hover:before:opacity-100;
+  }
+
+  /* Hiệu ứng nhịp đập nhẹ cho các Badge cần chú ý */
+  .pulse-badge-dot {
+    @apply inline-block w-1.5 h-1.5 rounded-full mr-1.5 animate-pulse shrink-0;
+  }
+
+  /* 1. Biến thể Primary (Dành cho "Đăng ký ngay" / CTA chính): Nền màu #49C8D6 */
+  .btn-interactive-primary {
+    @apply btn-interactive px-3.5 py-1.5 text-xs sm:text-sm bg-[#49C8D6] text-white border border-[#3cb5c2] shadow-xs;
+  }
+
+  /* 2. Biến thể Outline / Ghost (Dành cho "Thêm vào TKB", "Xem chi tiết"): Nền trắng viền xám */
+  .btn-interactive-outline {
+    @apply btn-interactive px-3 py-1.5 text-xs sm:text-sm bg-white text-slate-700 border border-slate-200/90 shadow-xs;
+  }
+}
+
+/* ==================== BUTTON ANIMATIONS (UIVERSE ADAPTED) ==================== */
+
+@keyframes btn-wobble {
+  0% { transform: rotate(0deg) translate3d(0, 0, 0); }
+  25% { transform: rotate(2.5deg) translate3d(0, 0, 0); }
+  50% { transform: rotate(-2.5deg) translate3d(0, 0, 0); }
+  75% { transform: rotate(1deg) translate3d(0, 0, 0); }
+  100% { transform: rotate(0deg) translate3d(0, 0, 0); }
+}
+
+@keyframes btn-text-storm {
+  0% { transform: translate3d(0, 0, 0); }
+  25% { transform: translate3d(2px, 0, 0); }
+  50% { transform: translate3d(-2px, 0, 0); }
+  75% { transform: translate3d(1px, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+/* Base button có hiệu ứng lắc lư và vệt sáng */
+.btn-interactive {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 0.75rem; /* rounded-xl */
+  font-weight: 500;
+  transition: all 0.3s cubic-bezier(0.02, 0.01, 0.47, 1);
+  user-select: none;
+  z-index: 0;
+}
+
+.btn-interactive > * {
+  z-index: 10;
+}
+
+/* Hiệu ứng lắc nút khi hover */
+.btn-interactive:hover {
+  animation: btn-wobble 0.6s ease-in-out both;
+}
+
+.btn-interactive:hover span,
+.btn-interactive:hover svg {
+  animation: btn-text-storm 0.6s ease-in-out both;
+  animation-delay: 0.05s;
+}
+
+/* Vệt sáng quét qua chéo (Shine effect) */
+.btn-interactive::after {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: -80px;
+  width: 40px;
+  height: 160px;
+  opacity: 0.45;
+  transform: rotate(35deg);
+  transition: all 600ms cubic-bezier(0.19, 1, 0.22, 1);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* Primary Shine & Hover */
+.btn-interactive-primary::after {
+  background: #ffffff;
+}
+.btn-interactive-primary:hover::after {
+  left: 130%;
+}
+.btn-interactive-primary:hover {
+  background-color: #3cb5c2;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+}
+
+/* Outline Shine & Hover */
+.btn-interactive-outline::after {
+  background: #49C8D6;
+}
+.btn-interactive-outline:hover::after {
+  left: 130%;
+}
+.btn-interactive-outline:hover {
+  border-color: rgba(73, 200, 214, 0.7);
+  color: #0c727d;
+  background-color: rgba(236, 254, 255, 0.4);
+}
+
+
 /* Custom scrollbars */
 ::-webkit-scrollbar {
   width: 6px;
@@ -34,3 +156,136 @@
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* ========================================================================= */
+/* From Uiverse.io by adamgiebl - Adapted for UEH Tracker Design System      */
+/* Color: Brand Cyan #49C8D6 (Hover: #3db8c6)                               */
+/* ========================================================================= */
+
+.btn-ueh,
+button.btn-ueh,
+button.btn-primary {
+  font-family: inherit;
+  background: #49C8D6;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.btn-ueh span,
+button.btn-ueh span,
+button.btn-primary span {
+  display: block;
+  margin-left: 0.35em;
+  transition: all 0.3s ease-in-out;
+  white-space: nowrap;
+}
+
+.btn-ueh svg,
+button.btn-ueh svg,
+button.btn-primary svg {
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.btn-ueh:hover,
+button.btn-ueh:hover,
+button.btn-primary:hover {
+  background: #3db8c6;
+}
+
+.btn-ueh:hover .svg-wrapper,
+button.btn-ueh:hover .svg-wrapper,
+button.btn-primary:hover .svg-wrapper,
+.btn-ueh:hover svg,
+button.btn-ueh:hover svg,
+button.btn-primary:hover svg {
+  animation: fly-1 0.6s ease-in-out infinite alternate;
+}
+
+.btn-ueh:hover svg,
+button.btn-ueh:hover svg,
+button.btn-primary:hover svg {
+  transform: translateX(0.3em) rotate(15deg) scale(1.1);
+}
+
+.btn-ueh:hover span,
+button.btn-ueh:hover span,
+button.btn-primary:hover span {
+  transform: translateX(0.25em);
+}
+
+.btn-ueh:active,
+button.btn-ueh:active,
+button.btn-primary:active {
+  transform: scale(0.95);
+}
+
+/* Full Uiverse Fly-out variant (e.g. for Send / Submit / Launch CTAs) */
+.btn-uiverse-fly {
+  font-family: inherit;
+  background: #49C8D6;
+  color: white;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.2s;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-uiverse-fly span {
+  display: block;
+  margin-left: 0.3em;
+  transition: all 0.3s ease-in-out;
+}
+
+.btn-uiverse-fly svg {
+  display: block;
+  transform-origin: center center;
+  transition: transform 0.3s ease-in-out;
+}
+
+.btn-uiverse-fly:hover {
+  background: #3db8c6;
+}
+
+.btn-uiverse-fly:hover .svg-wrapper,
+.btn-uiverse-fly:hover svg {
+  animation: fly-1 0.6s ease-in-out infinite alternate;
+}
+
+.btn-uiverse-fly:hover svg {
+  transform: translateX(1.2em) rotate(45deg) scale(1.1);
+}
+
+.btn-uiverse-fly:hover span {
+  transform: translateX(5em);
+}
+
+.btn-uiverse-fly:active {
+  transform: scale(0.95);
+}
+
+@keyframes fly-1 {
+  from {
+    transform: translateY(0.1em);
+  }
+
+  to {
+    transform: translateY(-0.1em);
+  }
+}
+
