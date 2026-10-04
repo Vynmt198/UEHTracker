@@ -47,20 +47,56 @@ export interface UserProfile {
   isOnboarded: boolean;
 }
 
+export interface DRLCriterionNode {
+  id: string; // "1", "1.1", "1.2.1"
+  name: string;
+  shortName?: string;
+  points?: number;
+  maxPoints?: number;
+  minPoints?: number;
+  defaultPoints?: number;
+  isDefault?: boolean;
+  isPenalty?: boolean;
+  maxPenalty?: number;
+  authority?: string;
+  range?: [number, number];
+  children?: DRLCriterionNode[];
+}
+
+export interface DRLSubCriteriaProgress {
+  id: string;
+  code: string;
+  title: string;
+  currentPoints: number;
+  maxPoints: number;
+  minPoints?: number;
+  rawPoints: number;
+  isCapped: boolean;
+  isDefault?: boolean;
+  isPenalty?: boolean;
+  range?: [number, number];
+  children?: DRLSubCriteriaProgress[];
+}
+
 export interface DRLSubCriteria {
-  id: string; // vd: "1.1", "1.2", "2.1", "2.7.4.2"
+  id: string;
   code: string;
   title: string;
   description?: string;
   maxPoints: number;
+  children?: DRLSubCriteria[];
 }
 
 export interface DRLMainCriteria {
-  id: number; // 1, 2, 3, 4, 5
-  title: string;
+  id: string | number; // "1" or 1
+  name: string;
+  title?: string;
+  shortName?: string;
   maxPoints: number;
+  defaultPoints?: number;
   basePoints?: number;
-  subCriteria: DRLSubCriteria[];
+  children?: DRLCriterionNode[];
+  subCriteria?: DRLSubCriteria[];
 }
 
 export interface ActivityCriterionAllocation {
@@ -93,6 +129,8 @@ export interface DRLManualAdjustment {
   id: string;
   reason: string;
   criterionId: number; // 1-5
+  subCriterionId?: string; // vd: "1.3.1", "1.4.1", "5.3.1"
+  subCriterionName?: string;
   points: number; // +/- points
   date: string;
 }

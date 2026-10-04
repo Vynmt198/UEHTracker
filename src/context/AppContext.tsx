@@ -4,9 +4,11 @@ import {
   Semester,
   Course,
   UEHActivity,
-  DRLMainCriteria,
   DRLManualAdjustment,
   DRLSemesterData,
+  DRLMainCriteria,
+  DRLCriterionNode,
+  DRLSubCriteriaProgress,
   ScheduleBlock,
   GapTimeSlot
 } from '../types';
@@ -20,20 +22,16 @@ const activitiesData = activitiesRaw as UEHActivity[];
 
 export interface CriteriaProgress {
   id: number;
+  name: string;
   title: string;
+  shortName: string;
   currentPoints: number;
   maxPoints: number;
+  defaultPoints?: number;
   rawPoints: number;
   isCapped: boolean;
   excessPoints: number;
-  subCriteriaProgress: {
-    code: string;
-    title: string;
-    currentPoints: number;
-    maxPoints: number;
-    rawPoints: number;
-    isCapped: boolean;
-  }[];
+  subCriteriaProgress: DRLSubCriteriaProgress[];
 }
 
 interface AppContextType {
@@ -475,56 +473,93 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     let cappedCount = 0;
     const deficitMap: Record<string, number> = {};
 
+    const buildNodeProgress = (node: DRLCriterionNode): DRLSubCriteriaProgress => {
+      let raw = subPointsMap[node.id] || 0;
+
+      // Add any sub-allocations where alloc code starts with node.id + '.'
+      Object.keys(subPointsMap).forEach((code) => {
+        if (code !== node.id && code.startsWith(node.id + '.')) {
+          raw += subPointsMap[code];
+        }
+      });
+
+      // Điểm sàn mặc định UEH
+      if (node.isDefault) {
+        if (node.id === '1.1') raw += (basePoints.m1 ?? 15);
+        else if (node.id === '2.1') raw += (basePoints.m2 ?? 10);
+        else if (node.id === '3.1') raw += (basePoints.m3 ?? 5);
+        else if (node.id === '4.1') raw += (basePoints.m4 ?? 10);
+        else if (node.id === '5.1') raw += (basePoints.m5 ?? 10);
+        else if (node.points) raw += node.points;
+      }
+
+      // Add adjustments targeted to this specific subCriterion
+      const directAdjustments = manualAdjustmentsList
+        .filter(
+          (a) =>
+            a.subCriterionId === node.id ||
+            (a.subCriterionId && a.subCriterionId.startsWith(node.id + '.'))
+        )
+        .reduce((sum, a) => sum + a.points, 0);
+      raw += directAdjustments;
+
+      // Recurse children if any
+      const childrenProgress = node.children?.map(buildNodeProgress);
+      if (childrenProgress && childrenProgress.length > 0) {
+        const childrenSum = childrenProgress.reduce((sum, c) => sum + c.currentPoints, 0);
+        raw = Math.max(raw, childrenSum);
+      }
+
+      const maxPts =
+        node.maxPoints ??
+        (node.points && !node.isPenalty
+          ? node.points
+          : node.range
+          ? node.range[1]
+          : 10);
+      const minPts = node.minPoints ?? (node.isPenalty ? (node.maxPenalty ?? -15) : 0);
+
+      const capped = node.isPenalty
+        ? Math.max(minPts, Math.min(0, raw))
+        : Math.min(maxPts, Math.max(0, raw));
+
+      const isCapped = node.isPenalty ? raw <= minPts : raw >= maxPts;
+
+      return {
+        id: node.id,
+        code: node.id,
+        title: node.name,
+        currentPoints: capped,
+        maxPoints: maxPts,
+        minPoints: minPts,
+        rawPoints: raw,
+        isCapped,
+        isDefault: node.isDefault,
+        isPenalty: node.isPenalty,
+        range: node.range,
+        children: childrenProgress
+      };
+    };
+
     const criteriaList: CriteriaProgress[] = drlCriteriaData.map((mainCat) => {
+      const catId = typeof mainCat.id === 'string' ? parseInt(mainCat.id, 10) : mainCat.id;
       let mainRawSum = 0;
       let mainCappedSum = 0;
 
-      const subProgress = mainCat.subCriteria.map((sub) => {
-        let raw = subPointsMap[sub.code] || 0;
+      const subProgress = (mainCat.children || []).map(buildNodeProgress);
+      const subSum = subProgress.reduce((sum, s) => sum + s.currentPoints, 0);
+      const subRaw = subProgress.reduce((sum, s) => sum + s.rawPoints, 0);
 
-        // Điểm sàn mặc định UEH theo điều khoản từng mục:
-        // Mục 1: Sẵn 15đ (1.1)
-        // Mục 2: Sẵn 10đ (2.1)
-        // Mục 3: Sẵn 5đ (3.1)
-        // Mục 4: Sẵn 10đ (4.1)
-        // Mục 5: Sẵn 10đ (5.1)
-        if (sub.code === '1.1') raw += (basePoints.m1 ?? 15);
-        if (sub.code === '2.1') raw += (basePoints.m2 ?? 10);
-        if (sub.code === '3.1') raw += (basePoints.m3 ?? 5);
-        if (sub.code === '4.1') raw += (basePoints.m4 ?? 10);
-        if (sub.code === '5.1') raw += (basePoints.m5 ?? 10);
+      mainRawSum = subRaw;
+      mainCappedSum = subSum;
 
-        // Hỗ trợ mã tiêu chí đặc biệt / chi tiết
-        if (sub.code === '2.2' && subPointsMap['2.7.4.2']) {
-          raw += subPointsMap['2.7.4.2'];
-        }
-        if (sub.code === '3.1' && subPointsMap['3.4.2.2']) {
-          raw += subPointsMap['3.4.2.2'];
-        }
-
-        const capped = Math.min(raw, sub.maxPoints);
-        const isCapped = raw >= sub.maxPoints;
-
-        mainRawSum += raw;
-        mainCappedSum += capped;
-
-        return {
-          code: sub.code,
-          title: sub.title,
-          currentPoints: capped,
-          maxPoints: sub.maxPoints,
-          rawPoints: raw,
-          isCapped
-        };
-      });
-
-      // Thêm điểm điều chỉnh thủ công (+/-) cho mục này
-      const adjustmentsForCat = manualAdjustmentsList
-        .filter((a) => a.criterionId === mainCat.id)
+      // Add adjustments that are category-wide (without subCriterionId)
+      const catWideAdjustments = manualAdjustmentsList
+        .filter((a) => a.criterionId === catId && !a.subCriterionId)
         .reduce((sum, a) => sum + a.points, 0);
 
-      mainRawSum += adjustmentsForCat;
-      mainCappedSum = Math.max(0, Math.min(mainCat.maxPoints, mainCappedSum + adjustmentsForCat));
+      mainRawSum += catWideAdjustments;
+      mainCappedSum = Math.max(0, Math.min(mainCat.maxPoints, mainCappedSum + catWideAdjustments));
 
       const isCapped = mainCappedSum >= mainCat.maxPoints;
       const excessPoints = Math.max(0, Math.round((mainRawSum - mainCat.maxPoints) * 10) / 10);
@@ -534,13 +569,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       }
 
       totalCappedSum += mainCappedSum;
-      deficitMap[mainCat.id.toString()] = Math.max(0, mainCat.maxPoints - mainCappedSum);
+      deficitMap[catId.toString()] = Math.max(0, mainCat.maxPoints - mainCappedSum);
 
       return {
-        id: mainCat.id,
-        title: mainCat.title,
+        id: catId,
+        name: mainCat.name,
+        title: mainCat.name,
+        shortName: mainCat.shortName || mainCat.name,
         currentPoints: mainCappedSum,
         maxPoints: mainCat.maxPoints,
+        defaultPoints: mainCat.defaultPoints,
         rawPoints: mainRawSum,
         isCapped,
         excessPoints,
