@@ -4,7 +4,6 @@ import {
   Brain,
   GraduationCap,
   Award,
-  Calendar,
   MessageSquare,
   ChevronLeft,
   ChevronRight,
@@ -50,12 +49,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       label: 'Điểm rèn luyện',
       shortLabel: 'ĐRL',
       icon: IconDRLMedal
-    },
-    {
-      id: 'schedule' as const,
-      label: 'Thời khóa biểu',
-      shortLabel: 'TKB',
-      icon: Calendar
     },
     {
       id: 'forum' as const,

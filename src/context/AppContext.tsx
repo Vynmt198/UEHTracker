@@ -8,13 +8,10 @@ import {
   DRLSemesterData,
   DRLMainCriteria,
   DRLCriterionNode,
-  DRLSubCriteriaProgress,
-  ScheduleBlock,
-  GapTimeSlot
+  DRLSubCriteriaProgress
 } from '../types';
 import drlCriteriaRaw from '../data/drlCriteria.json';
 import activitiesRaw from '../data/uehActivities.json';
-import { findValidGapTimes, timeToMinutes } from '../utils/scheduleMatcher';
 import { calculateCourseFinalScore, convertScore10ToUEH } from '../utils/gpaCalculator';
 
 const drlCriteriaData = drlCriteriaRaw as DRLMainCriteria[];
@@ -35,8 +32,8 @@ export interface CriteriaProgress {
 }
 
 interface AppContextType {
-  activeTab: 'planner' | 'gpa' | 'drl' | 'schedule' | 'forum';
-  setActiveTab: (tab: 'planner' | 'gpa' | 'drl' | 'schedule' | 'forum') => void;
+  activeTab: 'planner' | 'gpa' | 'drl' | 'forum';
+  setActiveTab: (tab: 'planner' | 'gpa' | 'drl' | 'forum') => void;
 
   // Profile
   profile: UserProfile;
@@ -79,18 +76,7 @@ interface AppContextType {
     rank: string;
   }[];
 
-  // Schedule
-  scheduleBlocks: ScheduleBlock[];
-  addScheduleBlock: (block: Omit<ScheduleBlock, 'id'>) => void;
-  deleteScheduleBlock: (id: string) => void;
-  validGapTimes: GapTimeSlot[];
   allActivities: UEHActivity[];
-  checkActivityScheduleConflict: (activity: UEHActivity) => {
-    hasConflict: boolean;
-    conflictingBlock?: ScheduleBlock;
-    isAlreadyInSchedule: boolean;
-  };
-  addActivityToSchedule: (activity: UEHActivity) => { success: boolean; message: string };
 }
 
 const defaultProfile: UserProfile = {
@@ -174,54 +160,6 @@ const defaultCourses: Course[] = [
   }
 ];
 
-const defaultScheduleBlocks: ScheduleBlock[] = [
-  {
-    id: 'sb-1',
-    dayOfWeek: 2, // Thứ 3
-    startTime: '07:30',
-    endTime: '11:45',
-    title: 'Toán ứng dụng trong Kinh tế (Lớp HP 26D1MAT501)',
-    location: 'B1.302 - Cơ sở B',
-    type: 'class'
-  },
-  {
-    id: 'sb-2',
-    dayOfWeek: 2, // Thứ 3
-    startTime: '13:00',
-    endTime: '16:15',
-    title: 'Kinh tế vi mô (Lớp HP 26D1ECO502)',
-    location: 'B1.205 - Cơ sở B',
-    type: 'class'
-  },
-  {
-    id: 'sb-3',
-    dayOfWeek: 3, // Thứ 4
-    startTime: '08:00',
-    endTime: '11:15',
-    title: 'Triết học Mác - Lênin',
-    location: 'A.103 - Cơ sở A',
-    type: 'class'
-  },
-  {
-    id: 'sb-4',
-    dayOfWeek: 4, // Thứ 5
-    startTime: '13:30',
-    endTime: '17:00',
-    title: 'Làm việc nhóm BTL & Tự học tại Thư viện Smart Library',
-    location: 'Cơ sở B - Tầng 6',
-    type: 'personal'
-  },
-  {
-    id: 'sb-5',
-    dayOfWeek: 5, // Thứ 6
-    startTime: '08:00',
-    endTime: '11:30',
-    title: 'Tiếng Anh thương mại BEC 1',
-    location: 'B2.102 - Cơ sở B',
-    type: 'class'
-  }
-];
-
 const DEFAULT_BASE_POINTS = { m1: 15, m2: 10, m3: 5, m4: 10, m5: 10 };
 
 const defaultDrlSemesters: Record<string, DRLSemesterData> = {
@@ -258,7 +196,7 @@ const defaultDrlSemesters: Record<string, DRLSemesterData> = {
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [activeTab, setActiveTab] = useState<'planner' | 'gpa' | 'drl' | 'schedule' | 'forum'>('planner');
+  const [activeTab, setActiveTab] = useState<'planner' | 'gpa' | 'drl' | 'forum'>('planner');
 
   // Load from localStorage or defaults
   const [profile, setProfile] = useState<UserProfile>(() => {
@@ -294,10 +232,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return current ? current.id : defaultSemesters[0]?.id || 'sem-2';
   });
 
-  const [scheduleBlocks, setScheduleBlocks] = useState<ScheduleBlock[]>(() => {
-    const saved = localStorage.getItem('ueh_tracker_schedule');
-    return saved ? JSON.parse(saved) : defaultScheduleBlocks;
-  });
+  // Profile management
+  const updateProfile = (updated: Partial<UserProfile>) => {
+    setProfile((prev) => ({ ...prev, ...updated }));
+  };
 
   // Derived properties for active DRL semester
   const activeDrlSemester = drlSemesters[currentDrlSemesterId] || {
@@ -336,15 +274,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('ueh_tracker_drl_adjustments', JSON.stringify(manualAdjustments));
   }, [manualAdjustments]);
 
-  useEffect(() => {
-    localStorage.setItem('ueh_tracker_schedule', JSON.stringify(scheduleBlocks));
-  }, [scheduleBlocks]);
-
-  // Profile management
-  const updateProfile = (updated: Partial<UserProfile>) => {
-    setProfile((prev) => ({ ...prev, ...updated }));
-  };
-
   const resetAllData = () => {
     localStorage.clear();
     setProfile({ ...defaultProfile, isOnboarded: false });
@@ -352,7 +281,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setCourses(defaultCourses);
     setDrlSemesters(defaultDrlSemesters);
     setCurrentDrlSemesterId('sem-2');
-    setScheduleBlocks(defaultScheduleBlocks);
     setSelectedSemesterId('sem-2');
   };
 
@@ -687,27 +615,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       };
     });
 
-    // Schedule block toggle
-    const currentList = drlSemesters[targetId]?.completedActivityIds || [];
-    const exists = currentList.includes(activityId);
-    if (exists) {
-      setScheduleBlocks((sBlocks) => sBlocks.filter((b) => b.activityId !== activityId));
-    } else {
-      const act = activitiesData.find((a) => a.id === activityId);
-      if (act) {
-        const newBlock: ScheduleBlock = {
-          id: `sb-act-${Date.now()}`,
-          dayOfWeek: act.dayOfWeek,
-          startTime: act.startTime,
-          endTime: act.endTime,
-          title: `[ĐRL] ${act.title}`,
-          location: act.location,
-          type: 'activity',
-          activityId: act.id
-        };
-        setScheduleBlocks((sBlocks) => [...sBlocks, newBlock]);
-      }
-    }
   };
 
   const addManualAdjustment = (
@@ -772,63 +679,6 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     });
   };
 
-  // Schedule management
-  const addScheduleBlock = (blockData: Omit<ScheduleBlock, 'id'>) => {
-    const newBlock: ScheduleBlock = {
-      ...blockData,
-      id: `sb-${Date.now()}`
-    };
-    setScheduleBlocks((prev) => [...prev, newBlock]);
-  };
-
-  const deleteScheduleBlock = (id: string) => {
-    setScheduleBlocks((prev) => prev.filter((b) => b.id !== id));
-  };
-
-  const validGapTimes = findValidGapTimes(scheduleBlocks);
-
-  const checkActivityScheduleConflict = (activity: UEHActivity) => {
-    const isAlreadyInSchedule = scheduleBlocks.some((b) => b.activityId === activity.id);
-    const actStart = timeToMinutes(activity.startTime);
-    const actEnd = timeToMinutes(activity.endTime);
-
-    const conflictingBlock = scheduleBlocks.find((b) => {
-      if (b.dayOfWeek !== activity.dayOfWeek) return false;
-      const bStart = timeToMinutes(b.startTime);
-      const bEnd = timeToMinutes(b.endTime);
-      return actStart < bEnd && actEnd > bStart;
-    });
-
-    return {
-      hasConflict: !!conflictingBlock && !isAlreadyInSchedule,
-      conflictingBlock,
-      isAlreadyInSchedule
-    };
-  };
-
-  const addActivityToSchedule = (activity: UEHActivity) => {
-    const check = checkActivityScheduleConflict(activity);
-    if (check.isAlreadyInSchedule) {
-      return { success: false, message: 'Hoạt động đã có trong TKB của bạn!' };
-    }
-    if (check.hasConflict && check.conflictingBlock) {
-      return {
-        success: false,
-        message: `Trùng giờ với "${check.conflictingBlock.title}" (${check.conflictingBlock.startTime} - ${check.conflictingBlock.endTime})`
-      };
-    }
-    addScheduleBlock({
-      title: activity.title,
-      dayOfWeek: activity.dayOfWeek,
-      startTime: activity.startTime,
-      endTime: activity.endTime,
-      location: activity.location,
-      type: 'activity',
-      activityId: activity.id
-    });
-    return { success: true, message: `Đã thêm vào TKB (Thứ ${activity.dayOfWeek === 7 ? 'CN' : activity.dayOfWeek + 1}, ${activity.startTime} - ${activity.endTime})!` };
-  };
-
   return (
     <AppContext.Provider
       value={{
@@ -846,25 +696,17 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         addCourse,
         updateCourse,
         deleteCourse,
-        // DRL
         currentDrlSemesterId,
         setCurrentDrlSemesterId,
         drlSemesters,
-        registeredActivityIds,
+        registeredActivityIds: drlSemesters[currentDrlSemesterId]?.completedActivityIds || [],
         toggleActivityRegistration,
-        manualAdjustments,
+        manualAdjustments: drlSemesters[currentDrlSemesterId]?.manualAdjustments || [],
         addManualAdjustment,
         deleteManualAdjustment,
         getDRLProgress,
         getAllSemestersDRL,
-        // Schedule
-        scheduleBlocks,
-        addScheduleBlock,
-        deleteScheduleBlock,
-        validGapTimes,
-        allActivities: activitiesData,
-        checkActivityScheduleConflict,
-        addActivityToSchedule
+        allActivities: activitiesData
       }}
     >
       {children}

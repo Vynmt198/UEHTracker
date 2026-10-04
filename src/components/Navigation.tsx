@@ -4,7 +4,6 @@ import {
   Brain,
   GraduationCap,
   Award,
-  Calendar,
   MessageSquare,
   User,
   LogOut,
@@ -86,17 +85,6 @@ export const Navigation: React.FC<{ onOpenOnboarding: () => void }> = ({ onOpenO
               <span>Điểm rèn luyện</span>
             </button>
 
-            <button
-              onClick={() => setActiveTab('schedule')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
-                activeTab === 'schedule'
-                  ? 'bg-slate-100 text-slate-900 font-semibold'
-                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
-              }`}
-            >
-              <Calendar className="w-4 h-4 text-slate-500" />
-              <span>Smart Schedule</span>
-            </button>
 
             <button
               onClick={() => setActiveTab('forum')}
@@ -225,17 +213,7 @@ export const Navigation: React.FC<{ onOpenOnboarding: () => void }> = ({ onOpenO
           <span>ĐRL</span>
         </button>
 
-        <button
-          onClick={() => setActiveTab('schedule')}
-          className={`px-2.5 py-1.5 rounded-lg font-medium shrink-0 flex items-center gap-1 ${
-            activeTab === 'schedule'
-              ? 'bg-slate-900 text-white font-semibold'
-              : 'text-slate-600 hover:bg-slate-50'
-          }`}
-        >
-          <Calendar className="w-3.5 h-3.5" />
-          <span>Lịch</span>
-        </button>
+
 
         <button
           onClick={() => setActiveTab('forum')}

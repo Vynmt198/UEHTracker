@@ -145,33 +145,3 @@ export interface DRLSemesterData {
   totalScore: number;
   rank: 'Kém' | 'Yếu' | 'Trung bình' | 'Khá' | 'Tốt' | 'Xuất sắc';
 }
-
-export interface ScheduleBlock {
-  id: string;
-  dayOfWeek: number; // 1: Thứ 2, 2: Thứ 3, ..., 7: Chủ Nhật
-  startTime: string; // "07:30"
-  endTime: string; // "11:45"
-  title: string;
-  location?: string;
-  type: 'class' | 'personal' | 'activity' | 'part_time';
-  activityId?: string; // liên kết nếu là hoạt động ĐRL
-}
-
-export interface GapTimeSlot {
-  id: string;
-  dayOfWeek: number;
-  startTime: string;
-  endTime: string;
-  durationMinutes: number;
-}
-
-export type MatchingStrategy = 'faculty' | 'drl_deficit' | 'balanced';
-
-export interface MatchedActivity {
-  activity: UEHActivity;
-  gapSlot: GapTimeSlot;
-  matchScore: number;
-  reasons: string[];
-  facultyMatch: boolean;
-  pointsForDeficit: number;
-}

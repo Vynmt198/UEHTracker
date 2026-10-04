@@ -4,7 +4,6 @@ import { Sidebar } from './components/Sidebar';
 import { OnboardingModal } from './components/OnboardingModal';
 import { GPADashboard } from './components/gpa/GPADashboard';
 import { DRLModule } from './components/drl/DRLModule';
-import { ScheduleDashboard } from './components/schedule/ScheduleDashboard';
 import { SmartPlanner } from './components/planner/SmartPlanner';
 import { ForumPlaceholder } from './components/forum/ForumPlaceholder';
 import { GraduationCap } from 'lucide-react';
@@ -41,7 +40,6 @@ const MainLayout: React.FC = () => {
             {activeTab === 'planner' && <SmartPlanner isMainView={true} />}
             {activeTab === 'gpa' && <GPADashboard />}
             {activeTab === 'drl' && <DRLModule />}
-            {activeTab === 'schedule' && <ScheduleDashboard />}
             {activeTab === 'forum' && <ForumPlaceholder />}
           </div>
         </main>

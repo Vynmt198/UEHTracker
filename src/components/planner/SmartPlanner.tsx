@@ -29,9 +29,7 @@ import {
   IconResearchLab,
   IconCareerBag,
   IconSkillSpark,
-  IconNetworkFist,
-  IconScheduleAlert,
-  IconScheduleCalendar
+  IconNetworkFist
 } from '../common/EduIcons';
 
 type PlannerSimulatedState = 'auto' | 'freshman' | 'in_progress' | 'achieved';
@@ -49,65 +47,12 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
     registeredActivityIds,
     toggleActivityRegistration,
     getDRLProgress,
-    setActiveTab,
-    scheduleBlocks,
-    checkActivityScheduleConflict,
-    addActivityToSchedule
+    setActiveTab
   } = useApp();
 
   const [simulatedState, setSimulatedState] = useState<PlannerSimulatedState>('auto');
   const [selectedGoal, setSelectedGoal] = useState<SelfDevelopmentGoal>('scientific_research');
   const [facultyFilter, setFacultyFilter] = useState<string>(profile.faculty || 'Tất cả');
-  const [scheduleFeedback, setScheduleFeedback] = useState<{ message: string; type: 'success' | 'warning' } | null>(null);
-
-  const handleAddToSchedule = (activity: UEHActivity) => {
-    const result = addActivityToSchedule(activity);
-    setScheduleFeedback({
-      message: result.message,
-      type: result.success ? 'success' : 'warning'
-    });
-    setTimeout(() => setScheduleFeedback(null), 3500);
-  };
-
-  const renderScheduleButton = (act: UEHActivity) => {
-    const isScheduled = scheduleBlocks.some((b) => b.activityId === act.id);
-    const conflict = checkActivityScheduleConflict(act);
-
-    if (conflict.hasConflict && !isScheduled) {
-      return (
-        <div
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium bg-amber-50 border border-amber-200 text-amber-700 select-none shrink-0"
-          title={`Trùng lịch với: ${conflict.conflictingBlock?.title} (${conflict.conflictingBlock?.startTime}-${conflict.conflictingBlock?.endTime})`}
-        >
-          <IconScheduleAlert className="w-3.5 h-3.5 text-amber-500 shrink-0" />
-          <span>Trùng lịch</span>
-        </div>
-      );
-    }
-
-    if (isScheduled) {
-      return (
-        <div
-          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-medium bg-emerald-50 border border-emerald-200 text-emerald-700 select-none shrink-0"
-          title="Đã lưu trong Thời khóa biểu của bạn"
-        >
-          <Calendar className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-          <span>Đã vào TKB</span>
-        </div>
-      );
-    }
-
-    return (
-      <button
-        onClick={() => handleAddToSchedule(act)}
-        className="btn-interactive-outline shrink-0"
-        title={`Thứ ${act.dayOfWeek === 7 ? 'CN' : act.dayOfWeek + 1} (${act.startTime} - ${act.endTime})`}
-      >
-        <IconScheduleCalendar className="w-3.5 h-3.5 text-[#007D8C] shrink-0" />
-        <span>Thêm vào TKB</span>
-      </button>
-    );
-  };
 
   // Real data calculations
   const overallStats = calculateGPAStats(courses);
@@ -269,43 +214,23 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
             </p>
           </div>
 
-          {/* Profile & Schedule Helper Diagnostic */}
+          {/* Profile Diagnostic */}
           <div className="interactive-card-accent flex items-center justify-between">
             <div>
               <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
                 HỒ SƠ CỐ VẤN
               </div>
-              <div className="text-xs font-bold text-slate-900 mt-1 truncate max-w-[150px]">
+              <div className="text-xs font-bold text-slate-900 mt-1 truncate max-w-[180px]">
                 {profile.faculty}
               </div>
               <div className="text-[11px] text-slate-500">{profile.cohort} • {profile.major}</div>
             </div>
-            <button
-              onClick={() => setActiveTab('schedule')}
-              className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-700 bg-slate-50 hover:bg-[#49C8D6] hover:text-white border border-slate-200 transition-all shrink-0 shadow-xs"
-            >
-              Mở TKB
-            </button>
+            <div className="text-right">
+              <span className="text-[10px] px-2 py-0.5 rounded-full font-semibold bg-cyan-50 text-cyan-800 border border-cyan-200">
+                {profile.cohort}
+              </span>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* Schedule Action Toast Notification */}
-      {scheduleFeedback && (
-        <div
-          className={`p-3 rounded-xl text-xs font-medium flex items-center justify-between border ${
-            scheduleFeedback.type === 'success'
-              ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
-              : 'bg-amber-50 text-amber-800 border-amber-200'
-          } animate-in fade-in duration-200`}
-        >
-          <span>{scheduleFeedback.message}</span>
-          <button
-            onClick={() => setScheduleFeedback(null)}
-            className="p-0.5 text-slate-400 hover:text-slate-600"
-          >
-            <X className="w-3.5 h-3.5" />
-          </button>
         </div>
       )}
 
@@ -459,9 +384,6 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
               <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 overflow-hidden bg-white">
                 {freshmanActivities.map((act) => {
                   const isRegistered = registeredActivityIds.includes(act.id);
-                  const conflict = checkActivityScheduleConflict(act);
-                  const isScheduled = scheduleBlocks.some((b) => b.activityId === act.id);
-                  const isConflict = conflict.hasConflict && !isScheduled;
 
                   return (
                     <div
@@ -494,13 +416,9 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                         <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold px-2 py-0.5 rounded-full text-xs">
                           +{act.totalPoints}đ
                         </span>
-                        {renderScheduleButton(act)}
                         <button
                           onClick={() => toggleActivityRegistration(act.id)}
-                          className={`${isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'} ${
-                            isConflict && !isRegistered ? 'opacity-70 hover:opacity-100 transition-opacity' : ''
-                          }`}
-                          title={isConflict && !isRegistered ? 'Hoạt động này trùng với giờ học của bạn, cân nhắc sắp xếp lại TKB' : undefined}
+                          className={isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'}
                         >
                           <span>{isRegistered ? 'Đã đăng ký' : 'Đăng ký ngay'}</span>
                         </button>
@@ -602,9 +520,6 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
               <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 overflow-hidden bg-white">
                 {deficitActivities.map((act) => {
                   const isRegistered = registeredActivityIds.includes(act.id);
-                  const conflict = checkActivityScheduleConflict(act);
-                  const isScheduled = scheduleBlocks.some((b) => b.activityId === act.id);
-                  const isConflict = conflict.hasConflict && !isScheduled;
 
                   return (
                     <div
@@ -632,13 +547,9 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                         <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold px-2 py-0.5 rounded-full text-xs">
                           +{act.totalPoints}đ
                         </span>
-                        {renderScheduleButton(act)}
                         <button
                           onClick={() => toggleActivityRegistration(act.id)}
-                          className={`${isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'} ${
-                            isConflict && !isRegistered ? 'opacity-70 hover:opacity-100 transition-opacity' : ''
-                          }`}
-                          title={isConflict && !isRegistered ? 'Hoạt động này trùng với giờ học của bạn, cân nhắc sắp xếp lại TKB' : undefined}
+                          className={isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'}
                         >
                           <span>{isRegistered ? 'Đã đăng ký' : 'Đăng ký ngay'}</span>
                         </button>
@@ -736,9 +647,6 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                 ) : (
                   selfDevActivities.map((act) => {
                     const isRegistered = registeredActivityIds.includes(act.id);
-                    const conflict = checkActivityScheduleConflict(act);
-                    const isScheduled = scheduleBlocks.some((b) => b.activityId === act.id);
-                    const isConflict = conflict.hasConflict && !isScheduled;
 
                     return (
                       <div
@@ -770,13 +678,9 @@ export const SmartPlanner: React.FC<SmartPlannerProps> = ({ isMainView = false }
                           <span className="bg-emerald-50 text-emerald-600 border border-emerald-200 font-semibold px-2 py-0.5 rounded-full text-xs">
                             +{act.totalPoints}đ
                           </span>
-                          {renderScheduleButton(act)}
                           <button
                             onClick={() => toggleActivityRegistration(act.id)}
-                            className={`${isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'} ${
-                              isConflict && !isRegistered ? 'opacity-70 hover:opacity-100 transition-opacity' : ''
-                            }`}
-                            title={isConflict && !isRegistered ? 'Hoạt động này trùng với giờ học của bạn, cân nhắc sắp xếp lại TKB' : undefined}
+                            className={isRegistered ? 'btn-interactive-outline' : 'btn-interactive-primary'}
                           >
                             <span>{isRegistered ? 'Đã đăng ký' : 'Tham gia'}</span>
                           </button>
