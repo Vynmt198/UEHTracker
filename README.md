@@ -12,7 +12,8 @@
   <img src="https://img.shields.io/badge/React-19.3.0-61DAFB?style=flat-square&logo=react&logoColor=black" alt="React 19" />
   <img src="https://img.shields.io/badge/JavaScript-ESModules-F7DF1E?style=flat-square&logo=javascript&logoColor=black" alt="JavaScript" />
   <img src="https://img.shields.io/badge/Express-4.21-000000?style=flat-square&logo=express&logoColor=white" alt="Express" />
-  <img src="https://img.shields.io/badge/Prisma-5.22-2D3748?style=flat-square&logo=prisma&logoColor=white" alt="Prisma" />
+  <img src="https://img.shields.io/badge/Neon-Postgres%20Serverless-00E599?style=flat-square&logo=postgresql&logoColor=black" alt="Neon Postgres" />
+  <img src="https://img.shields.io/badge/Prisma-6.4-2D3748?style=flat-square&logo=prisma&logoColor=white" alt="Prisma" />
   <img src="https://img.shields.io/badge/Vite-8.3-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite" />
   <img src="https://img.shields.io/badge/TailwindCSS-3.4-38B2AC?style=flat-square&logo=tailwind-css&logoColor=white" alt="Tailwind CSS" />
   <img src="https://img.shields.io/badge/UEH-Standardized-005B96?style=flat-square" alt="UEH Standardized" />

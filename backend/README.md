@@ -46,7 +46,19 @@ backend/
 
 ## 🚀 Hướng Dẫn Khởi Chạy (Step-by-Step Setup)
 
-### 1. Khởi chạy Database PostgreSQL qua Docker
+### 1. Cơ sở dữ liệu PostgreSQL
+
+Dự án hỗ trợ 2 tùy chọn kết nối:
+
+#### 👉 Lựa chọn 1: Sử dụng Neon PostgreSQL Cloud (Khuyến nghị - Đã cấu hình sẵn)
+Dự án đã liên kết sẵn với **Neon Cloud PostgreSQL Serverless** (Project: `flat-band-12164942`, Branch: `production`).
+Bạn chỉ cần thiết lập file `.env` từ `.env.example`:
+```env
+DATABASE_URL="postgresql://neondb_owner:...@ep-...-pooler...neon.tech/neondb?sslmode=require"
+DIRECT_URL="postgresql://neondb_owner:...@ep-....neon.tech/neondb?sslmode=require"
+```
+
+#### 👉 Lựa chọn 2: Khởi chạy Database cục bộ qua Docker
 Tại thư mục `backend/`:
 ```bash
 docker compose up -d
