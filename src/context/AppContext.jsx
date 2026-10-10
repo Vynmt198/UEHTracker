@@ -569,6 +569,7 @@ export const AppProvider = ({ children }) => {
 
     const logout = () => {
         authApi.logout();
+        sessionStorage.removeItem('ueh_splash_seen');
         setUser(null);
         setSyncStatus('idle');
         setSyncMessage('');

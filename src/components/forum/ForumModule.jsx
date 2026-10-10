@@ -24,10 +24,9 @@ import { FORUM_CATEGORIES, SORT_OPTIONS } from './forumConstants';
 import { PostCard } from './PostCard';
 import { PostDetailView } from './PostDetailView';
 import { CreatePostModal } from './CreatePostModal';
-import { CloudSyncModal } from './../common/CloudSyncModal';
 
 export const ForumModule = () => {
-  const { user } = useApp();
+  const { user, logout } = useApp();
 
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +49,12 @@ export const ForumModule = () => {
   // Views & Modals
   const [selectedPostId, setSelectedPostId] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const handleRequireAuth = () => {
+    if (window.confirm('Bạn cần đăng nhập tài khoản để thực hiện thao tác này. Chuyển đến màn hình Đăng nhập ngay?')) {
+      logout();
+    }
+  };
 
   // Fetch posts from backend
   const fetchPosts = useCallback(async () => {
@@ -149,10 +153,9 @@ export const ForumModule = () => {
           postId={selectedPostId}
           onBack={() => setSelectedPostId(null)}
           currentUser={user}
-          onRequireAuth={() => setShowAuthModal(true)}
+          onRequireAuth={handleRequireAuth}
           onPostUpdated={handlePostUpdated}
         />
-        <CloudSyncModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} />
       </div>
     );
   }
@@ -434,12 +437,7 @@ export const ForumModule = () => {
         onClose={() => setShowCreateModal(false)}
         onPostCreated={handlePostCreated}
         currentUser={user}
-        onRequireAuth={() => setShowAuthModal(true)}
-      />
-
-      <CloudSyncModal
-        isOpen={showAuthModal}
-        onClose={() => setShowAuthModal(false)}
+        onRequireAuth={handleRequireAuth}
       />
     </div>
   );

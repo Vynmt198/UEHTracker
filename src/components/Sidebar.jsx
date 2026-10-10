@@ -1,12 +1,11 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, Cloud, GraduationCap, BookOpen, Award, MessageSquare } from 'lucide-react';
-import { CloudSyncModal } from './common/CloudSyncModal';
+import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, LogOut, LogIn, GraduationCap, BookOpen, Award, MessageSquare } from 'lucide-react';
+
 export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => {
-    const { activeTab, setActiveTab, profile, semesters, resetAllData, user, syncStatus, isSyncing, autoSyncState } = useApp();
+    const { activeTab, setActiveTab, profile, semesters, resetAllData, user, logout } = useApp();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
-    const [showCloudSync, setShowCloudSync] = useState(false);
     const navItems = [
         {
             id: 'planner',
@@ -39,6 +38,18 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
             resetAllData();
             setShowProfileMenu(false);
         }
+    };
+
+    const handleLogout = () => {
+        if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
+            logout();
+            setShowProfileMenu(false);
+        }
+    };
+
+    const handleLogin = () => {
+        logout();
+        setShowProfileMenu(false);
     };
     const NavContent = () => (<div className="flex flex-col h-full justify-between select-none">
       {/* Top Header & Brand */}
@@ -122,111 +133,131 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
         </nav>
       </div>
 
-      {/* Neon Cloud Sync Button */}
-      <div className="p-3 border-t border-slate-100">
-        <button
-          onClick={() => setShowCloudSync(true)}
-          className={`w-full flex items-center ${
-            isCollapsed ? 'justify-center p-2.5' : 'justify-between px-3 py-2.5'
-          } rounded-xl text-xs font-semibold transition-all duration-200 border ${
-            user 
-              ? 'bg-gradient-to-r from-emerald-50/80 to-[#E0F7FA]/50 hover:from-emerald-100/80 hover:to-[#E0F7FA]/80 text-[#0B2545] border-emerald-200 shadow-2xs' 
-              : 'bg-gradient-to-r from-slate-50 to-cyan-50/60 hover:from-cyan-50 hover:to-indigo-50/60 text-slate-800 border-slate-200/90 shadow-2xs'
-          }`}
-          title={isCollapsed ? (user ? 'Neon Cloud: Đã kết nối' : 'Đồng bộ Neon Cloud') : undefined}
-        >
-          <div className="flex items-center gap-2 min-w-0">
-            <Cloud className={`w-4 h-4 shrink-0 ${
-              user 
-                ? autoSyncState === 'saving' || autoSyncState === 'pending'
-                  ? 'text-sky-500 animate-pulse'
-                  : 'text-emerald-600' 
-                : 'text-[#49C8D6]'
-            } ${isSyncing ? 'animate-bounce' : ''}`} />
-            {!isCollapsed && (
-              <div className="text-left truncate">
-                <span className="block font-bold text-[#0B2545] leading-tight truncate">
-                  {user ? 'Neon Cloud' : 'Đồng bộ Cloud'}
-                </span>
-                <span className="block text-[10px] text-slate-500 leading-tight truncate">
-                  {user 
-                    ? autoSyncState === 'saving'
-                      ? 'Đang tự động lưu...'
-                      : autoSyncState === 'saved'
-                      ? 'Đã tự động lưu'
-                      : 'Đã kết nối • Auto-sync'
-                    : 'Đăng nhập / Backup'}
-                </span>
-              </div>
-            )}
-          </div>
-          {!isCollapsed && (
-            <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
-              user 
-                ? autoSyncState === 'saving'
-                  ? 'bg-sky-400 animate-ping'
-                  : 'bg-emerald-500 ring-2 ring-emerald-200 shadow-2xs' 
-                : 'bg-[#F2A900] ring-2 ring-amber-200'
-            }`} />
-          )}
-        </button>
-      </div>
-
-      {/* Bottom Profile Section */}
+      {/* Unified User Profile & Auth Section */}
       <div className="p-3 border-t border-slate-100 relative">
-        <div onClick={() => setShowProfileMenu(!showProfileMenu)} className={`flex items-center ${isCollapsed ? 'justify-center p-2' : 'p-2.5'} rounded-xl hover:bg-slate-100 cursor-pointer transition-colors group`}>
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0B2545] to-[#132E59] text-white flex items-center justify-center font-bold text-xs shrink-0 ring-2 ring-[#49C8D6]/30 group-hover:scale-105 transition-transform">
-            {profile.name ? profile.name.charAt(0) : 'U'}
+        <div 
+          onClick={() => setShowProfileMenu(!showProfileMenu)} 
+          className={`flex items-center ${isCollapsed ? 'justify-center p-2' : 'p-2.5'} rounded-xl hover:bg-slate-100/80 cursor-pointer transition-all group border border-transparent hover:border-slate-200/60`}
+        >
+          {/* Avatar with status indicator ring */}
+          <div className="relative shrink-0">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#0B2545] to-[#132E59] text-white flex items-center justify-center font-bold text-xs ring-2 ring-[#49C8D6]/30 group-hover:scale-105 transition-transform shadow-2xs">
+              {profile.name ? profile.name.charAt(0).toUpperCase() : (user?.profile?.fullName?.charAt(0).toUpperCase() || 'U')}
+            </div>
+            {/* Online / Logged-in dot indicator */}
+            <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white ${
+              user ? 'bg-emerald-500' : 'bg-slate-300'
+            }`} />
           </div>
 
-          {!isCollapsed && (<div className="ml-2.5 min-w-0 flex-1">
+          {!isCollapsed && (
+            <div className="ml-2.5 min-w-0 flex-1">
               <div className="text-xs font-bold text-[#0B2545] truncate">
-                {profile.name}
+                {profile.name || user?.profile?.fullName || 'Sinh viên UEH'}
               </div>
               <div className="text-[10px] text-slate-500 truncate font-mono">
-                MSSV: {profile.studentId || 'Chưa cập nhật'}
+                {profile.studentId ? `MSSV: ${profile.studentId}` : (user?.email || 'Chưa đăng nhập')}
               </div>
-            </div>)}
+            </div>
+          )}
+
+          {!isCollapsed && (
+            <div className="shrink-0 ml-1">
+              {user ? (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLogout();
+                  }}
+                  className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+                  title="Đăng xuất"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleLogin();
+                  }}
+                  className="p-1.5 text-slate-400 hover:text-[#0B2545] hover:bg-cyan-50 rounded-lg transition-colors"
+                  title="Đăng nhập"
+                >
+                  <LogIn className="w-4 h-4 text-[#0B2545]" />
+                </button>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Profile Dropdown Popup */}
-        {showProfileMenu && (<div className={`absolute ${isCollapsed ? 'left-full bottom-2 ml-2' : 'left-3 right-3 bottom-full mb-2'} w-64 bg-white rounded-2xl shadow-floating border border-slate-200/90 py-2 z-50 animate-in fade-in zoom-in-95 duration-150`}>
+        {showProfileMenu && (
+          <div className={`absolute ${isCollapsed ? 'left-full bottom-2 ml-2' : 'left-3 right-3 bottom-full mb-2'} w-64 bg-white rounded-2xl shadow-floating border border-slate-200/90 py-2 z-50 animate-in fade-in zoom-in-95 duration-150`}>
             <div className="px-3.5 py-2.5 border-b border-slate-100">
               <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Hồ sơ sinh viên UEH</p>
-              <p className="text-xs font-bold text-[#0B2545] truncate">{profile.name}</p>
+              <p className="text-xs font-bold text-[#0B2545] truncate">{profile.name || user?.profile?.fullName || 'Sinh viên UEH'}</p>
               <div className="flex items-center gap-1.5 mt-1">
-                <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#FEF7E6] text-[#B27B00]">
-                  {profile.cohort}
-                </span>
+                {profile.cohort && (
+                  <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#FEF7E6] text-[#B27B00]">
+                    {profile.cohort}
+                  </span>
+                )}
                 <span className="text-[10px] text-slate-500 font-mono truncate">
-                  {profile.studentId}
+                  {profile.studentId || user?.email || 'Chưa cập nhật MSSV'}
                 </span>
               </div>
             </div>
 
             <div className="p-1.5 space-y-0.5">
-              <button onClick={() => {
-                setShowProfileMenu(false);
-                onOpenOnboarding();
-            }} className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition-colors text-left">
+              <button 
+                onClick={() => {
+                  setShowProfileMenu(false);
+                  onOpenOnboarding();
+                }} 
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition-colors text-left"
+              >
                 <Sliders className="w-3.5 h-3.5 text-slate-500"/>
                 Cập nhật mục tiêu & hồ sơ
               </button>
 
-              <button onClick={() => {
-                setShowProfileMenu(false);
-                setShowCloudSync(true);
-            }} className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-cyan-50/50 rounded-xl transition-colors text-left">
-                <Cloud className="w-3.5 h-3.5 text-[#49C8D6]"/>
-                Đồng bộ Neon Cloud
-              </button>
-
-              <button onClick={handleReset} className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 rounded-xl transition-colors text-left">
+              <button 
+                onClick={handleReset} 
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 rounded-xl transition-colors text-left"
+              >
                 <RotateCcw className="w-3.5 h-3.5 text-amber-600"/>
                 Đặt lại dữ liệu mẫu
               </button>
+
+              <div className="my-1 border-t border-slate-100" />
+
+              {user ? (
+                <button 
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    handleLogout();
+                  }} 
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 rounded-xl transition-colors text-left"
+                >
+                  <LogOut className="w-3.5 h-3.5 text-rose-600"/>
+                  Đăng xuất tài khoản
+                </button>
+              ) : (
+                <button 
+                  onClick={() => {
+                    setShowProfileMenu(false);
+                    handleLogin();
+                  }} 
+                  className="w-full flex items-center gap-2 px-3 py-2 text-xs font-semibold text-[#0B2545] hover:bg-cyan-50 rounded-xl transition-colors text-left"
+                >
+                  <LogIn className="w-3.5 h-3.5 text-[#0B2545]"/>
+                  Đăng nhập / Đăng ký
+                </button>
+              )}
             </div>
-          </div>)}
+          </div>
+        )}
       </div>
     </div>);
     return (<>
@@ -247,17 +278,25 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
         </div>
 
         <div className="flex items-center gap-2">
-          <button 
-            onClick={() => setShowCloudSync(true)} 
-            className={`p-1.5 rounded-xl border transition-colors ${
-              user ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-slate-50 text-slate-600 border-slate-200'
-            }`}
-            title="Đồng bộ Neon Cloud"
-          >
-            <Cloud className="w-4 h-4 text-[#49C8D6]" />
-          </button>
-          <button onClick={onOpenOnboarding} className="w-7 h-7 rounded-full bg-gradient-to-br from-[#0B2545] to-[#132E59] text-white flex items-center justify-center text-xs font-bold shadow-2xs">
-            {profile.name ? profile.name.charAt(0) : 'U'}
+          {user ? (
+            <button 
+              onClick={handleLogout}
+              className="p-1.5 rounded-xl text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+              title="Đăng xuất"
+            >
+              <LogOut className="w-4 h-4" />
+            </button>
+          ) : (
+            <button 
+              onClick={handleLogin}
+              className="p-1.5 rounded-xl text-slate-400 hover:text-[#0B2545] hover:bg-cyan-50 transition-colors"
+              title="Đăng nhập"
+            >
+              <LogIn className="w-4 h-4 text-[#0B2545]" />
+            </button>
+          )}
+          <button onClick={onOpenOnboarding} className="w-7 h-7 rounded-full bg-gradient-to-br from-[#0B2545] to-[#132E59] text-white flex items-center justify-center text-xs font-bold shadow-2xs" title="Hồ sơ sinh viên">
+            {profile.name ? profile.name.charAt(0).toUpperCase() : 'U'}
           </button>
         </div>
       </div>
@@ -279,8 +318,5 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
       <aside className={`hidden md:flex flex-col fixed top-3 left-3 bottom-3 z-40 bg-white/95 backdrop-blur-xl border border-slate-200/90 rounded-2xl shadow-floating transition-all duration-300 ease-in-out ${isCollapsed ? 'w-20' : 'w-64'}`}>
         <NavContent />
       </aside>
-
-      {/* Cloud Sync Modal */}
-      <CloudSyncModal isOpen={showCloudSync} onClose={() => setShowCloudSync(false)} />
     </>);
 };
