@@ -462,7 +462,13 @@ export const AppProvider = ({ children }) => {
                 const cloudData = cloudCheck.data || cloudCheck;
                 if (cloudData.courses && cloudData.courses.length > 0) {
                     await syncFromCloud();
+                } else if (cloudData.semesters && cloudData.semesters.length > 0) {
+                    // Tài khoản đã có học kỳ nhưng chưa có môn (trạng thái sạch)
+                    setCourses([]);
+                    if (cloudData.semesters) setSemesters(cloudData.semesters);
+                    if (cloudData.profile) setProfile((p) => ({ ...p, ...cloudData.profile }));
                 } else {
+                    // Chưa có dữ liệu trên cloud -> đẩy dữ liệu hiện tại lên
                     await syncToCloud(true);
                 }
             } catch (syncErr) {
@@ -474,17 +480,87 @@ export const AppProvider = ({ children }) => {
         }
     };
 
-    const register = async (email, password, fullName) => {
+    const register = async (emailOrObj, passwordArg, fullNameArg) => {
+        let email, password, fullName, cohort, major, studentId;
+        if (typeof emailOrObj === 'object' && emailOrObj !== null) {
+            ({ email, password, fullName, cohort, major, studentId } = emailOrObj);
+        } else {
+            email = emailOrObj;
+            password = passwordArg;
+            fullName = fullNameArg;
+        }
+
         setIsSyncing(true);
         setSyncStatus('syncing');
-        setSyncMessage('Đang tạo tài khoản...');
+        setSyncMessage('Đang tạo tài khoản mới...');
         try {
-            const res = await authApi.register({ email, password, fullName });
+            const res = await authApi.register({ email, password, fullName, cohort, major, studentId });
             const authData = res.data || res;
             localStorage.setItem('ueh_tracker_token', authData.accessToken);
             localStorage.setItem('ueh_tracker_user', JSON.stringify(authData.user));
             setUser(authData.user);
-            await syncToCloud(true);
+
+            // 1. Dọn sạch LocalStorage môn học cũ của máy
+            localStorage.removeItem('ueh_tracker_courses');
+            localStorage.removeItem('ueh_tracker_semesters');
+            localStorage.removeItem('drl_semesters');
+            localStorage.removeItem('user_target_gpa');
+            localStorage.removeItem('ueh_tracker_activities');
+            localStorage.removeItem('ueh_tracker_drl_adjustments');
+
+            // 2. Thiết lập DỮ LIỆU TRẮNG HOÀN TOÀN (Clean state)
+            const cleanSemesters = [
+                { id: 'sem-1', name: 'Năm 1 - HK1', academicYear: '2025-2026', isCurrent: true }
+            ];
+            const cleanProfile = {
+                name: fullName || 'Sinh viên UEH',
+                studentId: studentId || '',
+                email: email,
+                cohort: cohort || 'K49',
+                faculty: 'Công nghệ thông tin kinh doanh',
+                major: major || 'Chuyên ngành tổng hợp',
+                goals: ['Học bổng', 'Tốt nghiệp đúng hạn', 'Tích lũy ĐRL'],
+                scholarshipTierTarget: 'Xuất sắc',
+                strengths: [],
+                studyHabits: '',
+                freeTimeSlots: [],
+                targetGPA: 3.60,
+                targetDRL: 85,
+                totalGraduationCredits: 125,
+                isOnboarded: true
+            };
+            const cleanDrlSemesters = {
+                'sem-1': {
+                    id: 'sem-1',
+                    name: 'Năm 1 - HK1',
+                    year: '2025-2026',
+                    basePoints: { m1: 15, m2: 10, m3: 5, m4: 10, m5: 10 },
+                    completedActivityIds: [],
+                    manualAdjustments: [],
+                    totalScore: 50,
+                    rank: 'Trung bình'
+                }
+            };
+
+            setCourses([]); // Bảng điểm trắng 100%
+            setSemesters(cleanSemesters);
+            setSelectedSemesterId('sem-1');
+            setProfile(cleanProfile);
+            setDrlSemesters(cleanDrlSemesters);
+            setCurrentDrlSemesterId('sem-1');
+
+            // 3. Đồng bộ trạng thái sạch lên Cloud (trống môn học)
+            try {
+                await syncApi.pushLocal({
+                    profile: cleanProfile,
+                    semesters: cleanSemesters,
+                    courses: [],
+                    drlRecords: []
+                });
+            } catch (err) {
+                console.warn('Initial clean state sync notice:', err);
+            }
+
             return authData.user;
         } finally {
             setIsSyncing(false);

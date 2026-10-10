@@ -48,8 +48,8 @@ apiClient.interceptors.response.use(
 
 // Module API Xác thực (Auth)
 export const authApi = {
-  async register({ email, password, fullName }) {
-    return apiClient.post('/auth/register', { email, password, fullName });
+  async register({ email, password, fullName, cohort, major, studentId }) {
+    return apiClient.post('/auth/register', { email, password, fullName, cohort, major, studentId });
   },
 
   async login({ email, password }) {

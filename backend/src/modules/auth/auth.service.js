@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import prisma from '../../database/prisma.js';
 
 export class AuthService {
-  async register({ email, password, fullName, studentId, cohort }) {
+  async register({ email, password, fullName, studentId, cohort, major }) {
     const cleanEmail = email.toLowerCase().trim();
     const existing = await prisma.user.findUnique({
       where: { email: cleanEmail },
@@ -27,6 +27,7 @@ export class AuthService {
             fullName: fullName.trim(),
             studentId: studentId?.trim(),
             cohort: cohort?.trim(),
+            major: major?.trim(),
           },
         },
       },

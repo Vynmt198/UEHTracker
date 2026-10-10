@@ -2,6 +2,7 @@ import React, { useState, useEffect, Suspense, lazy } from 'react';
 import { useApp } from './context/AppContext';
 import { Sidebar } from './components/Sidebar';
 import { OnboardingModal } from './components/OnboardingModal';
+import AuthHomeView from './components/auth/AuthHomeView';
 import { Loader2 } from 'lucide-react';
 
 // Code Splitting & Dynamic Imports for large screens
@@ -97,6 +98,28 @@ const MainLayout = () => {
 };
 
 export const App = () => {
+  const { user } = useApp();
+  const [hasCompletedSplash, setHasCompletedSplash] = useState(() => {
+    return Boolean(localStorage.getItem('ueh_tracker_token') || sessionStorage.getItem('ueh_splash_seen'));
+  });
+
+  useEffect(() => {
+    if (!user && !sessionStorage.getItem('ueh_splash_seen')) {
+      setHasCompletedSplash(false);
+    }
+  }, [user]);
+
+  if (!hasCompletedSplash && !user) {
+    return (
+      <AuthHomeView
+        onLoginSuccess={() => {
+          sessionStorage.setItem('ueh_splash_seen', 'true');
+          setHasCompletedSplash(true);
+        }}
+      />
+    );
+  }
+
   return <MainLayout />;
 };
 

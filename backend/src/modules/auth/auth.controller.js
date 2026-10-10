@@ -3,7 +3,7 @@ import authService from './auth.service.js';
 export class AuthController {
   async register(req, res, next) {
     try {
-      const { email, password, fullName, studentId, cohort } = req.body;
+      const { email, password, fullName, studentId, cohort, major } = req.body;
       if (!email || !password || !fullName) {
         return res.status(400).json({
           statusCode: 400,
@@ -11,7 +11,7 @@ export class AuthController {
           message: 'Vui lòng cung cấp đầy đủ email, mật khẩu và họ tên',
         });
       }
-      const result = await authService.register({ email, password, fullName, studentId, cohort });
+      const result = await authService.register({ email, password, fullName, studentId, cohort, major });
       res.status(201).json({
         statusCode: 201,
         success: true,

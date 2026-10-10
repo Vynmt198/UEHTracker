@@ -591,12 +591,17 @@ export const GPADashboard = () => {
                             </div>
 
                             {semesterCourses.length === 0 ? (
-                                <div className="text-center py-12 px-4 border border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center">
+                                <div className="text-center py-12 px-4 border border-dashed border-slate-200 rounded-2xl flex flex-col items-center justify-center bg-white/60">
                                     <Mascot pose="puzzled" size="md"/>
-                                    <p className="mt-3 text-xs font-semibold text-slate-700">Chưa có môn học nào trong {currentSemester?.name}</p>
-                                    <button onClick={() => setShowCourseAddModal(true)} className="btn-interactive-primary mt-3 text-xs font-bold px-3.5 py-1.5">
+                                    <p className="mt-3 text-xs font-semibold text-slate-700">
+                                        Chưa có môn học nào trong học kỳ này.
+                                    </p>
+                                    <p className="text-[11px] text-slate-400 mt-0.5">
+                                        Bấm <strong className="text-[#0B2545] font-bold">[+ Thêm môn học]</strong> để bắt đầu lộ trình của bạn!
+                                    </p>
+                                    <button onClick={() => setShowCourseAddModal(true)} className="btn-interactive-gold mt-4 text-xs font-bold px-4 py-2">
                                         <Plus className="w-3.5 h-3.5"/>
-                                        <span>Thêm môn học ngay</span>
+                                        <span>Thêm môn học</span>
                                     </button>
                                 </div>
                             ) : (
