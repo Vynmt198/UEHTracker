@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { GraduationCap, Award, User, LogOut, RotateCcw, Sliders, ChevronDown } from 'lucide-react';
-import { IconAcademicCap, IconGPABook, IconDRLMedal, IconForumChat } from './common/EduIcons';
+import { GraduationCap, BookOpen, Award, MessageSquare, User, LogOut, RotateCcw, Sliders, ChevronDown } from 'lucide-react';
 export const Navigation = ({ onOpenOnboarding }) => {
     const { activeTab, setActiveTab, profile, semesters, resetAllData } = useApp();
     const [showDropdown, setShowDropdown] = useState(false);
@@ -32,20 +31,20 @@ export const Navigation = ({ onOpenOnboarding }) => {
             <button onClick={() => setActiveTab('planner')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${activeTab === 'planner'
             ? 'bg-slate-100 text-slate-900 font-semibold'
             : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'}`}>
-              <IconAcademicCap className="w-4 h-4 text-[#49C8D6]"/>
+              <GraduationCap className="w-4 h-4 text-[#49C8D6]"/>
               <span>Smart Planner</span>
             </button>
             <button onClick={() => setActiveTab('gpa')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${activeTab === 'gpa'
             ? 'bg-slate-100 text-slate-900 font-semibold'
             : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'}`}>
-              <IconGPABook className="w-4 h-4 text-[#49C8D6]"/>
+              <BookOpen className="w-4 h-4 text-[#49C8D6]"/>
               <span>GPA</span>
             </button>
 
             <button onClick={() => setActiveTab('drl')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${activeTab === 'drl'
             ? 'bg-slate-100 text-slate-900 font-semibold'
             : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'}`}>
-              <IconDRLMedal className="w-4 h-4 text-[#49C8D6]"/>
+              <Award className="w-4 h-4 text-[#49C8D6]"/>
               <span>Điểm rèn luyện</span>
             </button>
 
@@ -53,7 +52,7 @@ export const Navigation = ({ onOpenOnboarding }) => {
             <button onClick={() => setActiveTab('forum')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors relative ${activeTab === 'forum'
             ? 'bg-slate-100 text-slate-900 font-semibold'
             : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>
-              <IconForumChat className="w-4 h-4 text-[#49C8D6]"/>
+              <MessageSquare className="w-4 h-4 text-[#49C8D6]"/>
               <span>Diễn đàn</span>
               <span className="ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
                 Coming Soon

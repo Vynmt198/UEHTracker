@@ -5,22 +5,25 @@ import { CourseGradeModal } from './CourseGradeModal';
 import { SemesterModal } from './SemesterModal';
 import { CourseAddModal } from './CourseAddModal';
 import { Mascot } from '../common/Mascot';
-import { GraduationCap, Plus, BookOpen, Target, Edit3, X, Trash2, TrendingUp, Award } from 'lucide-react';
 import { 
-    IconAcademicCap, 
-    IconGPABook, 
-    IconDRLMedal, 
-    IconTrophy, 
-    IconEditPen, 
-    IconMilestone, 
-    IconTargetAim, 
-    IconCheckShield, 
-    IconProgressRing, 
-    IconQuoteMark, 
-    IconCompass, 
-    IconCareerBag, 
-    IconSkillSpark 
-} from '../common/EduIcons';
+    GraduationCap, 
+    Plus, 
+    BookOpen, 
+    Target, 
+    Edit3, 
+    X, 
+    Trash2, 
+    TrendingUp, 
+    Award,
+    Trophy,
+    Sparkles,
+    ShieldCheck,
+    CheckCircle2,
+    Clock,
+    Quote,
+    Compass,
+    Briefcase
+} from 'lucide-react';
 
 export const GPADashboard = () => {
     const { profile, updateProfile, semesters, selectedSemesterId, setSelectedSemesterId, addSemester, deleteSemester, courses, addCourse, updateCourse, deleteCourse } = useApp();
@@ -54,11 +57,11 @@ export const GPADashboard = () => {
 
     // Dynamic Title Badge based on GPA
     const getGPABadge = (gpa) => {
-        if (!gpa || gpa <= 0) return { label: 'Khởi đầu học kỳ', icon: IconAcademicCap, color: 'bg-slate-100 text-slate-700 border-slate-200' };
-        if (gpa >= 3.6) return { label: 'Học bổng Xuất sắc UEH', icon: IconTrophy, color: 'bg-[#FEF7E6] text-[#B27B00] border-[#F2A900]/50 shadow-xs' };
-        if (gpa >= 3.2) return { label: 'Hạng Học lực Giỏi', icon: IconSkillSpark, color: 'bg-emerald-50 text-emerald-800 border-emerald-300 shadow-xs' };
-        if (gpa >= 2.5) return { label: 'Tiến độ Vững vàng', icon: IconCheckShield, color: 'bg-cyan-50 text-[#0c727d] border-cyan-200' };
-        return { label: 'Cần Bứt phá Điểm số', icon: IconTargetAim, color: 'bg-amber-50 text-amber-800 border-amber-200' };
+        if (!gpa || gpa <= 0) return { label: 'Khởi đầu học kỳ', icon: GraduationCap, color: 'bg-slate-100 text-slate-700 border-slate-200' };
+        if (gpa >= 3.6) return { label: 'Học bổng Xuất sắc UEH', icon: Trophy, color: 'bg-[#FEF7E6] text-[#B27B00] border-[#F2A900]/50 shadow-xs' };
+        if (gpa >= 3.2) return { label: 'Hạng Học lực Giỏi', icon: Sparkles, color: 'bg-emerald-50 text-emerald-800 border-emerald-300 shadow-xs' };
+        if (gpa >= 2.5) return { label: 'Tiến độ Vững vàng', icon: ShieldCheck, color: 'bg-cyan-50 text-[#0c727d] border-cyan-200' };
+        return { label: 'Cần Bứt phá Điểm số', icon: Target, color: 'bg-amber-50 text-amber-800 border-amber-200' };
     };
 
     const gpaBadge = getGPABadge(overallStats.actualGPA4);
@@ -87,8 +90,8 @@ export const GPADashboard = () => {
         return { name: s.name, gpa: sStats.actualGPA4 };
     });
 
-    // Milestone SVG icon suite map
-    const milestoneIconList = [IconGPABook, IconAcademicCap, IconTargetAim, IconCompass, IconCareerBag, IconTrophy, IconCheckShield];
+    // Milestone icon suite map
+    const milestoneIconList = [BookOpen, GraduationCap, Target, Compass, Briefcase, Trophy, ShieldCheck];
 
     const handleSaveComponents = (courseId, updatedComponents) => {
         updateCourse(courseId, { components: updatedComponents });
@@ -257,9 +260,9 @@ export const GPADashboard = () => {
                             </div>
                         </div>
 
-                        {/* Bottom: Student Cheer Quote with Custom Quote Icon */}
+                        {/* Bottom: Student Cheer Quote with Quote Icon */}
                         <div className="pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs text-slate-600 font-medium">
-                            <IconQuoteMark className="w-4 h-4 text-[#49C8D6] shrink-0" />
+                            <Quote className="w-4 h-4 text-[#49C8D6] shrink-0" />
                             <span className="truncate italic">"{getMotivationalQuote()}"</span>
                         </div>
                     </div>
@@ -509,9 +512,9 @@ export const GPADashboard = () => {
                                                         : 'bg-slate-100 text-slate-600 border-slate-200'
                                                 }`}>
                                                     {isCompleted ? (
-                                                        <IconCheckShield className="w-3 h-3 text-emerald-600 shrink-0" />
+                                                        <CheckCircle2 className="w-3 h-3 text-emerald-600 shrink-0" />
                                                     ) : isSelected ? (
-                                                        <IconProgressRing className="w-3 h-3 text-[#087F8C] shrink-0" />
+                                                        <Clock className="w-3 h-3 text-[#087F8C] shrink-0" />
                                                     ) : (
                                                         <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
                                                     )}
@@ -686,7 +689,7 @@ export const GPADashboard = () => {
                                                             className="group/btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200/90 hover:bg-[#49C8D6] hover:text-white hover:border-[#49C8D6] hover:shadow-xs hover:scale-105 active:scale-95 transition-all duration-200"
                                                             title="Nhập điểm thành phần"
                                                         >
-                                                            <IconEditPen className="w-3.5 h-3.5 text-slate-500 group-hover/btn:text-white transition-colors" />
+                                                            <Edit3 className="w-3.5 h-3.5 text-slate-500 group-hover/btn:text-white transition-colors" />
                                                             <span>Điểm</span>
                                                         </button>
 

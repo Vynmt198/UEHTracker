@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, Cloud } from 'lucide-react';
-import { IconAcademicCap, IconGPABook, IconDRLMedal, IconForumChat } from './common/EduIcons';
+import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, Cloud, GraduationCap, BookOpen, Award, MessageSquare } from 'lucide-react';
 import { CloudSyncModal } from './common/CloudSyncModal';
 export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => {
     const { activeTab, setActiveTab, profile, semesters, resetAllData, user, syncStatus, isSyncing, autoSyncState } = useApp();
@@ -13,25 +12,25 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
             id: 'planner',
             label: 'Smart Planner',
             shortLabel: 'Planner',
-            icon: IconAcademicCap
+            icon: GraduationCap
         },
         {
             id: 'gpa',
             label: 'Quản lý GPA',
             shortLabel: 'GPA',
-            icon: IconGPABook
+            icon: BookOpen
         },
         {
             id: 'drl',
             label: 'Điểm rèn luyện',
             shortLabel: 'ĐRL',
-            icon: IconDRLMedal
+            icon: Award
         },
         {
             id: 'forum',
             label: 'Diễn đàn UEH',
             shortLabel: 'Diễn đàn',
-            icon: IconForumChat,
+            icon: MessageSquare,
             badge: 'Mới'
         }
     ];

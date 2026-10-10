@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { User, X, Check } from 'lucide-react';
+import { User, X, Check, ArrowRight } from 'lucide-react';
 import { Mascot } from './common/Mascot';
 import { UEH_FACULTIES, MAJORS_BY_FACULTY } from '../data/uehFaculties';
 export const OnboardingModal = ({ isOpen, onClose }) => {
@@ -55,14 +55,9 @@ export const OnboardingModal = ({ isOpen, onClose }) => {
               <strong className="text-slate-900 font-semibold">{formData.major}</strong>
             </div>
           </div>
-          <button onClick={handleCloseModal} className="btn-uiverse-fly mt-6 w-full py-2.5 px-4 text-xs font-semibold shadow-xs">
-            <div className="svg-wrapper shrink-0">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
-                <path fill="none" d="M0 0h24v24H0z"></path>
-                <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z"></path>
-              </svg>
-            </div>
-            <span>Bắt đầu cùng Kipo ngay 🚀</span>
+          <button onClick={handleCloseModal} className="btn-interactive-navy mt-6 w-full py-2.5 px-4 text-xs font-semibold shadow-xs flex items-center justify-center gap-2">
+            <span>Bắt đầu khám phá ngay</span>
+            <ArrowRight className="w-4 h-4 text-[#49C8D6]" />
           </button>
         </div>
       </div>);

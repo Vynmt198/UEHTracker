@@ -289,7 +289,7 @@ GPA-UEH/
 │       ├── Sidebar.jsx          # Thanh điều hướng đóng mở
 │       ├── Navigation.jsx       # Thanh điều hướng header
 │       ├── OnboardingModal.jsx  # Modal khảo sát hồ sơ tân sinh viên
-│       ├── common/              # EduIcons.jsx, Mascot.jsx, PrimaryButton.jsx
+│       ├── common/              # CloudSyncModal.jsx, Mascot.jsx, PrimaryButton.jsx
 │       ├── gpa/                 # GPADashboard, CourseGradeModal, CourseAddModal...
 │       ├── drl/                 # DRLModule, DRLOverview, DrlCriteriaTree...
 │       ├── planner/             # SmartPlanner (3 Sub-tabs)

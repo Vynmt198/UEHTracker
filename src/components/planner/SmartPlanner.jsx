@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { calculateGPAStats, convertScore10ToUEH, evaluateScholarship } from '../../utils/gpaCalculator';
-import { Calendar, Clock, MapPin, ArrowRight, Filter, Sliders, X } from 'lucide-react';
+import { Calendar, Clock, MapPin, ArrowRight, Filter, Sliders, X, GraduationCap, Lightbulb, Target, Compass, Sparkles } from 'lucide-react';
 import { Mascot } from '../common/Mascot';
-import { IconAcademicCap } from '../common/EduIcons';
 import { UEH_FACULTIES } from '../../data/uehFaculties';
 export const SmartPlanner = ({ isMainView = false }) => {
     const { profile, courses, updateCourse, allActivities, registeredActivityIds, toggleActivityRegistration, getDRLProgress, setActiveTab, selectedSemesterId } = useApp();
@@ -224,7 +223,7 @@ export const SmartPlanner = ({ isMainView = false }) => {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0B2545] to-[#132E59] text-white flex items-center justify-center shrink-0 ring-2 ring-[#49C8D6]/30 shadow-2xs">
-              <IconAcademicCap className="w-5 h-5 text-[#49C8D6]"/>
+              <GraduationCap className="w-5 h-5 text-[#49C8D6]"/>
             </div>
             <div>
               <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#49C8D6]">
@@ -350,7 +349,7 @@ export const SmartPlanner = ({ isMainView = false }) => {
           <details className="group bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden" open={!isGpaOnTrack}>
             <summary className="p-3 cursor-pointer flex items-center justify-between select-none hover:bg-slate-50/80 transition-colors">
               <div className="flex items-center gap-2">
-                <span className="text-sm">💡</span>
+                <Lightbulb className="w-4 h-4 text-amber-500 shrink-0"/>
                 <span className="text-xs font-semibold text-slate-900">
                   {isGpaOnTrack
                     ? 'GPA trong ngưỡng an toàn mục tiêu'
@@ -464,7 +463,7 @@ export const SmartPlanner = ({ isMainView = false }) => {
           <details className="group bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden" open={!isDrlOnTrack}>
             <summary className="p-3 cursor-pointer flex items-center justify-between select-none hover:bg-slate-50/80 transition-colors">
               <div className="flex items-center gap-2">
-                <span className="text-sm">🎯</span>
+                <Target className="w-4 h-4 text-[#49C8D6] shrink-0"/>
                 <span className="text-xs font-semibold text-slate-900">
                   {isDrlOnTrack
                     ? 'Điểm rèn luyện đã đạt mục tiêu'
@@ -672,7 +671,7 @@ export const SmartPlanner = ({ isMainView = false }) => {
           <details className="group bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden">
             <summary className="p-3 cursor-pointer flex items-center justify-between select-none hover:bg-slate-50/80 transition-colors">
               <div className="flex items-center gap-2">
-                <span className="text-sm">🚀</span>
+                <Compass className="w-4 h-4 text-[#49C8D6] shrink-0"/>
                 <span className="text-xs font-semibold text-slate-900">
                   Định hướng cá nhân: Nghiên cứu khoa học & Kỹ năng
                 </span>
