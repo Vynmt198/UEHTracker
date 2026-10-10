@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { GraduationCap, Award, MessageSquare, User, LogOut, RotateCcw, Sliders, ChevronDown } from 'lucide-react';
-import { IconAcademicCap, IconGPABook, IconDRLMedal } from './common/EduIcons';
+import { GraduationCap, Award, User, LogOut, RotateCcw, Sliders, ChevronDown } from 'lucide-react';
+import { IconAcademicCap, IconGPABook, IconDRLMedal, IconForumChat } from './common/EduIcons';
 export const Navigation = ({ onOpenOnboarding }) => {
     const { activeTab, setActiveTab, profile, semesters, resetAllData } = useApp();
     const [showDropdown, setShowDropdown] = useState(false);
@@ -27,7 +27,7 @@ export const Navigation = ({ onOpenOnboarding }) => {
             </div>
           </div>
 
-          {/* Giữa: 5 Tab chính (Smart Planner | GPA | Điểm rèn luyện | Smart Schedule | Diễn đàn) */}
+          {/* Giữa: Các Tab chính */}
           <nav className="hidden sm:flex items-center gap-1">
             <button onClick={() => setActiveTab('planner')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors ${activeTab === 'planner'
             ? 'bg-slate-100 text-slate-900 font-semibold'
@@ -53,7 +53,7 @@ export const Navigation = ({ onOpenOnboarding }) => {
             <button onClick={() => setActiveTab('forum')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors relative ${activeTab === 'forum'
             ? 'bg-slate-100 text-slate-900 font-semibold'
             : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>
-              <MessageSquare className="w-4 h-4 text-slate-400"/>
+              <IconForumChat className="w-4 h-4 text-[#49C8D6]"/>
               <span>Diễn đàn</span>
               <span className="ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
                 Coming Soon

@@ -5,8 +5,6 @@ import {
   CheckCircle2, 
   AlertCircle, 
   RefreshCw, 
-  UploadCloud, 
-  DownloadCloud, 
   LogOut, 
   X, 
   Lock, 
@@ -15,9 +13,9 @@ import {
   Database,
   ArrowRight,
   Sparkles,
-  ShieldCheck,
   Server
 } from 'lucide-react';
+import { IconCloudUpload, IconCloudDownload, IconCheckShield } from './EduIcons';
 
 export const CloudSyncModal = ({ isOpen, onClose }) => {
   const {
@@ -245,7 +243,7 @@ export const CloudSyncModal = ({ isOpen, onClose }) => {
                       <span className="block text-[10px] text-slate-300">Đẩy dữ liệu máy lên</span>
                     </div>
                     <div className="p-2 rounded-xl bg-white/10 text-[#49C8D6] group-hover:bg-[#49C8D6] group-hover:text-white transition-all">
-                      <UploadCloud className={`w-4 h-4 ${isSyncing ? 'animate-bounce' : 'group-hover:-translate-y-0.5 transition-transform'}`} />
+                      <IconCloudUpload className={`w-4 h-4 ${isSyncing ? 'animate-bounce' : 'group-hover:-translate-y-0.5 transition-transform'}`} />
                     </div>
                   </button>
 
@@ -262,7 +260,7 @@ export const CloudSyncModal = ({ isOpen, onClose }) => {
                       <span className="block text-[10px] text-slate-500">Kéo dữ liệu Cloud về</span>
                     </div>
                     <div className="p-2 rounded-xl bg-[#F2A900]/20 text-[#B27B00] group-hover:bg-[#F2A900] group-hover:text-slate-950 transition-all">
-                      <DownloadCloud className={`w-4 h-4 ${isSyncing ? 'animate-bounce' : 'group-hover:translate-y-0.5 transition-transform'}`} />
+                      <IconCloudDownload className={`w-4 h-4 ${isSyncing ? 'animate-bounce' : 'group-hover:translate-y-0.5 transition-transform'}`} />
                     </div>
                   </button>
                 </div>
@@ -276,9 +274,9 @@ export const CloudSyncModal = ({ isOpen, onClose }) => {
 
               {/* Logout Button */}
               <div className="pt-2 border-t border-slate-100 flex items-center justify-between">
-                <span className="text-[11px] text-slate-400 flex items-center gap-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                  Mã hóa an toàn SSL
+                <span className="text-[11px] text-slate-400 flex items-center gap-1 font-medium">
+                  <IconCheckShield className="w-3.5 h-3.5 text-emerald-600" />
+                  Mã hóa bảo mật UEH SSL
                 </span>
                 <button
                   onClick={logout}

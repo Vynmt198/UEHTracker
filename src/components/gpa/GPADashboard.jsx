@@ -5,7 +5,22 @@ import { CourseGradeModal } from './CourseGradeModal';
 import { SemesterModal } from './SemesterModal';
 import { CourseAddModal } from './CourseAddModal';
 import { Mascot } from '../common/Mascot';
-import { GraduationCap, Plus, BookOpen, Target, Edit3, X, Trash2, TrendingUp, Sparkles, Award } from 'lucide-react';
+import { GraduationCap, Plus, BookOpen, Target, Edit3, X, Trash2, TrendingUp, Award } from 'lucide-react';
+import { 
+    IconAcademicCap, 
+    IconGPABook, 
+    IconDRLMedal, 
+    IconTrophy, 
+    IconEditPen, 
+    IconMilestone, 
+    IconTargetAim, 
+    IconCheckShield, 
+    IconProgressRing, 
+    IconQuoteMark, 
+    IconCompass, 
+    IconCareerBag, 
+    IconSkillSpark 
+} from '../common/EduIcons';
 
 export const GPADashboard = () => {
     const { profile, updateProfile, semesters, selectedSemesterId, setSelectedSemesterId, addSemester, deleteSemester, courses, addCourse, updateCourse, deleteCourse } = useApp();
@@ -39,29 +54,30 @@ export const GPADashboard = () => {
 
     // Dynamic Title Badge based on GPA
     const getGPABadge = (gpa) => {
-        if (!gpa || gpa <= 0) return { label: 'Khởi đầu mới 🌱', color: 'bg-slate-100 text-slate-700 border-slate-200' };
-        if (gpa >= 3.6) return { label: 'Chiến thần học bổng 🔥', color: 'bg-[#FEF7E6] text-[#B27B00] border-[#F2A900]/50 shadow-xs' };
-        if (gpa >= 3.2) return { label: 'Hạng Xuất Sắc 🌟', color: 'bg-emerald-50 text-emerald-800 border-emerald-300 shadow-xs' };
-        if (gpa >= 2.5) return { label: 'Vững vàng tiến bước 🚀', color: 'bg-cyan-50 text-[#0c727d] border-cyan-200' };
-        return { label: 'Đang bứt phá ⚡', color: 'bg-amber-50 text-amber-800 border-amber-200' };
+        if (!gpa || gpa <= 0) return { label: 'Khởi đầu học kỳ', icon: IconAcademicCap, color: 'bg-slate-100 text-slate-700 border-slate-200' };
+        if (gpa >= 3.6) return { label: 'Học bổng Xuất sắc UEH', icon: IconTrophy, color: 'bg-[#FEF7E6] text-[#B27B00] border-[#F2A900]/50 shadow-xs' };
+        if (gpa >= 3.2) return { label: 'Hạng Học lực Giỏi', icon: IconSkillSpark, color: 'bg-emerald-50 text-emerald-800 border-emerald-300 shadow-xs' };
+        if (gpa >= 2.5) return { label: 'Tiến độ Vững vàng', icon: IconCheckShield, color: 'bg-cyan-50 text-[#0c727d] border-cyan-200' };
+        return { label: 'Cần Bứt phá Điểm số', icon: IconTargetAim, color: 'bg-amber-50 text-amber-800 border-amber-200' };
     };
 
     const gpaBadge = getGPABadge(overallStats.actualGPA4);
+    const GPABadgeIcon = gpaBadge.icon;
 
-    // Motivational quote
+    // Motivational quote (Professional, inspiring academic tone)
     const getMotivationalQuote = () => {
         const firstName = profile.name ? profile.name.trim().split(' ').pop() : 'bạn';
         if (overallStats.actualGPA4 >= 3.6) {
-            return `Phong độ xuất sắc lắm ${firstName}! Học bổng UEH đang rất gần bạn rồi đấy! 🏆`;
+            return `Phong độ học tập xuất sắc lắm ${firstName}! Tiêu chuẩn học bổng UEH đang duy trì rất vững chắc.`;
         }
         if (targetGPA !== null && overallStats.actualGPA4 > 0) {
             const gap = targetGPA - overallStats.actualGPA4;
             if (gap > 0) {
-                return `Còn ${gap.toFixed(2)}đ nữa là chạm mốc mục tiêu ${targetGPA.toFixed(2)}. Cố lên ${firstName}! 💪`;
+                return `Còn ${gap.toFixed(2)} điểm nữa để chạm mốc mục tiêu ${targetGPA.toFixed(2)}. Tiếp tục bứt phá nhé ${firstName}!`;
             }
-            return `Tuyệt vời! Bạn đã vượt mục tiêu đề ra rồi. Giữ vững phong độ nhé ${firstName}! ✨`;
+            return `Tuyệt vời! Bạn đã vượt mục tiêu đề ra cho chặng này. Giữ vững nhịp độ này nhé ${firstName}!`;
         }
-        return `Hôm nay bạn đã ôn bài chưa ${firstName}? Mỗi tín chỉ là một bước tiến tới thành công! 📚`;
+        return `Kế hoạch học tập rõ ràng là chìa khóa thành công. Chúc ${firstName} một kỳ học đạt kết quả cao nhất!`;
     };
 
     // Calculate Sparkline points across all semesters
@@ -71,8 +87,8 @@ export const GPADashboard = () => {
         return { name: s.name, gpa: sStats.actualGPA4 };
     });
 
-    // Milestone seasonal icons map
-    const milestoneIcons = ['🌱', '📚', '⚡', '🎯', '💼', '🚀', '🌟', '🎓'];
+    // Milestone SVG icon suite map
+    const milestoneIconList = [IconGPABook, IconAcademicCap, IconTargetAim, IconCompass, IconCareerBag, IconTrophy, IconCheckShield];
 
     const handleSaveComponents = (courseId, updatedComponents) => {
         updateCourse(courseId, { components: updatedComponents });
@@ -141,7 +157,7 @@ export const GPADashboard = () => {
 
                             {/* Dynamic Achievement Badge */}
                             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold border transition-all duration-200 ${gpaBadge.color}`}>
-                                <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                                <GPABadgeIcon className="w-3.5 h-3.5 shrink-0" />
                                 {gpaBadge.label}
                             </span>
                         </div>
@@ -241,9 +257,9 @@ export const GPADashboard = () => {
                             </div>
                         </div>
 
-                        {/* Bottom: Student Cheer Quote */}
-                        <div className="pt-3 border-t border-slate-100 flex items-center gap-2 text-xs text-slate-600 font-medium">
-                            <span className="text-base">💬</span>
+                        {/* Bottom: Student Cheer Quote with Custom Quote Icon */}
+                        <div className="pt-3 border-t border-slate-100 flex items-center gap-2.5 text-xs text-slate-600 font-medium">
+                            <IconQuoteMark className="w-4 h-4 text-[#49C8D6] shrink-0" />
                             <span className="truncate italic">"{getMotivationalQuote()}"</span>
                         </div>
                     </div>
@@ -455,8 +471,8 @@ export const GPADashboard = () => {
                             const isCompleted = semCourses.length > 0 && semCourses.every((c) => c.status === 'Đã hoàn thành');
                             
                             // Custom status tags for students
-                            const statusLabel = isCompleted ? 'Đã chinh phục 🎉' : isSelected ? 'Đang chiến đấu ⚔️' : 'Đang học';
-                            const seasonIcon = milestoneIcons[sIdx % milestoneIcons.length];
+                            const statusLabel = isCompleted ? 'Hoàn thành' : isSelected ? 'Đang học' : 'Kế hoạch';
+                            const SeasonIcon = milestoneIconList[sIdx % milestoneIconList.length];
 
                             return (
                                 <div 
@@ -469,11 +485,11 @@ export const GPADashboard = () => {
                                     }`}
                                 >
                                     <div>
-                                        {/* Header Thẻ: Mùa học + Tên kỳ & Trạng thái độc đáo */}
+                                        {/* Header Thẻ: Biểu tượng học thuật + Tên kỳ & Trạng thái chuẩn */}
                                         <div className="flex items-start justify-between gap-2 mb-2.5">
-                                            <div className="flex items-center gap-2 min-w-0">
-                                                <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-sm shrink-0">
-                                                    {seasonIcon}
+                                            <div className="flex items-center gap-2.5 min-w-0">
+                                                <div className="w-8 h-8 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-center text-[#0B2545] shrink-0">
+                                                    <SeasonIcon className="w-4 h-4 text-[#0B2545]" />
                                                 </div>
                                                 <div className="min-w-0">
                                                     <h3 className="font-bold text-[#0B2545] text-sm flex items-center gap-1.5 truncate">
@@ -485,14 +501,21 @@ export const GPADashboard = () => {
                                             </div>
 
                                             <div className="flex items-center gap-1.5 shrink-0">
-                                                <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold border transition-colors ${
+                                                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-bold border transition-colors ${
                                                     isCompleted
                                                         ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                                                         : isSelected
                                                         ? 'bg-[#E0F7FA] text-[#087F8C] border-[#49C8D6]/40'
                                                         : 'bg-slate-100 text-slate-600 border-slate-200'
                                                 }`}>
-                                                    {statusLabel}
+                                                    {isCompleted ? (
+                                                        <IconCheckShield className="w-3 h-3 text-emerald-600 shrink-0" />
+                                                    ) : isSelected ? (
+                                                        <IconProgressRing className="w-3 h-3 text-[#087F8C] shrink-0" />
+                                                    ) : (
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                                                    )}
+                                                    <span>{statusLabel}</span>
                                                 </span>
 
                                                 {semesters.length > 1 && (
@@ -628,11 +651,11 @@ export const GPADashboard = () => {
                                                             course.status === 'Đã hoàn thành'
                                                                 ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                                                                 : course.status === 'Đang học'
-                                                                ? 'bg-amber-50 text-amber-800 border-amber-200'
+                                                                ? 'bg-cyan-50 text-[#087F8C] border-cyan-200'
                                                                 : 'bg-slate-50 text-slate-500 border-slate-200'
                                                         }`}
                                                     >
-                                                        {course.status === 'Đã hoàn thành' ? 'Đã xong 🎉' : course.status === 'Đang học' ? 'Đang học ⚔️' : 'Chưa học'}
+                                                        {course.status === 'Đã hoàn thành' ? 'Hoàn thành' : course.status === 'Đang học' ? 'Đang học' : 'Chưa học'}
                                                     </button>
 
                                                     {/* Điểm chữ Tag tròn nổi bật */}
@@ -656,14 +679,14 @@ export const GPADashboard = () => {
                                                         </div>
                                                     </div>
 
-                                                    {/* Cột Thao tác: Nút 📝 Nhập điểm + Thùng rác */}
+                                                    {/* Cột Thao tác: Nút Nhập điểm với IconEditPen + Thùng rác */}
                                                     <div className="flex items-center gap-1.5 ml-1">
                                                         <button 
                                                             onClick={() => setActiveGradeModalCourse(course)} 
-                                                            className="flex items-center gap-1 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200/90 hover:bg-[#49C8D6] hover:text-white hover:border-[#49C8D6] hover:shadow-xs hover:scale-105 active:scale-95 transition-all duration-200"
+                                                            className="group/btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200/90 hover:bg-[#49C8D6] hover:text-white hover:border-[#49C8D6] hover:shadow-xs hover:scale-105 active:scale-95 transition-all duration-200"
                                                             title="Nhập điểm thành phần"
                                                         >
-                                                            <span>📝</span>
+                                                            <IconEditPen className="w-3.5 h-3.5 text-slate-500 group-hover/btn:text-white transition-colors" />
                                                             <span>Điểm</span>
                                                         </button>
 

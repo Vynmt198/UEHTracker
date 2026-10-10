@@ -1,145 +1,201 @@
 import React from 'react';
-// 1. Chiếc mũ cử nhân bo tròn ngộ nghĩnh (Thay cho Brain/AI)
-export const IconAcademicCap = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Cap diamond body */}
-    <path d="M12 3.5L2.5 8.2C1.8 8.5 1.8 9.5 2.5 9.8L12 14.5L21.5 9.8C22.2 9.5 22.2 8.5 21.5 8.2L12 3.5Z" fill="#49C8D6" fillOpacity="0.25" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    {/* Skull cap underneath with smile curve */}
-    <path d="M6.5 12.5V16C6.5 18.5 9 20.5 12 20.5C15 20.5 17.5 18.5 17.5 16V12.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    {/* Playful tassel hanging with bead */}
-    <path d="M20 10.5V16.5C20 17.3 19.3 18 18.5 18" stroke="#49C8D6" strokeWidth="2" strokeLinecap="round"/>
-    <circle cx="20" cy="10.5" r="1.5" fill="#49C8D6"/>
-    <circle cx="18.5" cy="18" r="1.5" fill="#49C8D6"/>
-  </svg>);
-// 2. Ly cà phê sinh viên có mắt cười / tia hơi nước (Thay cho icon sét "Tự động")
-export const IconCoffeeBoost = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Steam vapor ripples */}
-    <path d="M8.5 2.5C8 3.5 9 4.5 8.5 5.5" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round"/>
-    <path d="M12 2C11.5 3.2 12.5 4.2 12 5.5" stroke="#49C8D6" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M15.5 2.5C15 3.5 16 4.5 15.5 5.5" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round"/>
-    {/* Coffee Cup Lid */}
-    <rect x="5" y="6" width="14" height="2.5" rx="1.25" fill="#49C8D6" stroke="currentColor" strokeWidth="1.8"/>
-    {/* Cup Body */}
-    <path d="M6.5 8.5L7.8 19.2C7.9 20.2 8.8 21 9.8 21H14.2C15.2 21 16.1 20.2 16.2 19.2L17.5 8.5H6.5Z" fill="#49C8D6" fillOpacity="0.15" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-    {/* Cup Sleeve with cute smiley eyes */}
-    <path d="M7.2 12H16.8L16.4 16H7.6L7.2 12Z" fill="#49C8D6" fillOpacity="0.4" stroke="currentColor" strokeWidth="1.6"/>
-    {/* Little smiling curve inside sleeve */}
-    <path d="M10.5 13.8C11 14.5 13 14.5 13.5 13.8" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round"/>
-  </svg>);
-// 3. Kính lúp bo tròn tinh nghịch soi tờ giấy ghi chú A+ (Thay cho kính lúp máy móc / Nghiên cứu)
-export const IconResearchLab = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Research Paper in Background */}
-    <rect x="3" y="3" width="12" height="15" rx="2" fill="#49C8D6" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.8"/>
-    {/* A+ Note on Paper */}
-    <path d="M6 7.5L7.5 11.5M7.5 11.5L9 7.5M7.5 11.5H6.5" stroke="#49C8D6" strokeWidth="1.5" strokeLinecap="round"/>
-    <path d="M10.5 8.5V10.5M9.5 9.5H11.5" stroke="#49C8D6" strokeWidth="1.5" strokeLinecap="round"/>
-    {/* Big Playful Magnifying Glass */}
-    <circle cx="14" cy="13" r="5.5" fill="white" stroke="currentColor" strokeWidth="2"/>
-    {/* Lens reflection shine */}
-    <path d="M12 10.5C13 9.5 14.5 9.5 15.5 10.5" stroke="#49C8D6" strokeWidth="1.6" strokeLinecap="round"/>
-    {/* Handle with rubber grip */}
-    <path d="M18 17L21.5 20.5" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"/>
-    <circle cx="21" cy="20" r="1" fill="#49C8D6"/>
-  </svg>);
-// 4. Chiếc túi tote sinh viên có cài bút (Thay cho cặp da công sở / Nghề nghiệp)
-export const IconCareerBag = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Tote Straps */}
-    <path d="M9 8V5C9 3.9 9.9 3 11 3H13C14.1 3 15 3.9 15 5V8" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    {/* Tote Bag Body */}
-    <path d="M5 8H19L17.8 20C17.7 20.6 17.2 21 16.6 21H7.4C6.8 21 6.3 20.6 6.2 20L5 8Z" fill="#49C8D6" fillOpacity="0.2" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-    {/* Cute Pocket on Tote */}
-    <rect x="8.5" y="12" width="7" height="6" rx="1.5" fill="white" stroke="currentColor" strokeWidth="1.8"/>
-    {/* Pen peeking out of pocket */}
-    <path d="M13.5 9.5L13.5 13.5" stroke="#49C8D6" strokeWidth="2" strokeLinecap="round"/>
-    <circle cx="13.5" cy="9" r="1" fill="currentColor"/>
-  </svg>);
-// 5. Ngôi sao lấp lánh 4 cánh cách điệu (Thay cho não hồng / Kỹ năng)
-export const IconSkillSpark = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Big 4-point Sparkle */}
-    <path d="M12 2C12 6.5 15.5 10 20 10C15.5 10 12 13.5 12 18C12 13.5 8.5 10 4 10C8.5 10 12 6.5 12 2Z" fill="#49C8D6" fillOpacity="0.3" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-    {/* Secondary baby sparkle top-right */}
-    <path d="M19 16C19 17.5 20 18.5 21.5 18.5C20 18.5 19 19.5 19 21C19 19.5 18 18.5 16.5 18.5C18 18.5 19 17.5 19 16Z" fill="#49C8D6" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
-    {/* Accent spark dots */}
-    <circle cx="6" cy="18" r="1.5" fill="#49C8D6"/>
-    <circle cx="18" cy="4" r="1" fill="#49C8D6"/>
-  </svg>);
-// 6. Hai ly trà sữa / cụng ly sinh viên (Thay cho icon bắt tay / Networking)
-export const IconNetworkFist = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Left Boba Cup */}
-    <path d="M4.5 9L6 19.5C6.1 20.3 6.8 21 7.6 21H10.4C11.2 21 11.9 20.3 12 19.5L13.5 9H4.5Z" fill="#49C8D6" fillOpacity="0.25" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
-    {/* Left Cup Lid */}
-    <rect x="3.5" y="7" width="11" height="2" rx="1" fill="white" stroke="currentColor" strokeWidth="1.8"/>
-    {/* Left Straw */}
-    <path d="M8.5 7L7 2.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
 
-    {/* Right Boba Cup */}
-    <path d="M12.5 10.5L13.8 19.5C13.9 20.3 14.6 21 15.4 21H17.6C18.4 21 19.1 20.3 19.2 19.5L20.5 10.5H12.5Z" fill="#49C8D6" fillOpacity="0.4" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
-    {/* Right Cup Lid */}
-    <rect x="11.5" y="8.5" width="10" height="2" rx="1" fill="white" stroke="currentColor" strokeWidth="1.8"/>
-    {/* Right Straw */}
-    <path d="M17 8.5L18.5 4" stroke="#49C8D6" strokeWidth="2" strokeLinecap="round"/>
+/**
+ * BỘ ICON ĐỘC QUYỀN UEH TRACKER (TECH-ACADEMY DESIGN SYSTEM)
+ * Thiết kế chuẩn nét vẽ hình học cao cấp (Geometric Vector Duotone),
+ * phối màu thương hiệu: Navy (#0B2545), Forest/Cyan (#49C8D6), Gold (#F2A900).
+ * Thay thế hoàn toàn các icon mặc định và phong cách hoạt hình AI trước đây.
+ */
 
-    {/* Boba pearls */}
-    <circle cx="8" cy="18" r="1" fill="currentColor"/>
-    <circle cx="10" cy="18.5" r="1" fill="currentColor"/>
-    <circle cx="9" cy="16.5" r="1" fill="currentColor"/>
-    <circle cx="15.5" cy="18.5" r="1" fill="currentColor"/>
-    <circle cx="17.5" cy="18" r="1" fill="currentColor"/>
+// 1. Chiếc mũ học thuật Tech-Academy (Dùng cho Navigation Smart Planner & Bằng cấp)
+export const IconAcademicCap = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M12 2.5L2 7.5L12 12.5L22 7.5L12 2.5Z" fill="#49C8D6" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M6 9.5V15.5C6 17.5 8.7 19.5 12 19.5C15.3 19.5 18 17.5 18 15.5V9.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M22 7.5V14.5C22 15.1 21.6 15.5 21 15.5" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round"/>
+    <circle cx="21" cy="16" r="1.5" fill="#F2A900"/>
+  </svg>
+);
 
-    {/* Clinking spark */}
-    <path d="M12 4.5L13 3M13.5 5.5L15 5" stroke="#49C8D6" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>);
-// 7. Đồng hồ báo thức tròn trịa có chuông rung (Thay cho icon calendar Trùng lịch)
-export const IconScheduleAlert = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Alarm bells on top */}
-    <path d="M5 4.5C4 6 3.5 7.5 3.5 7.5L6.5 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M19 4.5C20 6 20.5 7.5 20.5 7.5L17.5 9" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    {/* Alarm clock round body */}
-    <circle cx="12" cy="13.5" r="7.5" fill="#49C8D6" fillOpacity="0.2" stroke="currentColor" strokeWidth="2"/>
-    {/* Clock hands showing urgency */}
-    <path d="M12 9.5V13.5L14.5 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-    {/* Center pin */}
-    <circle cx="12" cy="13.5" r="1" fill="#49C8D6"/>
-    {/* Feet */}
-    <path d="M7 20.5L6 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M17 20.5L18 22" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-    {/* Ringing vibration waves */}
-    <path d="M1 11C1 11 1.5 13 1 15" stroke="#49C8D6" strokeWidth="1.5" strokeLinecap="round"/>
-    <path d="M23 11C23 11 22.5 13 23 15" stroke="#49C8D6" strokeWidth="1.5" strokeLinecap="round"/>
-  </svg>);
-// 8. Quyển sổ mở kèm chiếc kẹp ghim màu mint (Dùng cho GPA Nav)
-export const IconGPABook = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Book Pages */}
-    <path d="M4 6C4 4.9 4.9 4 6 4H18C19.1 4 20 4.9 20 6V19C20 20.1 19.1 21 18 21H6C4.9 21 4 20.1 4 19V6Z" fill="#49C8D6" fillOpacity="0.15" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/>
-    {/* Bookmark ribbon or note lines */}
-    <path d="M8 8H16" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    <path d="M8 12H14" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    <path d="M8 16H12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    {/* Cute mint paperclip on top right */}
-    <path d="M16 2.5V7C16 8.1 16.9 9 18 9C19.1 9 20 8.1 20 7V4" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round"/>
-  </svg>);
-// 9. Chiếc huy hiệu ruy băng ngộ nghĩnh (Dùng cho ĐRL Nav)
-export const IconDRLMedal = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Ribbon tails */}
-    <path d="M9 14.5L7 22L12 19.5L17 22L15 14.5" fill="#49C8D6" fillOpacity="0.3" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
-    {/* Medal circle */}
-    <circle cx="12" cy="9.5" r="6.5" fill="#49C8D6" fillOpacity="0.25" stroke="currentColor" strokeWidth="2"/>
-    {/* Playful star in medal */}
-    <path d="M12 6.5L13.2 8.8L15.5 9.2L13.8 10.8L14.2 13L12 11.8L9.8 13L10.2 10.8L8.5 9.2L10.8 8.8L12 6.5Z" fill="#49C8D6" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round"/>
-  </svg>);
-// 10. Lịch bàn ngộ nghĩnh (Dùng cho Thêm vào TKB)
-export const IconScheduleCalendar = ({ className = 'w-5 h-5', size, ...props }) => (<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
-    {/* Calendar Body */}
-    <rect x="3.5" y="5" width="17" height="15.5" rx="3" fill="#49C8D6" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.8"/>
-    {/* Header Accent Bar */}
-    <path d="M3.5 9.5H20.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
-    {/* Spiral Rings */}
-    <path d="M7.5 3V6" stroke="#49C8D6" strokeWidth="2" strokeLinecap="round"/>
-    <path d="M16.5 3V6" stroke="#49C8D6" strokeWidth="2" strokeLinecap="round"/>
-    {/* Mini grid dots/plus */}
-    <circle cx="8" cy="13" r="1" fill="currentColor"/>
-    <circle cx="12" cy="13" r="1" fill="#49C8D6"/>
-    <circle cx="16" cy="13" r="1" fill="currentColor"/>
-    <circle cx="8" cy="16.5" r="1" fill="currentColor"/>
-    <circle cx="12" cy="16.5" r="1" fill="currentColor"/>
-    <path d="M15 16.5L16 17.5L18 15.5" stroke="#49C8D6" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-  </svg>);
+// 2. Bảng điểm học thuật & Giáo trình điện tử (Dùng cho Quản lý GPA)
+export const IconGPABook = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M4 19.5V5C4 3.9 4.9 3 6 3H18.5C19.3 3 20 3.7 20 4.5V19.5C20 20.3 19.3 21 18.5 21H6C4.9 21 4 20.1 4 19.5Z" fill="#49C8D6" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.8"/>
+    <path d="M4 17.5H19C19.6 17.5 20 17.9 20 18.5C20 19.9 18.9 21 17.5 21H6C4.9 21 4 20.1 4 19.5V17.5Z" fill="#0B2545" fillOpacity="0.08" stroke="currentColor" strokeWidth="1.8"/>
+    <path d="M8 7.5H15" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round"/>
+    <path d="M8 11.5H13" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+    <path d="M16 3V9L18 7.5L20 9V3" fill="#F2A900" stroke="#F2A900" strokeWidth="1.2" strokeLinejoin="round"/>
+  </svg>
+);
+
+// 3. Huân chương rèn luyện & Danh dự UEH (Dùng cho Điểm Rèn Luyện)
+export const IconDRLMedal = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M8 3.5L9.5 9.5H14.5L16 3.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M12 9.5L8.5 13H15.5L12 9.5Z" fill="#49C8D6" fillOpacity="0.25" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round"/>
+    <circle cx="12" cy="15" r="5.5" fill="#FEF7E6" stroke="#F2A900" strokeWidth="1.8"/>
+    <path d="M12 12.5L12.9 14.3L14.8 14.6L13.4 15.9L13.8 17.8L12 16.9L10.2 17.8L10.6 15.9L9.2 14.6L11.1 14.3L12 12.5Z" fill="#F2A900"/>
+  </svg>
+);
+
+// 4. Diễn đàn học thuật sinh viên (Dùng cho Diễn đàn UEH)
+export const IconForumChat = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M3.5 13.5C3.5 8.5 7.3 4.5 12 4.5C16.7 4.5 20.5 8.5 20.5 13.5C20.5 18.5 16.7 22.5 12 22.5C10.2 22.5 8.5 21.9 7 20.9L3.5 21.5L4.5 18C3.8 16.7 3.5 15.1 3.5 13.5Z" fill="#49C8D6" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+    <circle cx="8.5" cy="13.5" r="1.2" fill="#0B2545"/>
+    <circle cx="12" cy="13.5" r="1.2" fill="#49C8D6"/>
+    <circle cx="15.5" cy="13.5" r="1.2" fill="#F2A900"/>
+  </svg>
+);
+
+// 5. Cúp học bổng & Thành tích học thuật đỉnh cao (Trophy of Excellence)
+export const IconTrophy = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M7 4H17V10C17 12.8 14.8 15 12 15C9.2 15 7 12.8 7 10V4Z" fill="#FEF7E6" stroke="#F2A900" strokeWidth="1.8" strokeLinejoin="round"/>
+    <path d="M7 6H3.5C2.7 6 2 6.7 2 7.5C2 9.4 3.6 11 5.5 11H7" stroke="#F2A900" strokeWidth="1.8" strokeLinecap="round"/>
+    <path d="M17 6H20.5C21.3 6 22 6.7 22 7.5C22 9.4 20.4 11 18.5 11H17" stroke="#F2A900" strokeWidth="1.8" strokeLinecap="round"/>
+    <path d="M12 15V18" stroke="#F2A900" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M8 21H16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="12" cy="9" r="1.5" fill="#F2A900"/>
+  </svg>
+);
+
+// 6. Bút nhập điểm & Chỉnh sửa tinh chuẩn (Precision Stylus Pen)
+export const IconEditPen = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M16.5 3.5L20.5 7.5L7.5 20.5H3.5V16.5L16.5 3.5Z" fill="#49C8D6" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M14 6L18 10" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+    <path d="M3.5 20.5L6.5 17.5" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round"/>
+  </svg>
+);
+
+// 7. Cột mốc hành trình học kỳ (Milestone Flag / Marker)
+export const IconMilestone = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M5 21V3" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+    <path d="M5 4H17.5L15 8.5L17.5 13H5" fill="#49C8D6" fillOpacity="0.25" stroke="#49C8D6" strokeWidth="1.8" strokeLinejoin="round"/>
+    <circle cx="5" cy="4" r="2" fill="#0B2545"/>
+  </svg>
+);
+
+// 8. Mục tiêu tâm điểm (Target Aim & Precision)
+export const IconTargetAim = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <circle cx="12" cy="12" r="8.5" stroke="currentColor" strokeWidth="1.8"/>
+    <circle cx="12" cy="12" r="4.5" fill="#49C8D6" fillOpacity="0.2" stroke="#49C8D6" strokeWidth="1.8"/>
+    <circle cx="12" cy="12" r="1.5" fill="#F2A900"/>
+    <path d="M12 2V4.5M12 19.5V22M2 12H4.5M19.5 12H22" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+  </svg>
+);
+
+// 9. Dấu hoàn thành xác thực (Verified Achievement Shield)
+export const IconCheckShield = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M12 2.5L20 6.5V12C20 16.5 16.5 20.5 12 21.5C7.5 20.5 4 16.5 4 12V6.5L12 2.5Z" fill="#E0F7FA" stroke="#087F8C" strokeWidth="1.8" strokeLinejoin="round"/>
+    <path d="M8.5 12L11 14.5L15.5 9.5" stroke="#087F8C" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// 10. Trạng thái đang học / Chiến đấu học thuật (In Progress Node)
+export const IconProgressRing = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <circle cx="12" cy="12" r="8.5" stroke="#E2E8F0" strokeWidth="2"/>
+    <path d="M12 3.5C16.7 3.5 20.5 7.3 20.5 12" stroke="#49C8D6" strokeWidth="2.2" strokeLinecap="round"/>
+    <circle cx="12" cy="12" r="3" fill="#F2A900"/>
+  </svg>
+);
+
+// 11. Trích dẫn cổ động / Thông điệp đồng hành (Quote Inspiration)
+export const IconQuoteMark = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M9.5 7.5H6.5C5.4 7.5 4.5 8.4 4.5 9.5V12.5C4.5 13.6 5.4 14.5 6.5 14.5H8.5V16.5C8.5 17.6 7.6 18.5 6.5 18.5" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+    <path d="M18.5 7.5H15.5C14.4 7.5 13.5 8.4 13.5 9.5V12.5C13.5 13.6 14.4 14.5 15.5 14.5H17.5V16.5C17.5 17.6 16.6 18.5 15.5 18.5" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// 12. Định hướng tương lai & La bàn học thuật (Academic Compass)
+export const IconCompass = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <circle cx="12" cy="12" r="9" fill="#49C8D6" fillOpacity="0.1" stroke="currentColor" strokeWidth="1.8"/>
+    <path d="M15.5 8.5L13.5 13.5L8.5 15.5L10.5 10.5L15.5 8.5Z" fill="#F2A900" stroke="#0B2545" strokeWidth="1.5" strokeLinejoin="round"/>
+    <circle cx="12" cy="12" r="1.5" fill="#0B2545"/>
+  </svg>
+);
+
+// 13. Nghiên cứu khoa học & Dự án sinh viên (Research Lab)
+export const IconResearchLab = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M9 3H15" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+    <path d="M10 3V8L4.5 19C3.8 20.3 4.8 22 6.3 22H17.7C19.2 22 20.2 20.3 19.5 19L14 8V3" fill="#49C8D6" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+    <path d="M7 16H17" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round"/>
+    <circle cx="10" cy="18.5" r="1" fill="#F2A900"/>
+    <circle cx="14" cy="18.5" r="1" fill="#49C8D6"/>
+  </svg>
+);
+
+// 14. Phát triển sự nghiệp & Thực tập doanh nghiệp (Executive Portfolio)
+export const IconCareerBag = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <rect x="3" y="7" width="18" height="14" rx="3" fill="#49C8D6" fillOpacity="0.15" stroke="currentColor" strokeWidth="1.8"/>
+    <path d="M8 7V5C8 3.9 8.9 3 10 3H14C15.1 3 16 3.9 16 5V7" stroke="currentColor" strokeWidth="1.8"/>
+    <path d="M3 12H21" stroke="currentColor" strokeWidth="1.8"/>
+    <rect x="10.5" y="10.5" width="3" height="3" rx="0.5" fill="#F2A900" stroke="currentColor" strokeWidth="1.2"/>
+  </svg>
+);
+
+// 15. Ngôi sao kỹ năng & Phát triển tài năng (Skill Sparkle)
+export const IconSkillSpark = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M12 2L14.2 9.8L22 12L14.2 14.2L12 22L9.8 14.2L2 12L9.8 9.8L12 2Z" fill="#FEF7E6" stroke="#F2A900" strokeWidth="1.8" strokeLinejoin="round"/>
+    <circle cx="12" cy="12" r="1.5" fill="#F2A900"/>
+  </svg>
+);
+
+// 16. Mạng lưới kết nối học thuật & Đồng đội (Academic Network)
+export const IconNetworkFist = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <circle cx="12" cy="6" r="3" fill="#49C8D6" fillOpacity="0.2" stroke="currentColor" strokeWidth="1.8"/>
+    <circle cx="5" cy="17" r="2.5" stroke="currentColor" strokeWidth="1.8"/>
+    <circle cx="19" cy="17" r="2.5" stroke="currentColor" strokeWidth="1.8"/>
+    <path d="M9.5 8L6.5 15M14.5 8L17.5 15M7.5 17H16.5" stroke="#49C8D6" strokeWidth="1.8" strokeLinecap="round"/>
+  </svg>
+);
+
+// 17. Lịch biểu học tập & Thời khóa biểu (Academic Schedule Calendar)
+export const IconScheduleCalendar = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <rect x="3" y="4" width="18" height="17" rx="3" fill="#49C8D6" fillOpacity="0.12" stroke="currentColor" strokeWidth="1.8"/>
+    <path d="M3 9H21" stroke="currentColor" strokeWidth="1.8"/>
+    <path d="M7 2.5V5.5M17 2.5V5.5" stroke="#49C8D6" strokeWidth="2" strokeLinecap="round"/>
+    <rect x="7" y="12" width="2.5" height="2.5" rx="0.5" fill="currentColor"/>
+    <rect x="11" y="12" width="2.5" height="2.5" rx="0.5" fill="#49C8D6"/>
+    <rect x="15" y="12" width="2.5" height="2.5" rx="0.5" fill="currentColor"/>
+    <rect x="7" y="16" width="2.5" height="2.5" rx="0.5" fill="currentColor"/>
+    <rect x="11" y="16" width="2.5" height="2.5" rx="0.5" fill="#F2A900"/>
+  </svg>
+);
+
+// 18. Cảnh báo tiến độ / Lưu ý học phần (Schedule Alert)
+export const IconScheduleAlert = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <circle cx="12" cy="12" r="9" fill="#FEF7E6" stroke="#F2A900" strokeWidth="1.8"/>
+    <path d="M12 7.5V12.5" stroke="#F2A900" strokeWidth="2" strokeLinecap="round"/>
+    <circle cx="12" cy="16" r="1" fill="#F2A900"/>
+  </svg>
+);
+
+// 19. Đẩy / Lưu lên Cloud (Upload Cloud Sync)
+export const IconCloudUpload = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M6.5 19H17.5C19.4 19 21 17.4 21 15.5C21 13.8 19.7 12.3 18 12.1C17.6 8.7 14.8 6 11.5 6C8.7 6 6.3 7.8 5.4 10.4C3.5 10.8 2 12.5 2 14.5C2 17 4 19 6.5 19Z" fill="#49C8D6" fillOpacity="0.18" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+    <path d="M12 15V10M12 10L9.5 12.5M12 10L14.5 12.5" stroke="#49C8D6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);
+
+// 20. Tải từ Cloud về (Download Cloud Sync)
+export const IconCloudDownload = ({ className = 'w-5 h-5', size, ...props }) => (
+  <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className={className} width={size} height={size} {...props}>
+    <path d="M6.5 19H17.5C19.4 19 21 17.4 21 15.5C21 13.8 19.7 12.3 18 12.1C17.6 8.7 14.8 6 11.5 6C8.7 6 6.3 7.8 5.4 10.4C3.5 10.8 2 12.5 2 14.5C2 17 4 19 6.5 19Z" fill="#FEF7E6" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+    <path d="M12 10V15M12 15L9.5 12.5M12 15L14.5 12.5" stroke="#F2A900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+  </svg>
+);

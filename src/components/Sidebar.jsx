@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { MessageSquare, ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, Cloud } from 'lucide-react';
-import { IconAcademicCap, IconGPABook, IconDRLMedal } from './common/EduIcons';
+import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, Cloud } from 'lucide-react';
+import { IconAcademicCap, IconGPABook, IconDRLMedal, IconForumChat } from './common/EduIcons';
 import { CloudSyncModal } from './common/CloudSyncModal';
 export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => {
     const { activeTab, setActiveTab, profile, semesters, resetAllData, user, syncStatus, isSyncing, autoSyncState } = useApp();
@@ -31,7 +31,7 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
             id: 'forum',
             label: 'Diễn đàn UEH',
             shortLabel: 'Diễn đàn',
-            icon: MessageSquare,
+            icon: IconForumChat,
             badge: 'Mới'
         }
     ];
