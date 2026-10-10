@@ -174,11 +174,26 @@ export function calculateCourseFinalScore(components) {
  * - GPA tích lũy hệ 4 làm tròn đến 2 chữ số thập phân.
  */
 export function calculateGPAStats(courses = []) {
-  const completedCourses = courses.filter((c) => c.status === 'Đã hoàn thành');
-  const inProgressOrPlannedCourses = courses.filter((c) => c.status !== 'Đã hoàn thành');
+  // 1. Phân loại các môn:
+  // Môn được tính vào GPA thực tế (actual GPA) nếu:
+  // - Trạng thái là 'Đã hoàn thành', HOẶC
+  // - Đã có điểm tổng kết hợp lệ (finalScore10 !== null), HOẶC
+  // - Đã nhập đủ các cột điểm thành phần 100% trọng số
+  const completedCourses = courses.filter((c) => {
+    if (c.status === 'Đã hoàn thành') return true;
+    if (c.finalScore10 !== null && c.finalScore10 !== undefined && !isNaN(c.finalScore10)) return true;
+    if (c.components && c.components.length > 0) {
+      const finalResult = calculateCourseFinalScore(c.components);
+      return finalResult.score10 !== null && finalResult.isComplete;
+    }
+    return false;
+  });
 
-  // 1. GPA Thực tế (chỉ tính môn đã hoàn thành)
+  const inProgressOrPlannedCourses = courses.filter((c) => !completedCourses.includes(c));
+
+  // 1. GPA Thực tế (chỉ tính môn đã có kết quả điểm)
   let totalCredits = 0;
+  let earnedCredits = 0; // Tín chỉ tích lũy (không tính môn F/rớt)
   let totalPoints4 = 0;
   let totalPoints10 = 0;
 
@@ -186,12 +201,15 @@ export function calculateGPAStats(courses = []) {
     const finalResult = calculateCourseFinalScore(course.components);
     const score10 = course.finalScore10 ?? finalResult.score10;
 
-    if (score10 !== null && score10 !== undefined) {
-      // Nếu môn bị dính quy chế điểm liệt/vắng thi thì điểm hệ 4 nhận 0.0
-      const isFailed = finalResult.isFailedDueToRegulation || course.gradeLetter === 'F';
+    if (score10 !== null && score10 !== undefined && !isNaN(score10)) {
+      // Nếu môn bị dính quy chế điểm liệt/vắng thi hoặc điểm < 4.0 thì điểm F / không đạt
+      const isFailed = finalResult.isFailedDueToRegulation || course.gradeLetter === 'F' || score10 < 4.0;
       const uehGrade = convertScore10ToUEH(score10, isFailed);
       
       totalCredits += course.credits;
+      if (!isFailed) {
+        earnedCredits += course.credits;
+      }
       totalPoints4 += uehGrade.gpa4 * course.credits;
       totalPoints10 += (Math.round(score10 * 10) / 10) * course.credits;
     }
@@ -219,7 +237,7 @@ export function calculateGPAStats(courses = []) {
   return {
     actualGPA4,
     actualScore10,
-    completedCredits: totalCredits,
+    completedCredits: earnedCredits > 0 ? earnedCredits : totalCredits,
     projectedGPA4,
     projectedScore10,
     totalPlannedCredits: projectedCredits,

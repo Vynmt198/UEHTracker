@@ -240,6 +240,31 @@ describe('UEH GPA Calculator Unit Tests (JavaScript)', () => {
       expect(stats.completedCredits).toBe(7);
       expect(stats.actualGPA4).toBe(3.79);
     });
+
+    it('Môn đã có kết quả điểm nhưng trạng thái vẫn là Đang học vẫn được tính vào GPA thực tế', () => {
+      const mockCourses = [
+        {
+          id: 'c1',
+          name: 'Kinh Tế Vi Mô',
+          credits: 3,
+          status: 'Đang học',
+          finalScore10: 8.6,
+          aimScore10: 8.5,
+          semesterId: 'hk1',
+          components: [
+            { id: '1', name: 'Chuyên cần', weight: 10, score: 9.0 },
+            { id: '2', name: 'Kiểm tra quá trình', weight: 40, score: 8.5 },
+            { id: '3', name: 'Thi kết thúc học phần', weight: 50, score: 8.5 }
+          ]
+        }
+      ];
+
+      const stats = calculateGPAStats(mockCourses);
+      expect(stats.completedCredits).toBe(3);
+      expect(stats.actualGPA4).toBe(4.0);
+      expect(stats.actualScore10).toBe(8.6);
+      expect(stats.completedCoursesCount).toBe(1);
+    });
   });
 
   // =========================================================================

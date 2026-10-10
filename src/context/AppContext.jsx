@@ -191,7 +191,23 @@ export const AppProvider = ({ children }) => {
     });
     const [courses, setCourses] = useState(() => {
         const saved = localStorage.getItem('ueh_tracker_courses');
-        return saved ? JSON.parse(saved) : defaultCourses;
+        const list = saved ? JSON.parse(saved) : defaultCourses;
+        return list.map((c) => {
+            if (c.components && c.components.length > 0) {
+                const finalCalc = calculateCourseFinalScore(c.components);
+                if (finalCalc.score10 !== null) {
+                    const ueh = convertScore10ToUEH(finalCalc.score10);
+                    return {
+                        ...c,
+                        finalScore10: finalCalc.score10,
+                        gradeLetter: ueh.letter,
+                        gpa4: ueh.gpa4,
+                        status: finalCalc.isComplete ? 'Đã hoàn thành' : c.status
+                    };
+                }
+            }
+            return c;
+        });
     });
     // DRL Multi-Semester State
     const [drlSemesters, setDrlSemesters] = useState(() => {
@@ -619,13 +635,16 @@ export const AppProvider = ({ children }) => {
     };
     const addCourse = (courseData) => {
         const finalCalc = calculateCourseFinalScore(courseData.components);
-        const uehGrade = convertScore10ToUEH(finalCalc.score10 ?? courseData.aimScore10);
+        const hasScore = finalCalc.score10 !== null;
+        const uehGrade = convertScore10ToUEH(hasScore ? finalCalc.score10 : courseData.aimScore10);
+        const isComplete = (finalCalc.isComplete && hasScore) || courseData.status === 'Đã hoàn thành';
         const newCourse = {
             ...courseData,
             id: `course-${Date.now()}`,
+            status: isComplete ? 'Đã hoàn thành' : courseData.status,
             finalScore10: finalCalc.score10,
-            gradeLetter: uehGrade.letter,
-            gpa4: uehGrade.gpa4
+            gradeLetter: hasScore ? uehGrade.letter : (courseData.status === 'Đã hoàn thành' ? uehGrade.letter : '--'),
+            gpa4: hasScore ? uehGrade.gpa4 : 0
         };
         setCourses((prev) => [newCourse, ...prev]);
     };
@@ -641,6 +660,10 @@ export const AppProvider = ({ children }) => {
                     merged.finalScore10 = finalCalc.score10;
                     merged.gradeLetter = ueh.letter;
                     merged.gpa4 = ueh.gpa4;
+                    // Tự động đánh dấu hoàn thành môn nếu đã có đủ 100% điểm thành phần
+                    if (finalCalc.isComplete) {
+                        merged.status = 'Đã hoàn thành';
+                    }
                 }
             }
             return merged;
