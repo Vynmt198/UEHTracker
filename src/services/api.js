@@ -7,7 +7,7 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000,
+  timeout: 60000, // 60s timeout để hỗ trợ Render Free Tier Cold-Start (thường mất 30-50s)
 });
 
 // Request Interceptor: Tự động đính kèm Bearer JWT Token từ localStorage
@@ -22,7 +22,7 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Response Interceptor: Chuẩn hóa dữ liệu trả về và xử lý phiên hết hạn
+// Response Interceptor: Chuẩn hóa dữ liệu trả về và xử lý phiên hết hạn / Cold Start
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
@@ -30,7 +30,18 @@ apiClient.interceptors.response.use(
       localStorage.removeItem('ueh_tracker_token');
       localStorage.removeItem('ueh_tracker_user');
     }
-    const message = error.response?.data?.message || error.message || 'Lỗi kết nối máy chủ';
+
+    let message = error.response?.data?.message;
+    if (!message) {
+      if (error.code === 'ECONNABORTED' || error.message?.includes('timeout')) {
+        message = 'Máy chủ Backend đang khởi động lại từ trạng thái ngủ (Render Cold Start). Vui lòng đợi trong giây lát và thử lại!';
+      } else if (error.message === 'Network Error') {
+        message = 'Không thể kết nối đến máy chủ Backend (Network Error). Render có thể đang khởi động lại hoặc gặp sự cố mạng.';
+      } else {
+        message = error.message || 'Lỗi kết nối máy chủ';
+      }
+    }
+
     return Promise.reject(new Error(message));
   }
 );

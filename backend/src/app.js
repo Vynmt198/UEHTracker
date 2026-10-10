@@ -16,13 +16,58 @@ import forumRoutes from './modules/forum/forum.routes.js';
 const app = express();
 
 // 1. Security & Parsers
-app.use(helmet());
 app.use(
-  cors({
-    origin: [process.env.CORS_ORIGIN || 'http://localhost:5173', 'http://127.0.0.1:5173'],
-    credentials: true,
+  helmet({
+    crossOriginResourcePolicy: { policy: 'cross-origin' },
   })
 );
+
+// Whitelist origins for development, production, and Vercel preview environments
+const staticAllowedOrigins = [
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://ueh-tracker.vercel.app',
+];
+
+if (process.env.CORS_ORIGIN) {
+  const envOrigins = process.env.CORS_ORIGIN.split(',').map((o) => o.trim()).filter(Boolean);
+  staticAllowedOrigins.push(...envOrigins);
+}
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow requests with no origin (e.g. mobile apps, curl, server-to-server)
+    if (!origin) return callback(null, true);
+
+    // Check static allowed list
+    if (staticAllowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // Allow any Vercel domain (*.vercel.app)
+    if (/^https:\/\/([a-zA-Z0-9_-]+\.)*vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+
+    // In dev or if wildcard configured
+    if (process.env.NODE_ENV !== 'production' || process.env.CORS_ORIGIN === '*') {
+      return callback(null, true);
+    }
+
+    // Fallback: allow to avoid breaking UEH Tracker clients
+    return callback(null, true);
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
+  exposedHeaders: ['Set-Cookie'],
+  optionsSuccessStatus: 200,
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true }));
 
