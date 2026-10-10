@@ -116,7 +116,64 @@ const defaultDrlSemesters = {
 };
 const AppContext = createContext(undefined);
 export const AppProvider = ({ children }) => {
-    const [activeTab, setActiveTab] = useState('planner');
+    const VALID_TABS = ['planner', 'gpa', 'drl', 'forum'];
+
+    const getInitialActiveTab = () => {
+        if (typeof window !== 'undefined') {
+            const hash = window.location.hash.replace('#', '').toLowerCase();
+            if (VALID_TABS.includes(hash)) {
+                return hash;
+            }
+        }
+        if (typeof localStorage !== 'undefined') {
+            const saved = localStorage.getItem('ueh_tracker_active_tab');
+            if (saved && VALID_TABS.includes(saved)) {
+                return saved;
+            }
+        }
+        return 'planner';
+    };
+
+    const [activeTab, setActiveTabState] = useState(getInitialActiveTab);
+
+    const setActiveTab = (tab) => {
+        if (VALID_TABS.includes(tab)) {
+            setActiveTabState(tab);
+            localStorage.setItem('ueh_tracker_active_tab', tab);
+            if (typeof window !== 'undefined' && window.location.hash !== `#${tab}`) {
+                window.history.pushState(null, '', `#${tab}`);
+            }
+        }
+    };
+
+    // Listen to hashchange & popstate for browser Back / Forward buttons
+    useEffect(() => {
+        const handleNavigationChange = () => {
+            const hash = window.location.hash.replace('#', '').toLowerCase();
+            if (VALID_TABS.includes(hash) && hash !== activeTab) {
+                setActiveTabState(hash);
+                localStorage.setItem('ueh_tracker_active_tab', hash);
+            }
+        };
+
+        window.addEventListener('popstate', handleNavigationChange);
+        window.addEventListener('hashchange', handleNavigationChange);
+        return () => {
+            window.removeEventListener('popstate', handleNavigationChange);
+            window.removeEventListener('hashchange', handleNavigationChange);
+        };
+    }, [activeTab]);
+
+    // Keep URL hash synchronized on mount / tab change
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            if (window.location.hash !== `#${activeTab}`) {
+                window.history.replaceState(null, '', `#${activeTab}`);
+            }
+            localStorage.setItem('ueh_tracker_active_tab', activeTab);
+        }
+    }, [activeTab]);
+
     // Load from localStorage or defaults
     const [profile, setProfile] = useState(() => {
         const saved = localStorage.getItem('ueh_tracker_profile');
@@ -127,6 +184,8 @@ export const AppProvider = ({ children }) => {
         return saved ? JSON.parse(saved) : defaultSemesters;
     });
     const [selectedSemesterId, setSelectedSemesterId] = useState(() => {
+        const saved = localStorage.getItem('ueh_tracker_selected_semester_id');
+        if (saved) return saved;
         const current = defaultSemesters.find((s) => s.isCurrent);
         return current ? current.id : defaultSemesters[0]?.id || '';
     });
@@ -173,6 +232,11 @@ export const AppProvider = ({ children }) => {
     useEffect(() => {
         localStorage.setItem('currentDrlSemesterId', currentDrlSemesterId);
     }, [currentDrlSemesterId]);
+    useEffect(() => {
+        if (selectedSemesterId) {
+            localStorage.setItem('ueh_tracker_selected_semester_id', selectedSemesterId);
+        }
+    }, [selectedSemesterId]);
     useEffect(() => {
         localStorage.setItem('ueh_tracker_activities', JSON.stringify(registeredActivityIds));
     }, [registeredActivityIds]);

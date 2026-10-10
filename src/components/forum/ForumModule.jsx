@@ -34,7 +34,12 @@ export const ForumModule = () => {
   const [error, setError] = useState('');
   
   // Filters & Query
-  const [activeCategory, setActiveCategory] = useState('ALL');
+  const [activeCategory, setActiveCategory] = useState(() => {
+    return localStorage.getItem('ueh_tracker_forum_category') || 'ALL';
+  });
+  useEffect(() => {
+    localStorage.setItem('ueh_tracker_forum_category', activeCategory);
+  }, [activeCategory]);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedTag, setSelectedTag] = useState('');
   const [sortBy, setSortBy] = useState('newest');

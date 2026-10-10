@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { calculateGPAStats, convertScore10ToUEH, evaluateScholarship } from '../../utils/gpaCalculator';
 import { Calendar, Clock, MapPin, ArrowRight, Filter, Sliders, X } from 'lucide-react';
@@ -8,7 +8,12 @@ import { UEH_FACULTIES } from '../../data/uehFaculties';
 export const SmartPlanner = ({ isMainView = false }) => {
     const { profile, courses, updateCourse, allActivities, registeredActivityIds, toggleActivityRegistration, getDRLProgress, setActiveTab, selectedSemesterId } = useApp();
     // 3 Sub-tabs State: GPA Planner, DRL Strategy, Career & Growth
-    const [activeSubTab, setActiveSubTab] = useState('gpa');
+    const [activeSubTab, setActiveSubTab] = useState(() => {
+        return localStorage.getItem('ueh_tracker_planner_subtab') || 'gpa';
+    });
+    useEffect(() => {
+        localStorage.setItem('ueh_tracker_planner_subtab', activeSubTab);
+    }, [activeSubTab]);
     // Tab 1 state: Course selected for Aim adjustment modal
     const [editingAimCourse, setEditingAimCourse] = useState(null);
     const [tempAimScore, setTempAimScore] = useState(8.0);
