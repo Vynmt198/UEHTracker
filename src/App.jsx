@@ -66,20 +66,20 @@ const MainLayout = () => {
         </main>
 
         {/* Footer */}
-        <footer className="bg-white border-t border-slate-200 py-6 mt-12">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <div className="flex items-center gap-2.5">
+        <footer className="bg-white border-t border-slate-200 py-4 mt-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+            <div className="flex items-center gap-2">
               <img 
                 src="/logo.png" 
                 alt="UEH Tracker Logo" 
-                className="w-6 h-6 rounded-md object-contain" 
+                className="w-5 h-5 rounded object-contain" 
               />
-              <span className="font-semibold text-slate-800">UEH Tracker</span>
-              <span>• Dành riêng cho sinh viên Đại học Kinh tế TP. Hồ Chí Minh (UEH)</span>
+              <span className="font-semibold text-slate-700">UEH Tracker</span>
+              <span>• Đồng hành cùng sinh viên UEH</span>
             </div>
 
-            <div className="flex items-center gap-1 text-xs text-slate-500">
-              <span>Chuẩn hóa thang điểm 4.0 & quy chế ĐRL Đại học Kinh tế TP. Hồ Chí Minh</span>
+            <div className="text-[11px]">
+              <span>Chuẩn hóa thang điểm 4.0 & quy chế ĐRL UEH</span>
             </div>
           </div>
         </footer>

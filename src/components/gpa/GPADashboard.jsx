@@ -244,19 +244,16 @@ export const GPADashboard = () => {
           {/* Header & Quick Action Buttons */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                LỘ TRÌNH ĐÀO TẠO
-              </div>
-              <h2 className="text-base font-bold text-slate-900 mt-0.5 flex items-center gap-2">
-                <span>Tổng quan các học kỳ</span>
-                <span className="text-xs font-semibold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
-                  {semesters.length} học kỳ
+              <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <span>Học kỳ</span>
+                <span className="text-xs font-semibold text-slate-500 bg-slate-100 px-2 py-0.5 rounded-full border border-slate-200">
+                  {semesters.length} kỳ
                 </span>
               </h2>
             </div>
 
             <div className="flex items-center gap-2">
-              <button onClick={() => setShowSemesterModal(true)} className="btn-interactive-outline text-xs" title="Tạo học kỳ mới: Năm X - HK1/HK2 kèm Niên khóa">
+              <button onClick={() => setShowSemesterModal(true)} className="btn-interactive-outline text-xs">
                 <Plus className="w-3.5 h-3.5"/>
                 <span>Thêm học kỳ</span>
               </button>
@@ -268,23 +265,26 @@ export const GPADashboard = () => {
           </div>
 
           {/* Grid 2 hoặc 3 cột hiển thị từng học kỳ với 3 chỉ số then chốt */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
             {semesters.map((sem) => {
                 const isSelected = sem.id === currentSemester?.id;
                 const semCourses = courses.filter((c) => c.semesterId === sem.id);
                 const semCredits = semCourses.reduce((sum, c) => sum + c.credits, 0);
                 const semStats = calculateGPAStats(semCourses);
                 const isCompleted = semCourses.length > 0 && semCourses.every((c) => c.status === 'Đã hoàn thành');
-                const statusLabel = isCompleted ? 'Đã kết thúc' : 'Đang học';
-                return (<div key={sem.id} onClick={() => setSelectedSemesterId(sem.id)} className={`p-4 rounded-xl border transition-all duration-200 cursor-pointer flex flex-col justify-between ${isSelected
-                        ? 'bg-white border-[#49C8D6] shadow-sm ring-2 ring-[#49C8D6]/20'
-                        : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5'}`}>
+                const statusLabel = isCompleted ? 'Đã xong' : 'Đang học';
+                return (<div key={sem.id} onClick={() => setSelectedSemesterId(sem.id)} className={`p-3.5 rounded-xl border transition-all duration-150 cursor-pointer flex flex-col justify-between ${isSelected
+                        ? 'bg-white border-[#49C8D6] shadow-xs ring-2 ring-[#49C8D6]/30'
+                        : 'bg-white border-slate-200 hover:border-slate-300 hover:shadow-2xs'}`}>
                   <div>
                     {/* Header Thẻ: Tên kỳ, Niên khóa & Badge Trạng thái */}
-                    <div className="flex items-start justify-between gap-2 mb-3">
+                    <div className="flex items-start justify-between gap-2 mb-2">
                       <div>
-                        <h3 className="font-bold text-slate-900 text-sm">{sem.name}</h3>
-                        <p className="text-[11px] text-slate-400 font-medium">Niên khóa {sem.academicYear}</p>
+                        <h3 className="font-bold text-slate-900 text-sm flex items-center gap-1.5">
+                          {sem.name}
+                          {isSelected && <span className="w-1.5 h-1.5 rounded-full bg-[#49C8D6]" />}
+                        </h3>
+                        <p className="text-[11px] text-slate-400 font-normal">{sem.academicYear}</p>
                       </div>
 
                       <div className="flex items-center gap-1.5">
@@ -305,34 +305,27 @@ export const GPADashboard = () => {
                       </div>
                     </div>
 
-                    {/* 3 chỉ số then chốt: 1. Số môn học | 2. GPA kỳ đó (Hệ 4) | 3. Trạng thái (ở badge trên) & Tín chỉ */}
+                    {/* Chỉ số: Số môn & GPA Học kỳ */}
                     <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100">
-                      <div className="space-y-0.5">
-                        <span className="text-[10px] font-medium uppercase text-slate-400">Số môn học</span>
-                        <div className="text-sm font-bold text-slate-800">
-                          {semCourses.length} môn{' '}
-                          <span className="text-[11px] font-normal text-slate-400">({semCredits} TC)</span>
+                      <div>
+                        <span className="text-[10px] font-medium text-slate-400 block">Môn học</span>
+                        <div className="text-xs font-bold text-slate-800">
+                          {semCourses.length} môn <span className="text-slate-400 font-normal">({semCredits} TC)</span>
                         </div>
                       </div>
 
-                      <div className="space-y-0.5 text-right">
-                        <span className="text-[10px] font-medium uppercase text-slate-400">GPA Học kỳ</span>
-                        <div className="text-sm font-bold text-slate-900">
-                          {semStats.actualGPA4 > 0 ? (<>
-                              <span className="text-base text-slate-900 font-bold">{semStats.actualGPA4.toFixed(2)}</span>
-                              <span className="text-[11px] font-normal text-slate-400"> / 4.00</span>
-                            </>) : (<span className="text-slate-400 font-normal">-- / 4.00</span>)}
+                      <div className="text-right">
+                        <span className="text-[10px] font-medium text-slate-400 block">GPA kỳ</span>
+                        <div className="text-xs font-bold text-slate-900">
+                          {semStats.actualGPA4 > 0 ? (
+                            <span className="text-sm font-bold text-slate-900">{semStats.actualGPA4.toFixed(2)}</span>
+                          ) : (
+                            <span className="text-slate-400 font-normal">--</span>
+                          )}
+                          <span className="text-[10px] text-slate-400 font-normal"> / 4.0</span>
                         </div>
                       </div>
                     </div>
-                  </div>
-
-                  {/* Dòng điều hướng: Bấm vào thẻ để bung bảng chi tiết */}
-                  <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
-                    <span className={`text-[11px] font-medium ${isSelected ? 'text-[#007D8C] font-semibold' : 'text-slate-500'}`}>
-                      {isSelected ? '✓ Đang xem bảng điểm' : 'Bấm để xem chi tiết'}
-                    </span>
-                    <ChevronRight className={`w-3.5 h-3.5 transition-transform ${isSelected ? 'rotate-90 text-[#007D8C]' : 'text-slate-400'}`}/>
                   </div>
                 </div>);
             })}
@@ -342,29 +335,22 @@ export const GPADashboard = () => {
           {currentSemester && (<div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4 hover:border-slate-300 transition-colors">
               {/* Header chi tiết học kỳ */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-500">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">
-                    BẢNG ĐIỂM CHI TIẾT:
-                  </span>
+                <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
                   <span className="font-bold text-slate-900 text-sm">{currentSemester.name}</span>
                   <span className="text-slate-300">•</span>
-                  <span>
-                    NIÊN KHÓA: <strong className="text-slate-700 font-semibold">{currentSemester.academicYear}</strong>
-                  </span>
+                  <span className="text-slate-500">{currentSemester.academicYear}</span>
                   <span className="text-slate-300">•</span>
-                  <span>
-                    GPA KỲ:{' '}
-                    <strong className="text-slate-900 font-semibold">
-                      {semesterStats.actualGPA4 > 0 ? semesterStats.actualGPA4.toFixed(2) : '--'}
-                    </strong>
+                  <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold text-[11px]">
+                    GPA: {semesterStats.actualGPA4 > 0 ? semesterStats.actualGPA4.toFixed(2) : '--'}
                   </span>
-                  <span className="text-slate-300">•</span>
-                  <span>{semesterStats.totalPlannedCredits} TÍN CHỈ</span>
+                  <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-700 font-semibold text-[11px]">
+                    {semesterStats.totalPlannedCredits} tín chỉ
+                  </span>
                 </div>
 
                 <button onClick={() => setShowCourseAddModal(true)} className="btn-interactive-primary text-xs shrink-0 self-end sm:self-auto">
                   <Plus className="w-3.5 h-3.5"/>
-                  <span>Thêm môn vào kỳ này</span>
+                  <span>Thêm môn học</span>
                 </button>
               </div>
 

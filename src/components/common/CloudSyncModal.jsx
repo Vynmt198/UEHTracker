@@ -90,10 +90,10 @@ export const CloudSyncModal = ({ isOpen, onClose }) => {
               <Cloud className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-base font-semibold text-white tracking-tight">Đồng bộ Neon Cloud</h3>
+              <h3 className="text-base font-semibold text-white tracking-tight">Đồng bộ Đám mây</h3>
               <div className="flex items-center gap-1.5 text-[11px] text-slate-300">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                <span>Postgres: <strong className="text-emerald-400 font-mono">flat-band-12164942</strong> (production)</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                <span>Sao lưu an toàn cho tài khoản UEH</span>
               </div>
             </div>
           </div>
@@ -199,7 +199,7 @@ export const CloudSyncModal = ({ isOpen, onClose }) => {
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-xs transition-all disabled:opacity-50"
                 >
                   <UploadCloud className={`w-4 h-4 ${isSyncing ? 'animate-bounce' : ''}`} />
-                  {isSyncing ? 'Đang đồng bộ...' : 'Đẩy dữ liệu hiện tại lên Cloud (Push)'}
+                  {isSyncing ? 'Đang lưu...' : 'Lưu dữ liệu lên Cloud'}
                 </button>
 
                 <button
@@ -208,7 +208,7 @@ export const CloudSyncModal = ({ isOpen, onClose }) => {
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 rounded-xl text-xs font-semibold transition-all disabled:opacity-50"
                 >
                   <DownloadCloud className="w-4 h-4 text-[#49C8D6]" />
-                  Tải dữ liệu từ Neon Cloud về máy (Pull)
+                  Tải dữ liệu từ Cloud về máy
                 </button>
               </div>
 

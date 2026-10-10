@@ -328,32 +328,41 @@ export const SmartPlanner = ({ isMainView = false }) => {
                 </span>
               </div>
               <div className="mt-2">
-                <div className="text-sm font-bold text-slate-900">
-                  Mục tiêu: Học bổng {profile.scholarshipTierTarget || 'Xuất sắc'}
+                <div className="text-xs font-bold text-slate-900">
+                  Mục tiêu: {profile.scholarshipTierTarget || 'Xuất sắc'}
                 </div>
-                <p className="text-[11px] text-slate-500 mt-1 leading-relaxed">
-                  {scholarship.description}
-                </p>
+                <details className="mt-1 text-[11px] text-slate-500 group">
+                  <summary className="cursor-pointer text-[#007D8C] hover:underline font-medium list-none flex items-center justify-between select-none">
+                    <span>Xem tiêu chuẩn</span>
+                    <span className="group-open:rotate-180 transition-transform text-[9px]">▼</span>
+                  </summary>
+                  <p className="mt-1 pt-1 border-t border-slate-100 leading-relaxed text-slate-600">
+                    {scholarship.description}
+                  </p>
+                </details>
               </div>
             </div>
           </div>
 
-          {/* Mascot Guidance Banner - Pure White with #49C8D6 left border */}
-          <div className="p-4 bg-white border border-slate-200/80 border-l-4 border-l-[#49C8D6] rounded-2xl shadow-xs flex items-center gap-4">
-            <Mascot pose="inspect" size="md"/>
-            <div>
-              <h3 className="font-semibold text-slate-900 text-sm">
-                {isGpaOnTrack
-                ? 'GPA đang trong ngưỡng an toàn mục tiêu'
-                : 'Kipo đã phân tích và tìm thấy điểm nghẽn học phần!'}
-              </h3>
-              <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                {isGpaOnTrack
+          {/* Collapsible Guidance Bar */}
+          <details className="group bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden" open={!isGpaOnTrack}>
+            <summary className="p-3 cursor-pointer flex items-center justify-between select-none hover:bg-slate-50/80 transition-colors">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">💡</span>
+                <span className="text-xs font-semibold text-slate-900">
+                  {isGpaOnTrack
+                    ? 'GPA trong ngưỡng an toàn mục tiêu'
+                    : 'Gợi ý giải cứu môn học điểm nghẽn'}
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="px-3.5 pb-2.5 pt-1 text-xs text-slate-600 border-t border-slate-100 leading-relaxed">
+              {isGpaOnTrack
                 ? 'Tiếp tục duy trì tiến độ thi cuối kỳ để bảo toàn điểm số. Kiểm tra danh sách môn học bên dưới để tối ưu hóa điểm số.'
                 : 'Hãy xem kỹ các môn học cần giải cứu bên dưới để tập trung kéo điểm thi kết thúc học phần.'}
-              </p>
             </div>
-          </div>
+          </details>
 
           {/* Bottleneck Subjects Section */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5">
@@ -449,18 +458,23 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {/* 3. SUB-TAB 2: CHIẾN LƯỢC ĐRL (DRL STRATEGY & GAP AUDIT) */}
       {/* ========================================================================= */}
       {activeSubTab === 'drl' && (<div className="space-y-4">
-          {/* Mascot Guidance Banner */}
-          <div className="p-4 bg-white border border-slate-200/80 border-l-4 border-l-[#49C8D6] rounded-2xl shadow-xs flex items-center gap-4">
-            <Mascot pose="proud" size="md"/>
-            <div>
-              <h3 className="font-semibold text-slate-900 text-sm">
-                Chiến lược rèn luyện thông minh: Tránh thừa điểm, bù đúng thâm hụt
-              </h3>
-              <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                ĐRL UEH tính trên 5 mục lớn với mức sàn 50 điểm khởi đầu. Hãy kiểm tra các mục còn thiếu điểm bên dưới và lọc hoạt động theo thời gian rảnh của bạn.
-              </p>
+          {/* Collapsible Guidance Bar */}
+          <details className="group bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden" open={!isDrlOnTrack}>
+            <summary className="p-3 cursor-pointer flex items-center justify-between select-none hover:bg-slate-50/80 transition-colors">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">🎯</span>
+                <span className="text-xs font-semibold text-slate-900">
+                  {isDrlOnTrack
+                    ? 'Điểm rèn luyện đã đạt mục tiêu'
+                    : `Chiến lược bù thâm hụt (Thiếu ${drlDeficit}đ)`}
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="px-3.5 pb-2.5 pt-1 text-xs text-slate-600 border-t border-slate-100 leading-relaxed">
+              ĐRL UEH tính trên 5 mục với mức sàn 50 điểm khởi đầu. Hãy kiểm tra các mục còn thiếu bên dưới và lọc hoạt động theo thời gian rảnh.
             </div>
-          </div>
+          </details>
 
           {/* Gap Audit Cards (5 Main Criteria) */}
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5">
@@ -652,18 +666,21 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {/* 4. SUB-TAB 3: ĐỊNH HƯỚNG CÁ NHÂN (CAREER & GROWTH) */}
       {/* ========================================================================= */}
       {activeSubTab === 'growth' && (<div className="space-y-4">
-          {/* Mascot Guidance Banner */}
-          <div className="p-4 bg-white border border-slate-200/80 border-l-4 border-l-[#49C8D6] rounded-2xl shadow-xs flex items-center gap-4">
-            <Mascot pose="proud" size="md"/>
-            <div>
-              <h3 className="font-semibold text-slate-900 text-sm">
-                Định hướng cá nhân: Phát triển toàn diện kỹ năng & chuyên môn
-              </h3>
-              <p className="text-xs text-slate-600 mt-0.5 leading-relaxed">
-                Dành cho sinh viên khi GPA & ĐRL đã ổn thỏa hoặc muốn mở rộng cơ hội việc làm, nghiên cứu khoa học và kết nối doanh nghiệp.
-              </p>
+          {/* Collapsible Guidance Bar */}
+          <details className="group bg-white border border-slate-200/80 rounded-xl shadow-xs overflow-hidden">
+            <summary className="p-3 cursor-pointer flex items-center justify-between select-none hover:bg-slate-50/80 transition-colors">
+              <div className="flex items-center gap-2">
+                <span className="text-sm">🚀</span>
+                <span className="text-xs font-semibold text-slate-900">
+                  Định hướng cá nhân: Nghiên cứu khoa học & Kỹ năng
+                </span>
+              </div>
+              <span className="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+            </summary>
+            <div className="px-3.5 pb-2.5 pt-1 text-xs text-slate-600 border-t border-slate-100 leading-relaxed">
+              Mở rộng cơ hội việc làm, nghiên cứu khoa học và kết nối doanh nghiệp theo chuyên ngành của bạn.
             </div>
-          </div>
+          </details>
 
           <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5 space-y-4">
             {/* Header and Faculty Filter */}
@@ -769,34 +786,32 @@ export const SmartPlanner = ({ isMainView = false }) => {
           </div>
         </div>)}
 
-      {/* ========================================================================= */}
-      {/* 5. COMMON FOOTER WIDGET: TOP 1 PRIORITY & DEADLINE REMINDER */}
-      {/* ========================================================================= */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
+      {/* 5. Gợi ý ưu tiên tuần này (Gọn gàng) */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
         {/* Card 1: Top 1 Priority */}
-        <div className="bg-white rounded-xl border border-slate-200/80 p-4 shadow-xs flex items-start gap-3">
-          <div className="w-2 h-2 rounded-full bg-[#007D8C] shrink-0 mt-1.5"/>
-          <div className="space-y-1">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-xs flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-[#007D8C] shrink-0" />
+          <div className="min-w-0">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              ƯU TIÊN SỐ 1 TUẦN NÀY
+              Ưu tiên tuần này
             </span>
-            <p className="text-xs text-slate-800 font-medium leading-relaxed">
+            <p className="text-xs text-slate-800 font-medium line-clamp-2">
               {top1PriorityText}
             </p>
           </div>
         </div>
 
         {/* Card 2: Deadline Reminder */}
-        <div className="bg-white rounded-xl border border-slate-200/80 p-4 shadow-xs flex items-start gap-3">
-          <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0 mt-1.5"/>
-          <div className="space-y-1">
+        <div className="bg-white rounded-xl border border-slate-200/80 p-3.5 shadow-xs flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-amber-500 shrink-0" />
+          <div className="min-w-0">
             <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 block">
-              NHẮC NHỞ HẠN CHÓT & TIẾN ĐỘ
+              Tiến độ hoạt động
             </span>
-            <p className="text-xs text-slate-800 font-medium leading-relaxed">
+            <p className="text-xs text-slate-800 font-medium line-clamp-2">
               {registeredCount > 0
-            ? `Bạn đang có ${registeredCount} hoạt động đã đăng ký. Hãy kiểm tra thời gian và địa điểm tham gia để hoàn thành điểm danh.`
-            : 'Chưa có hoạt động nào được đăng ký tuần này. Hãy chọn các hoạt động thuộc Mục 2 hoặc Mục 3 để bù thâm hụt rèn luyện.'}
+                ? `${registeredCount} hoạt động đã đăng ký. Nhớ tham gia đúng giờ để điểm danh!`
+                : 'Chưa đăng ký hoạt động nào. Hãy chọn hoạt động bù điểm còn thiếu.'}
             </p>
           </div>
         </div>

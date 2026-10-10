@@ -106,13 +106,19 @@ export const DRLOverview = ({ onSwitchToActivities }) => {
               </div>
             </div>
 
-            {/* Base 50 points explanation badge */}
-            <div className="mt-3 flex items-center gap-1.5 text-[11px] text-slate-600 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-              <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 shrink-0"/>
-              <span>
-                <strong>Điểm sàn UEH:</strong> Sẵn <strong>50đ</strong> đầu mỗi kỳ (M1: 15đ • M2: 10đ • M3: 5đ • M4: 10đ • M5: 10đ). Xếp loại tối thiểu là <strong>Trung bình</strong>.
-              </span>
-            </div>
+            {/* Base 50 points collapsible info */}
+            <details className="mt-3 group text-[11px] text-slate-600 bg-slate-50 rounded-lg border border-slate-100 overflow-hidden">
+              <summary className="px-3 py-1.5 cursor-pointer flex items-center justify-between select-none hover:bg-slate-100/60 transition-colors">
+                <span className="flex items-center gap-1.5 font-medium text-slate-700">
+                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 shrink-0"/>
+                  <span>Sàn 50đ UEH (Tối thiểu: Trung bình)</span>
+                </span>
+                <span className="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
+              </summary>
+              <div className="px-3 pb-2 pt-1 text-slate-500 border-t border-slate-100/60 leading-relaxed">
+                Khởi đầu mỗi kỳ sinh viên có sẵn 50đ chia đều 5 mục: M1 (15đ) • M2 (10đ) • M3 (5đ) • M4 (10đ) • M5 (10đ).
+              </div>
+            </details>
           </div>
 
           {/* Global Progress Bar with 6 UEH Milestones */}
