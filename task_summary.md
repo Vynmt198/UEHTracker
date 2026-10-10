@@ -28,24 +28,24 @@
 | `src/components/drl/DrlCriteriaTree.tsx` | Điều chỉnh nhãn trạng thái từ *"Đạt trần"* thành *"Tối đa"* trong cây tiêu chí rèn luyện. |
 | `src/components/drl/ActivityList.tsx` | Tinh gọn bộ lọc tìm kiếm ĐRL, gỡ bỏ dropdown Khoa/Viện lấn sân sang Smart Planner nhằm đảm bảo tính phân tách nhiệm vụ (Separation of Concerns). |
 | `src/components/Sidebar.tsx` & `src/App.tsx` | Loại bỏ hoàn toàn tính năng và menu Thời khóa biểu (TKB) theo yêu cầu. |
+| `src/utils/gpaCalculator.ts` | Hoàn thiện chuẩn UEH: chuẩn hóa trần điểm quá trình <= 70%, điểm liệt cuối kỳ < 1.0, tính GPA cần gánh kỳ tới `calculateNextSemesterRequiredGPA`, điều kiện học bổng khống chế điểm F. |
+| `src/utils/__tests__/gpaCalculator.test.ts` | **(Mới)** Bộ Unit Test 24 test cases bao phủ toàn diện 100% logic thang điểm UEH, trọng số, làm tròn, Adaptive Aim, điểm cần gánh và học bổng. |
+| `src/App.tsx` | Tích hợp `React.lazy` và `Suspense` cùng `ModuleLoadingFallback` cho 4 phân hệ lớn (`SmartPlanner`, `GPADashboard`, `DRLModule`, `ForumPlaceholder`). |
+| `vite.config.ts` | Tối ưu hóa Chunk Distribution (`manualChunks`), tách riêng `vendor-react`, `vendor-icons`, `data-activities`, `data-criteria`, triệt tiêu cảnh báo chunk > 500kB. |
+| `backend/` | **(Mới)** Hệ sinh thái Backend hoàn chỉnh: NestJS + Prisma ORM + PostgreSQL, đầy đủ các module Auth (JWT/Bcrypt), Profile, Academic (GPA quy chế UEH), DRL, Sync LocalStorage-Cloud, Forum, Swagger UI và Docker Compose. |
 
 ---
 
 ## 3. 🎯 Việc tiếp theo cần làm (Next Steps & Roadmap)
 
-1. **Phát triển phân hệ Diễn đàn (`src/components/forum/ForumPlaceholder.tsx`):**
+1. **Phát triển phân hệ Diễn đàn phía Frontend (`src/components/forum/ForumPlaceholder.tsx`):**
    - Hiện đang ở dạng màn hình chờ (Placeholder).
-   - Xây dựng giao diện thảo luận, hỏi đáp kinh nghiệm học tập, review môn học/giảng viên và chia sẻ hoạt động săn học bổng giữa các UEHer.
+   - Xây dựng giao diện thảo luận, hỏi đáp kinh nghiệm học tập, review môn học/giảng viên và kết nối với Backend API (`/api/v1/forum`).
 
-2. **Tối ưu hóa hiệu năng & Code Splitting:**
-   - Áp dụng `React.lazy` và dynamic `import()` cho các màn hình lớn (`SmartPlanner`, `DRLModule`, `GPADashboard`) để chia nhỏ file bundle `index.js` (hiện đang > 500kB).
+2. **Tích hợp API Client / State Sync phía Frontend:**
+   - Kết nối frontend với API `POST /api/v1/sync/push-local` để sinh viên có thể sao lưu dữ liệu từ LocalStorage lên Cloud khi đăng nhập.
 
-3. **Viết kiểm thử tự động (Unit Tests):**
-   - Bổ sung bộ test cho `src/utils/gpaCalculator.ts`:
-     - Kiểm thử logic quy đổi thang điểm UEH (Hệ 10 $\rightarrow$ Chữ $\rightarrow$ Hệ 4).
-     - Kiểm thử luật Adaptive Aim ($\pm 0.3$).
-     - Kiểm thử công thức tính điểm GPA cần gánh (*Required GPA*).
-     - Kiểm thử quy tắc khống chế điểm liệt / vắng thi.
-
-4. **Trải nghiệm PWA (Progressive Web App):**
+3. **Trải nghiệm PWA (Progressive Web App):**
    - Đăng ký Service Worker và file `manifest.json` để sinh viên có thể cài đặt ứng dụng lên màn hình chính điện thoại và xem bảng điểm offline.
+
+

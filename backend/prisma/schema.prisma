@@ -1,0 +1,234 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// =========================================================================
+// 1. USER & PROFILE MODELS
+// =========================================================================
+
+enum Role {
+  STUDENT
+  ADMIN
+}
+
+model User {
+  id               String          @id @default(uuid())
+  email            String          @unique
+  passwordHash     String
+  role             Role            @default(STUDENT)
+  refreshTokenHash String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  profile          StudentProfile?
+  semesters        Semester[]
+  courses          Course[]
+  drlRecords       DrlRecord[]
+  forumPosts       ForumPost[]
+  forumComments    ForumComment[]
+  postVotes        PostVote[]
+
+  @@index([email])
+}
+
+model StudentProfile {
+  id                   String    @id @default(uuid())
+  userId               String    @unique
+  user                 User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  fullName             String
+  studentId            String?   // MSSV (e.g. 31231020000)
+  facultyId            String?
+  faculty              Faculty?  @relation(fields: [facultyId], references: [id], onDelete: SetNull)
+  major                String?   // Chuyên ngành
+  cohort               String?   // Khóa (K48, K49, K50...)
+  classCode            String?   // Lớp sinh hoạt
+
+  targetGPA            Float     @default(3.60)
+  targetDRL            Int       @default(85)
+  totalRequiredCredits Int       @default(125)
+  
+  studyHabits          String?
+  freeTimeSlots        String[]  @default([])
+  isOnboarded          Boolean   @default(false)
+
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+model Faculty {
+  id        String           @id @default(uuid())
+  code      String           @unique
+  name      String           @unique
+  majors    String[]         @default([])
+  profiles  StudentProfile[]
+  createdAt DateTime         @default(now())
+}
+
+// =========================================================================
+// 2. ACADEMIC & GPA STRUCTURE
+// =========================================================================
+
+enum CourseStatus {
+  CHUA_HOC        // Chưa học
+  DANG_HOC        // Đang học
+  DA_HOAN_THANH   // Đã hoàn thành
+}
+
+model Semester {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  name         String     // VD: "Năm 1 - HK1", "Năm 2 - HK2"
+  academicYear String     // VD: "2024-2025"
+  order        Int        @default(1)
+  isCurrent    Boolean    @default(false)
+  isCompleted  Boolean    @default(false)
+  
+  courses      Course[]
+  drlRecords   DrlRecord[]
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([userId, order])
+}
+
+model Course {
+  id           String           @id @default(uuid())
+  semesterId   String
+  semester     Semester         @relation(fields: [semesterId], references: [id], onDelete: Cascade)
+  userId       String
+  user         User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  code         String?          // Mã học phần (VD: ECO501)
+  name         String           // Tên môn học
+  credits      Int              @default(3)
+  status       CourseStatus     @default(DANG_HOC)
+  aimScore10   Float            @default(8.0)
+  finalScore10 Float?
+  letterGrade  String?          // A+, A, B+, B, C+, C, D+, D, F+, F
+  gpa4         Float?
+  notes        String?
+
+  components   ScoreComponent[]
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  @@index([userId, semesterId])
+}
+
+model ScoreComponent {
+  id        String   @id @default(uuid())
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+
+  name      String   // Điểm quá trình, Điểm kết thúc học phần, v.v.
+  weight    Float    // Phần trăm (VD: 10, 40, 50)
+  score     Float?   // Thang điểm 10 (null nếu chưa có)
+  isAbsent  Boolean  @default(false)
+  isExempt  Boolean  @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([courseId])
+}
+
+// =========================================================================
+// 3. DIEM REN LUYEN (DRL) MODULE
+// =========================================================================
+
+model DrlRecord {
+  id            String    @id @default(uuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  semesterId    String?
+  semester      Semester? @relation(fields: [semesterId], references: [id], onDelete: SetNull)
+
+  criterionId   String    // Mục quy chế UEH: "1", "1.1", "2", "3", "4", "5"
+  activityTitle String
+  pointsEarned  Int       @default(0)
+  proofUrl      String?
+  isManual      Boolean   @default(false)
+  dateRecorded  DateTime  @default(now())
+  createdAt     DateTime  @default(now())
+
+  @@index([userId, semesterId])
+}
+
+// =========================================================================
+// 4. FORUM & DISCUSSION MODULE
+// =========================================================================
+
+enum ForumCategory {
+  GOC_HOC_TAP       // Góc học tập
+  SAN_HOC_BONG      // Săn học bổng
+  REVIEW_MON_HOC    // Review môn học & giảng viên
+  HOI_DAP           // Hỏi đáp chung
+}
+
+enum VoteType {
+  UPVOTE
+  DOWNVOTE
+}
+
+model ForumPost {
+  id            String         @id @default(uuid())
+  authorId      String
+  author        User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  title         String
+  content       String         @db.Text
+  category      ForumCategory  @default(HOI_DAP)
+  tags          String[]       @default([])
+  viewsCount    Int            @default(0)
+  upvotesCount  Int            @default(0)
+  downvotesCount Int           @default(0)
+
+  comments      ForumComment[]
+  votes         PostVote[]
+
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([category, createdAt])
+  @@index([authorId])
+}
+
+model ForumComment {
+  id        String         @id @default(uuid())
+  postId    String
+  post      ForumPost      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId  String
+  author    User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
+
+  parentId  String?
+  parent    ForumComment?  @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   ForumComment[] @relation("CommentReplies")
+
+  content   String         @db.Text
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+
+  @@index([postId, createdAt])
+}
+
+model PostVote {
+  id        String    @id @default(uuid())
+  postId    String
+  post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      VoteType
+
+  createdAt DateTime  @default(now())
+
+  @@unique([postId, userId])
+}
