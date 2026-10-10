@@ -40,18 +40,18 @@ const MainLayout = () => {
   }, [profile.isOnboarded]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 text-slate-800">
-      {/* 1. Menu thanh trượt có thể đóng mở (Collapsible Slide Bar) */}
+    <div className="min-h-screen flex flex-col academic-grid-bg text-slate-800 selection:bg-[#49C8D6]/20 selection:text-[#0B2545]">
+      {/* 1. Floating Sidebar khoang điều hướng hiện đại */}
       <Sidebar
         isCollapsed={isCollapsed}
         onToggleCollapse={() => setIsCollapsed(!isCollapsed)}
         onOpenOnboarding={() => setShowOnboarding(true)}
       />
 
-      {/* Main Content Area with dynamic transition for sidebar */}
+      {/* Main Content Area with dynamic transition for floating sidebar */}
       <div
         className={`flex-1 flex flex-col transition-all duration-300 ease-in-out ${
-          isCollapsed ? 'md:pl-20' : 'md:pl-64'
+          isCollapsed ? 'md:pl-28' : 'md:pl-72'
         }`}
       >
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
@@ -65,21 +65,23 @@ const MainLayout = () => {
           </Suspense>
         </main>
 
-        {/* Footer */}
-        <footer className="bg-white border-t border-slate-200 py-4 mt-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-400">
+        {/* Footer Glassmorphism */}
+        <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/80 py-4 mt-8">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
             <div className="flex items-center gap-2">
               <img 
                 src="/logo.png" 
                 alt="UEH Tracker Logo" 
-                className="w-5 h-5 rounded object-contain" 
+                className="w-5 h-5 rounded object-contain shadow-xs" 
               />
-              <span className="font-semibold text-slate-700">UEH Tracker</span>
-              <span>• Đồng hành cùng sinh viên UEH</span>
+              <span className="font-bold text-[#0B2545]">UEH Tracker</span>
+              <span className="text-slate-400">•</span>
+              <span className="text-slate-600 font-medium">Đồng hành cùng sinh viên UEH</span>
             </div>
 
-            <div className="text-[11px]">
-              <span>Chuẩn hóa thang điểm 4.0 & quy chế ĐRL UEH</span>
+            <div className="flex items-center gap-2 text-[11px] font-medium text-slate-500">
+              <span className="px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">Thang điểm 4.0</span>
+              <span className="px-2 py-0.5 rounded-full bg-cyan-50 border border-cyan-200/60 text-[#0c727d]">Quy chế ĐRL UEH</span>
             </div>
           </div>
         </footer>

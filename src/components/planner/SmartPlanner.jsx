@@ -218,32 +218,34 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {/* ========================================================================= */}
       {/* 1. HEADER & SUB-NAVIGATION BAR */}
       {/* ========================================================================= */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-xs p-5">
+      {/* 1. HEADER & SUB-TABS SELECTOR                                            */}
+      {/* ========================================================================= */}
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-card p-5 sm:p-6">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#0B2545] to-[#132E59] text-white flex items-center justify-center shrink-0 ring-2 ring-[#49C8D6]/30 shadow-2xs">
               <IconAcademicCap className="w-5 h-5 text-[#49C8D6]"/>
             </div>
             <div>
-              <div className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+              <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#49C8D6]">
                 UEH SMART PLANNER
               </div>
-              <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
+              <h1 className="text-base sm:text-lg font-extrabold text-[#0B2545] tracking-tight">
                 Lộ trình học tập & rèn luyện
               </h1>
             </div>
           </div>
 
-          {/* Clean SaaS Status Indicator */}
+          {/* Student Badge Indicator */}
           <div className="flex items-center gap-2 self-start sm:self-auto">
             <span className="text-xs text-slate-500 font-medium">Hồ sơ:</span>
-            <span className="text-xs font-semibold text-slate-800 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
-              {profile.cohort} • {profile.faculty}
+            <span className="text-xs font-bold text-[#0B2545] bg-[#E0F7FA]/50 px-2.5 py-1 rounded-lg border border-[#49C8D6]/30 shadow-2xs">
+              {profile.cohort || 'K49'} • {profile.faculty || 'CNTT Kinh doanh'}
             </span>
           </div>
         </div>
 
-        {/* 3 Sub-Tabs Pill Selector (Strictly text-only / clean dot, NO EMOJI) */}
+        {/* 3 Sub-Tabs Pill Selector */}
         <div className="pt-4 flex flex-wrap items-center gap-1.5 sm:gap-2">
           {[
             { id: 'gpa', label: 'Kế hoạch GPA' },
@@ -251,10 +253,10 @@ export const SmartPlanner = ({ isMainView = false }) => {
             { id: 'growth', label: 'Định hướng cá nhân' }
         ].map((tab) => {
             const isActive = activeSubTab === tab.id;
-            return (<button key={tab.id} type="button" onClick={() => setActiveSubTab(tab.id)} className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium transition-all flex items-center gap-2 ${isActive
-                    ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                    : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200/70'}`}>
-                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-[#49C8D6]' : 'bg-slate-400'}`}/>
+            return (<button key={tab.id} type="button" onClick={() => setActiveSubTab(tab.id)} className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center gap-2 ${isActive
+                    ? 'bg-gradient-to-r from-[#0B2545] to-[#132E59] text-white shadow-card border border-[#49C8D6]/40'
+                    : 'bg-slate-100/90 text-slate-600 hover:text-[#0B2545] hover:bg-slate-200/80'}`}>
+                <span className={`w-1.5 h-1.5 rounded-full ${isActive ? 'bg-[#49C8D6] shadow-cyan-glow' : 'bg-slate-400'}`}/>
                 <span>{tab.label}</span>
               </button>);
         })}
