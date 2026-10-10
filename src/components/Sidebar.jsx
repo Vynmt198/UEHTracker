@@ -78,25 +78,6 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
           </button>
         </div>
 
-        {/* Student Mini Profile Card (Header thu nhỏ với Badge K49 / Khoa) */}
-        {!isCollapsed && (
-          <div className="px-3 pt-3">
-            <div className="p-2.5 rounded-xl bg-gradient-to-br from-slate-50 to-[#E0F7FA]/30 border border-slate-200/80 flex items-center justify-between">
-              <div className="min-w-0 pr-2">
-                <p className="text-[10px] text-slate-500 font-medium truncate">Sinh viên UEH</p>
-                <p className="text-xs font-bold text-[#0B2545] truncate">{profile.name || 'UEH Student'}</p>
-              </div>
-              <div className="flex items-center gap-1 shrink-0">
-                <span className="px-1.5 py-0.5 rounded-md text-[9.5px] font-extrabold bg-[#F2A900] text-slate-950 shadow-2xs">
-                  {profile.cohort || 'K49'}
-                </span>
-                <span className="px-1.5 py-0.5 rounded-md text-[9.5px] font-bold bg-[#0B2545] text-[#49C8D6] border border-[#132E59]">
-                  {profile.faculty ? profile.faculty.split(' ')[0] : 'CNTT'}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
 
         {/* Navigation Items */}
         <nav className="p-3 space-y-1.5">

@@ -3,9 +3,9 @@ import { useApp } from '../../context/AppContext';
 import { ManualAdjustmentModal, cleanCriterionTitle } from './ManualAdjustmentModal';
 import { SemesterModal } from '../gpa/SemesterModal';
 import { DrlCriteriaTree } from './DrlCriteriaTree';
-import { Award, Plus, Trash2, Sparkles, Calendar, TrendingUp, TrendingDown, Minus, ShieldCheck } from 'lucide-react';
+import { Award, Plus, Trash2, Sparkles, Calendar, TrendingUp, TrendingDown, Minus } from 'lucide-react';
 export const DRLOverview = ({ onSwitchToActivities }) => {
-    const { semesters, addSemester, currentDrlSemesterId, setCurrentDrlSemesterId, getDRLProgress, getAllSemestersDRL, manualAdjustments, addManualAdjustment, deleteManualAdjustment } = useApp();
+    const { semesters, addSemester, currentDrlSemesterId, setCurrentDrlSemesterId, getDRLProgress, getAllSemestersDRL, manualAdjustments, addManualAdjustment, deleteManualAdjustment, profile } = useApp();
     const [showManualModal, setShowManualModal] = useState(false);
     const [showSemesterModal, setShowSemesterModal] = useState(false);
     const { totalDRL, rank, criteriaList } = getDRLProgress(currentDrlSemesterId);
@@ -65,113 +65,64 @@ export const DRLOverview = ({ onSwitchToActivities }) => {
 
       {/* 2. Top Grid: Main Scorecard & Semester Comparison Card */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        {/* Left: Main Scorecard for Selected Semester (Col 1-7 or 8) */}
-        <div className="lg:col-span-7 xl:col-span-8 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-card !p-5 flex flex-col justify-between hover:border-[#49C8D6]/50 transition-all duration-200">
-          <div>
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
-              <div className="flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0B2545] to-[#132E59] text-white flex flex-col items-center justify-center shrink-0 shadow-card ring-2 ring-[#49C8D6]/30">
-                  <span className="text-2xl font-black tracking-tight text-[#49C8D6]">{totalDRL}</span>
-                  <span className="text-[9px] text-slate-300 font-mono">/ 100</span>
-                </div>
-
-                <div>
-                  <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#49C8D6]">
-                    ĐIỂM RÈN LUYỆN UEH
-                  </div>
-                  <div className="flex items-center gap-2 mt-0.5 flex-wrap">
-                    <h2 className="text-base font-extrabold text-[#0B2545]">
-                      {currentSemester?.name || 'Học kỳ hiện tại'}
-                    </h2>
-                    {currentSemester?.academicYear && (<span className="text-xs text-slate-500 font-medium">
-                        ({currentSemester.academicYear})
-                      </span>)}
-                    <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border shadow-2xs ${getRankBadgeClass(rank)}`}>
-                      {rank}
-                    </span>
-                  </div>
-                </div>
+        {/* Left: Main Scorecard for Selected Semester */}
+        <div className="lg:col-span-6 xl:col-span-7 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-card p-5 flex flex-col justify-between hover:border-[#49C8D6]/50 transition-all duration-200 overflow-hidden">
+          {/* Header */}
+          <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+            <div className="flex items-center gap-2">
+              <div className="p-1.5 rounded-lg bg-[#0B2545] text-[#49C8D6] shadow-2xs">
+                <Award className="w-4 h-4" />
               </div>
-
-              <div className="flex items-center gap-2 w-full sm:w-auto">
-                <button onClick={() => setShowManualModal(true)} className="btn-interactive-outline flex-1 sm:flex-none text-xs">
-                  <Plus className="w-3.5 h-3.5"/>
-                  <span>Ghi nhận (+/-)</span>
-                </button>
-
-                <button onClick={onSwitchToActivities} className="btn-interactive-gold flex-1 sm:flex-none text-xs font-bold">
-                  <Sparkles className="w-3.5 h-3.5"/>
-                  <span>Hoạt động</span>
-                </button>
+              <div>
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-[#0B2545]">
+                  ĐIỂM RÈN LUYỆN UEH
+                </span>
+                <span className="block text-[10px] text-slate-400 font-medium">
+                  {currentSemester?.academicYear || 'Học kỳ chính quy'}
+                </span>
               </div>
             </div>
-
-            {/* Base 50 points collapsible info */}
-            <details className="mt-3 group text-[11px] text-slate-600 bg-slate-50 rounded-lg border border-slate-100 overflow-hidden">
-              <summary className="px-3 py-1.5 cursor-pointer flex items-center justify-between select-none hover:bg-slate-100/60 transition-colors">
-                <span className="flex items-center gap-1.5 font-medium text-slate-700">
-                  <ShieldCheck className="w-3.5 h-3.5 text-cyan-600 shrink-0"/>
-                  <span>Sàn 50đ UEH (Tối thiểu: Trung bình)</span>
-                </span>
-                <span className="text-[10px] text-slate-400 group-open:rotate-180 transition-transform">▼</span>
-              </summary>
-              <div className="px-3 pb-2 pt-1 text-slate-500 border-t border-slate-100/60 leading-relaxed">
-                Khởi đầu mỗi kỳ sinh viên có sẵn 50đ chia đều 5 mục: M1 (15đ) • M2 (10đ) • M3 (5đ) • M4 (10đ) • M5 (10đ).
-              </div>
-            </details>
+            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-extrabold border shadow-2xs ${getRankBadgeClass(rank)}`}>
+              {rank}
+            </span>
           </div>
 
-          {/* Global Progress Bar with 6 UEH Milestones */}
-          <div className="mt-4 pt-3 border-t border-slate-100">
-            <div className="flex justify-between items-center text-xs mb-1.5">
-              <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
-                TIẾN ĐỘ TÍCH LŨY
-              </span>
-              <span className="text-slate-900 font-semibold font-mono">
-                {totalDRL} / 100 điểm ({totalDRL}%)
-              </span>
+          {/* Middle: Score Badge & Semester Info */}
+          <div className="py-3.5 flex items-center gap-4">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#0B2545] to-[#132E59] text-white flex flex-col items-center justify-center shrink-0 shadow-card ring-2 ring-[#49C8D6]/30">
+              <span className="text-2xl font-black tracking-tight text-[#49C8D6]">{totalDRL}</span>
+              <span className="text-[9px] text-slate-300 font-mono">/ 100</span>
             </div>
-
-            {/* Bar Container */}
-            <div className="relative w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-              {/* Threshold tick lines at 35%, 50%, 65%, 80%, 90% */}
-              <div className="absolute inset-0 pointer-events-none flex justify-between z-10 opacity-30">
-                <div style={{ left: '35%' }} className="absolute h-full w-[1px] bg-slate-400"/>
-                <div style={{ left: '50%' }} className="absolute h-full w-[1px] bg-slate-400"/>
-                <div style={{ left: '65%' }} className="absolute h-full w-[1px] bg-slate-400"/>
-                <div style={{ left: '80%' }} className="absolute h-full w-[1px] bg-slate-400"/>
-                <div style={{ left: '90%' }} className="absolute h-full w-[1px] bg-slate-400"/>
-              </div>
-
-              <div className="h-full rounded-full bg-[#49C8D6] transition-all duration-500 ease-out" style={{ width: `${Math.min(100, totalDRL)}%` }}/>
+            <div className="min-w-0 flex-1">
+              <h2 className="text-base font-extrabold text-[#0B2545] truncate">
+                {currentSemester?.name || 'Học kỳ hiện tại'}
+              </h2>
+              <p className="text-xs text-slate-500 font-medium mt-0.5">
+                Mục tiêu: <strong className="text-slate-800">{profile?.targetDRL || 85}đ</strong>
+                {profile?.targetDRL && totalDRL >= profile.targetDRL ? (
+                  <span className="text-emerald-600 font-semibold ml-1.5">✓ Đã đạt</span>
+                ) : profile?.targetDRL ? (
+                  <span className="text-amber-600 font-semibold ml-1.5">(Còn thiếu {profile.targetDRL - totalDRL}đ)</span>
+                ) : null}
+              </p>
             </div>
+          </div>
 
-            {/* 6 Clearly spaced milestones */}
-            <div className="grid grid-cols-6 text-[10px] text-slate-400 font-mono mt-1.5 text-center">
-              <span className={rank === 'Kém' ? 'text-rose-600 font-bold' : ''}>
-                Kém (&lt;35)
-              </span>
-              <span className={rank === 'Yếu' ? 'text-orange-600 font-bold' : ''}>
-                Yếu (35-49)
-              </span>
-              <span className={rank === 'Trung bình' ? 'text-amber-600 font-bold' : ''}>
-                TB (50-64)
-              </span>
-              <span className={rank === 'Khá' ? 'text-blue-600 font-bold' : ''}>
-                Khá (65-79)
-              </span>
-              <span className={rank === 'Tốt' ? 'text-cyan-700 font-bold' : ''}>
-                Tốt (80-89)
-              </span>
-              <span className={`text-right ${rank === 'Xuất sắc' ? 'text-emerald-600 font-bold' : 'text-slate-600 font-medium'}`}>
-                Xuất sắc (&ge;90)
-              </span>
-            </div>
+          {/* Bottom Actions */}
+          <div className="pt-3 border-t border-slate-100 flex items-center justify-end gap-2 flex-wrap">
+            <button onClick={() => setShowManualModal(true)} className="btn-interactive-outline text-xs px-3 py-1.5">
+              <Plus className="w-3.5 h-3.5"/>
+              <span>Ghi nhận (+/-)</span>
+            </button>
+            <button onClick={onSwitchToActivities} className="btn-interactive-gold text-xs font-bold px-3 py-1.5">
+              <Sparkles className="w-3.5 h-3.5"/>
+              <span>Hoạt động</span>
+            </button>
           </div>
         </div>
 
-        {/* Right: Semester Comparison Card (Col 8-12 or 9-12) */}
-        <div className="lg:col-span-5 xl:col-span-4 bg-white rounded-xl border border-slate-200 p-5 shadow-xs flex flex-col justify-between">
+        {/* Right: Semester Comparison Card */}
+        <div className="lg:col-span-6 xl:col-span-5 bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 p-5 shadow-card flex flex-col justify-between overflow-hidden">
           <div>
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">

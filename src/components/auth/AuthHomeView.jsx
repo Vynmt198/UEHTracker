@@ -243,6 +243,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                           <option value="K50">K50</option>
                           <option value="K51">K51</option>
                           <option value="K52">K52</option>
+                          <option value="K53">K53</option>
                         </select>
                       </div>
                       <div>

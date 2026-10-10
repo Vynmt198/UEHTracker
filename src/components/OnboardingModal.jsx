@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { User, X, Check, ArrowRight } from 'lucide-react';
 import { Mascot } from './common/Mascot';
-import { UEH_FACULTIES, MAJORS_BY_FACULTY } from '../data/uehFaculties';
+import { UEH_FACULTIES } from '../data/uehFaculties';
 export const OnboardingModal = ({ isOpen, onClose }) => {
     const { profile, updateProfile } = useApp();
     const [isCompleted, setIsCompleted] = useState(false);
@@ -10,15 +10,13 @@ export const OnboardingModal = ({ isOpen, onClose }) => {
     const initialFaculty = UEH_FACULTIES.find((f) => f.toLowerCase() === (profile.faculty || '').toLowerCase() ||
         f.toLowerCase().includes((profile.faculty || '').toLowerCase()) ||
         (profile.faculty || '').toLowerCase().includes(f.toLowerCase())) || UEH_FACULTIES[12];
-    const availableInitialMajors = MAJORS_BY_FACULTY[initialFaculty] || ['Chuyên ngành tổng hợp'];
-    const initialMajor = availableInitialMajors.find((m) => m === profile.major) || availableInitialMajors[0];
     const [formData, setFormData] = useState({
         name: profile.name || '',
         studentId: profile.studentId || '',
         email: profile.email || '',
         cohort: profile.cohort || 'K49',
         faculty: initialFaculty,
-        major: initialMajor,
+        major: profile.major || '',
         scholarshipTierTarget: profile.scholarshipTierTarget || 'Xuất sắc',
         targetGPA: profile.targetGPA || 3.6,
         targetDRL: profile.targetDRL || 85
@@ -105,18 +103,17 @@ export const OnboardingModal = ({ isOpen, onClose }) => {
                 <option value="K49">K49 (2023-2027)</option>
                 <option value="K50">K50 (2024-2028)</option>
                 <option value="K51">K51 (2025-2029)</option>
+                <option value="K52">K52 (2026-2030)</option>
+                <option value="K53">K53 (2027-2031)</option>
               </select>
             </div>
 
             <div className="sm:col-span-2">
               <label className="block text-xs font-medium text-slate-700 mb-1">Khoa / Viện</label>
               <select value={formData.faculty} onChange={(e) => {
-            const newFac = e.target.value;
-            const majors = MAJORS_BY_FACULTY[newFac] || ['Chuyên ngành tổng hợp'];
             setFormData({
                 ...formData,
-                faculty: newFac,
-                major: majors[0]
+                faculty: e.target.value
             });
         }} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white">
                 {UEH_FACULTIES.map((fac) => (<option key={fac} value={fac}>
@@ -129,11 +126,13 @@ export const OnboardingModal = ({ isOpen, onClose }) => {
           {/* Major */}
           <div>
             <label className="block text-xs font-medium text-slate-700 mb-1">Chuyên ngành</label>
-            <select value={formData.major} onChange={(e) => setFormData({ ...formData, major: e.target.value })} className="w-full px-2.5 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400 bg-white">
-              {(MAJORS_BY_FACULTY[formData.faculty] || ['Chuyên ngành tổng hợp']).map((m) => (<option key={m} value={m}>
-                  {m}
-                </option>))}
-            </select>
+            <input
+              type="text"
+              value={formData.major}
+              onChange={(e) => setFormData({ ...formData, major: e.target.value })}
+              className="w-full px-3 py-1.5 rounded-lg border border-slate-200 text-xs focus:outline-none focus:border-slate-400"
+              placeholder="VD: Quản trị kinh doanh, Marketing, Hệ thống thông tin..."
+            />
           </div>
 
           {/* Scholarship Target */}
