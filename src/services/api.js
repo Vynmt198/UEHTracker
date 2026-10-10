@@ -79,4 +79,43 @@ export const facultyApi = {
   },
 };
 
+// Module API Diễn đàn UEH (Forum)
+export const forumApi = {
+  /**
+   * Lấy danh sách bài viết thảo luận với bộ lọc & phân trang
+   */
+  async getPosts(params = {}) {
+    return apiClient.get('/forum/posts', { params });
+  },
+
+  /**
+   * Lấy chi tiết bài viết kèm toàn bộ cây bình luận đa cấp
+   */
+  async getPostDetail(id) {
+    return apiClient.get(`/forum/posts/${id}`);
+  },
+
+  /**
+   * Đăng bài viết mới trên diễn đàn
+   */
+  async createPost(data) {
+    return apiClient.post('/forum/posts', data);
+  },
+
+  /**
+   * Đăng bình luận hoặc phản hồi (reply) vào bình luận cấp dưới
+   */
+  async addComment(postId, data) {
+    return apiClient.post(`/forum/posts/${postId}/comments`, data);
+  },
+
+  /**
+   * Upvote hoặc Downvote bài viết (nhấn lần 2 để hủy vote)
+   */
+  async votePost(postId, type) {
+    return apiClient.post(`/forum/posts/${postId}/vote`, { type });
+  },
+};
+
 export default apiClient;
+

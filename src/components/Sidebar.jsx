@@ -4,7 +4,7 @@ import { MessageSquare, ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, 
 import { IconAcademicCap, IconGPABook, IconDRLMedal } from './common/EduIcons';
 import { CloudSyncModal } from './common/CloudSyncModal';
 export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => {
-    const { activeTab, setActiveTab, profile, semesters, resetAllData, user, syncStatus, isSyncing } = useApp();
+    const { activeTab, setActiveTab, profile, semesters, resetAllData, user, syncStatus, isSyncing, autoSyncState } = useApp();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const [showCloudSync, setShowCloudSync] = useState(false);
@@ -32,7 +32,7 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
             label: 'Diễn đàn UEH',
             shortLabel: 'Diễn đàn',
             icon: MessageSquare,
-            badge: 'Coming Soon'
+            badge: 'Mới'
         }
     ];
     const handleReset = () => {
@@ -109,20 +109,38 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
           title={isCollapsed ? (user ? 'Neon Cloud: Đã kết nối' : 'Đồng bộ Neon Cloud') : undefined}
         >
           <div className="flex items-center gap-2 min-w-0">
-            <Cloud className={`w-4 h-4 shrink-0 ${user ? 'text-emerald-600' : 'text-[#49C8D6]'} ${isSyncing ? 'animate-bounce' : ''}`} />
+            <Cloud className={`w-4 h-4 shrink-0 ${
+              user 
+                ? autoSyncState === 'saving' || autoSyncState === 'pending'
+                  ? 'text-sky-500 animate-pulse'
+                  : 'text-emerald-600' 
+                : 'text-[#49C8D6]'
+            } ${isSyncing ? 'animate-bounce' : ''}`} />
             {!isCollapsed && (
               <div className="text-left truncate">
                 <span className="block font-semibold text-slate-900 leading-tight truncate">
                   {user ? 'Neon Cloud' : 'Đồng bộ Cloud'}
                 </span>
-                <span className="block text-[10px] text-slate-500 leading-tight">
-                  {user ? 'Đã kết nối' : 'Đăng nhập / Backup'}
+                <span className="block text-[10px] text-slate-500 leading-tight truncate">
+                  {user 
+                    ? autoSyncState === 'saving'
+                      ? 'Đang tự động lưu...'
+                      : autoSyncState === 'saved'
+                      ? 'Đã tự động lưu'
+                      : 'Đã kết nối • Auto-sync'
+                    : 'Đăng nhập / Backup'}
                 </span>
               </div>
             )}
           </div>
           {!isCollapsed && (
-            <span className={`w-2 h-2 rounded-full shrink-0 ${user ? 'bg-emerald-500 ring-2 ring-emerald-200' : 'bg-amber-400'}`} />
+            <span className={`w-2 h-2 rounded-full shrink-0 ${
+              user 
+                ? autoSyncState === 'saving'
+                  ? 'bg-sky-400 animate-ping'
+                  : 'bg-emerald-500 ring-2 ring-emerald-200' 
+                : 'bg-amber-400'
+            }`} />
           )}
         </button>
       </div>

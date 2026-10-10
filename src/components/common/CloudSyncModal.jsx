@@ -32,6 +32,9 @@ export const CloudSyncModal = ({ isOpen, onClose }) => {
     lastSyncedAt,
     courses,
     semesters,
+    autoSyncEnabled,
+    setAutoSyncEnabled,
+    autoSyncState,
   } = useApp();
 
   const [mode, setMode] = useState('login'); // 'login' | 'register'
@@ -156,6 +159,37 @@ export const CloudSyncModal = ({ isOpen, onClose }) => {
                   Lần đồng bộ gần nhất: {new Date(lastSyncedAt).toLocaleTimeString('vi-VN')} {new Date(lastSyncedAt).toLocaleDateString('vi-VN')}
                 </p>
               )}
+
+              {/* Auto-Sync Toggle Control */}
+              <div className="p-3.5 bg-slate-50 hover:bg-slate-100/70 rounded-xl border border-slate-200 transition-colors flex items-center justify-between gap-3">
+                <div className="space-y-0.5">
+                  <div className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-[#49C8D6]" />
+                    <span className="text-xs font-semibold text-slate-800">Tự động đồng bộ ngầm (Auto-Sync)</span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-tight">
+                    Tự động lưu điểm & môn học lên Neon Cloud ngay khi thay đổi
+                  </p>
+                  {autoSyncState !== 'idle' && (
+                    <span className="inline-flex items-center gap-1 text-[10px] font-medium text-[#0284c7]">
+                      {autoSyncState === 'pending' && '⏳ Chờ gom thay đổi...'}
+                      {autoSyncState === 'saving' && '⚡ Đang tự động đẩy lên Cloud...'}
+                      {autoSyncState === 'saved' && '✅ Đã lưu ngầm mới nhất'}
+                      {autoSyncState === 'error' && '⚠️ Chưa thể tự động lưu'}
+                    </span>
+                  )}
+                </div>
+
+                <label className="relative inline-flex items-center cursor-pointer shrink-0">
+                  <input
+                    type="checkbox"
+                    checked={autoSyncEnabled}
+                    onChange={(e) => setAutoSyncEnabled(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-9 h-5 bg-slate-300 peer-focus:outline-hidden rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-[#49C8D6]"></div>
+                </label>
+              </div>
 
               {/* Sync Action Buttons */}
               <div className="space-y-2 pt-2">

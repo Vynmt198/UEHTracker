@@ -6,30 +6,26 @@
 
 ## 1. 🟢 Trạng thái hiện tại của dự án (Current Status)
 
-Dự án **UEH Tracker** đã chính thức hoàn thiện chuyển đổi sang kiến trúc **Fullstack Cloud Hybrid** với sự tích hợp của **Neon Serverless PostgreSQL Cloud**, kết nối hoàn chỉnh giữa giao diện người dùng và hệ thống cơ sở dữ liệu đám mây.
+Dự án **UEH Tracker** đã chính thức hoàn thiện phân hệ **Diễn đàn sinh viên UEH** và cơ chế **Tự động đồng bộ ngầm (Background Debounced Auto-Sync)**, kết nối xuyên suốt giữa Frontend (React 19 + Vite 8.3) và Backend (Node.js ES Modules + Express + Prisma ORM) với **Neon Serverless PostgreSQL Cloud** (Dự án: `flat-band-12164942`, branch `production`).
 
-- **Frontend (Client-side & Offline-First):**
+- **Frontend (Client-side & Offline-First & Realtime Cloud Sync):**
   - Chạy trên nền tảng **React 19 + Vite 8.3 + Tailwind CSS 3.4**.
-  - Hoạt động mượt mà ở cả hai chế độ:
-    - **Offline/Guest Mode:** Lưu trữ và tính toán tức thì trên `localStorage` cho sinh viên chưa đăng nhập.
-    - **Cloud-Synced Mode:** Tự động đồng bộ hai chiều (Push/Pull) lên đám mây khi đăng nhập tài khoản UEH.
-  - Tích hợp modal **Đồng bộ Neon Cloud** (`CloudSyncModal.jsx`) hỗ trợ đăng nhập, đăng ký và sao lưu dữ liệu chỉ với 1 click.
-  - Vượt qua 100% bộ **24 Unit Tests** về quy chế GPA/ĐRL UEH và build production bundle không có cảnh báo lỗi.
+  - **Phân hệ Diễn đàn sinh viên UEH chính thức:**
+    - Thay thế hoàn toàn `ForumPlaceholder.jsx` bằng bộ UI hoàn chỉnh, chuẩn phong cách UEH: `ForumModule.jsx`, `PostCard.jsx`, `PostDetailView.jsx`, `CreatePostModal.jsx`, `CommentTree.jsx`, `CommentItem.jsx`.
+    - Bộ lọc chuyên mục (Săn học bổng UEH, Góc học tập & NCKH, Review môn học & Giảng viên, Hỏi đáp chung).
+    - Tìm kiếm từ khóa theo thời gian thực và lọc theo hashtag phổ biến (`#HocBongUEH`, `#K49`, `#KinhTeLuong`...).
+    - Tương tác Upvote / Downvote đa chiều trực tiếp từ feed và trang chi tiết với cơ chế Toggle thông minh.
+    - Cây thảo luận đa cấp (Nested threaded comments) đệ quy không giới hạn cấp độ, hỗ trợ trả lời bình luận phân nhánh trực quan.
+  - **Cơ chế Tự động đồng bộ ngầm (Background Auto-Sync):**
+    - Tự động gom thay đổi điểm số, môn học, học kỳ và ĐRL đẩy ngầm lên Neon Cloud sau 2.5s không thao tác (`Debounced Auto-Save`).
+    - Cơ chế chống lặp vô hạn `skipNextAutoSync` khi kéo dữ liệu từ đám mây về máy.
+    - Hiển thị trạng thái đồng bộ sống động trên Sidebar và nút Toggle bật/tắt trong `CloudSyncModal.jsx`.
+  - Bộ kiểm thử tự động tăng lên **31/31 Unit Tests** (100% Pass) trên Vitest; thời gian build production bundle đạt **< 1 giây**.
 
-- **Backend & Cloud Database (API & PostgreSQL Serverless):**
-  - Xây dựng trên nền tảng **Node.js (ES Modules) + Express.js + Prisma ORM 6.4**.
-  - **Cơ sở dữ liệu đám mây Neon:**
-    - Dự án: `UEH Tracker` (`flat-band-12164942`).
-    - Nhánh hoạt động: `production` (`br-weathered-unit-b3lo0ub5`).
-    - Hỗ trợ kiến trúc kép: **Connection Pooling (PgBouncer)** cho API runtime và **Direct URL** phục vụ Prisma Migrations.
-    - Đã deploy thành công migration `20261010034528_init_neon_schema`.
-    - Đã nạp dữ liệu chuẩn (Seeded) cho **33 Khoa / Viện** và toàn bộ chuyên ngành UEH.
-  - **Tài liệu Swagger UI:** Hoạt động ổn định tại `http://localhost:3000/api/docs`.
-
-- **Môi trường & Git Repository:**
-  - Thiết lập thành công **Neon MCP Server** và **Neon Agent Skills** (8 bộ kỹ năng chính thức của Neon).
-  - Tệp `.gitignore` bảo vệ tuyệt đối không làm lộ biến môi trường và khóa bí mật (`.env`, `.env.local`, `.neon`).
-  - Toàn bộ mã nguồn đã được commit và push lên nhánh `main` của GitHub: `https://github.com/Vynmt198/UEHTracker.git`.
+- **Backend & Cơ sở dữ liệu đám mây Neon:**
+  - Hoạt động ổn định tại `http://localhost:3000/api/v1/forum`.
+  - Mở rộng Middleware `optionalAuthMiddleware` cho phép khách vãng lai duyệt bài viết công khai, tự động nhận diện tài khoản để trả về trạng thái `userVote`.
+  - Nạp dữ liệu mẫu chất lượng cao về học bổng, review môn học qua `backend/prisma/seedForum.js`.
 
 ---
 
@@ -37,34 +33,32 @@ Dự án **UEH Tracker** đã chính thức hoàn thiện chuyển đổi sang k
 
 | Đường dẫn file | Mô tả chi tiết thay đổi |
 |---|---|
-| `backend/.env` & `backend/.env.example` | Cấu hình `DATABASE_URL` (pooled) và `DIRECT_URL` (unpooled) trỏ trực tiếp đến Neon Serverless PostgreSQL Cloud. |
-| `backend/prisma/schema.prisma` | Cập nhật khối `datasource db` hỗ trợ `directUrl = env("DIRECT_URL")` cho phép migrate an toàn qua PgBouncer. |
-| `backend/prisma/migrations/` | Tạo và áp dụng bản di chuyển cơ sở dữ liệu `20261010034528_init_neon_schema` lên Neon. |
-| `backend/src/modules/sync/sync.service.js` | Chuẩn hóa ánh xạ trạng thái môn học `CourseStatus` (Đang học / Đã hoàn thành / Chưa học), hỗ trợ đồng bộ dữ liệu đa chiều. |
-| `backend/src/modules/sync/sync.routes.js` | Mở rộng alias route `/api/v1/sync/push` song song với `/api/v1/sync/push-local`. |
-| `src/services/api.js` | **(Mới)** Xây dựng API Client bằng `axios` với Interceptor tự động gắn JWT Bearer token và xử lý dọn phiên đăng nhập. |
-| `src/context/AppContext.jsx` | Tích hợp trạng thái người dùng (`user`), phương thức đăng nhập (`login`), đăng ký (`register`), đăng xuất (`logout`) và 2 hàm đồng bộ đám mây (`syncToCloud`, `syncFromCloud`). |
-| `src/components/common/CloudSyncModal.jsx` | **(Mới)** Modal giao diện xác thực và đồng bộ dữ liệu đám mây (hỗ trợ tab Đăng nhập, Đăng ký, nút điền nhanh tài khoản test, trạng thái kết nối Neon Cloud). |
-| `src/components/Sidebar.jsx` | Tích hợp nút kích hoạt đồng bộ Cloud trên cả thanh Sidebar desktop và Top-bar mobile. |
-| `neon.ts` | Khởi tạo cấu hình Infrastructure-as-Code của Neon dự án. |
-| `.agents/skills/neon*/` | Cài đặt đầy đủ 8 bộ kỹ năng chính thức của Neon (`neon`, `neon-postgres`, `neon-auth`, `neon-functions`...). |
-| `.gitignore` & `backend/.gitignore` | Bổ sung quy tắc loại trừ nghiêm ngặt các file nhạy cảm (`.env`, `.env.*`, `*.local`, `.neon`). |
+| `src/components/forum/forumConstants.js` | **(Mới)** Hằng số danh mục thảo luận UEH, màu sắc badge, tiêu chí sắp xếp và hàm tính thời gian tương đối `formatRelativeTime`. |
+| `src/components/forum/CommentItem.jsx` | **(Mới)** Thành phần bình luận đệ quy hỗ trợ trả lời phân cấp, hiển thị tác giả, khóa và thời gian đăng. |
+| `src/components/forum/CommentTree.jsx` | **(Mới)** Khung thảo luận đa cấp, tích hợp form gửi bình luận gốc và cây phản hồi theo luồng. |
+| `src/components/forum/PostCard.jsx` | **(Mới)** Thẻ hiển thị bài viết trên bảng tin với điểm số vote tương tác, danh mục, tác giả, tags và số bình luận. |
+| `src/components/forum/PostDetailView.jsx` | **(Mới)** Màn hình chi tiết bài viết đầy đủ với hộp vote Reddit-style, sao chép link chia sẻ và cây bình luận lồng nhau. |
+| `src/components/forum/CreatePostModal.jsx` | **(Mới)** Modal đăng bài viết mới với bộ chọn chuyên mục, nhập tiêu đề, nội dung và gắn thẻ tag linh hoạt. |
+| `src/components/forum/ForumModule.jsx` | **(Mới)** Phân hệ Diễn đàn hoàn chỉnh tích hợp thanh tìm kiếm, bộ lọc chuyên mục, hot tags và phân trang. |
+| `src/components/forum/ForumPlaceholder.jsx` | Chuyển đổi thành bộ render trung gian trỏ về `ForumModule`, duy trì tính tương thích với cấu hình lazy loading. |
+| `src/components/forum/__tests__/forum.test.js` | **(Mới)** Bộ unit test cho các hằng số diễn đàn, hàm định dạng thời gian và interface API. |
+| `src/context/AppContext.jsx` | Tích hợp cơ chế Background Debounced Auto-Sync (2.5s), cờ `skipNextAutoSync`, xuất bản `autoSyncEnabled`, `autoSyncState`. |
+| `src/components/common/CloudSyncModal.jsx` | Tích hợp công tắc gạt (Toggle Switch) bật/tắt tính năng Auto-Sync và hiển thị trạng thái lưu ngầm thời gian thực. |
+| `src/components/Sidebar.jsx` | Cập nhật nhãn Diễn đàn thành `Mới` và thêm chỉ báo trạng thái Auto-Sync sống động trên nút Neon Cloud. |
+| `src/services/api.js` | Bổ sung module `forumApi` kết nối các endpoint `/forum/posts`, `/forum/posts/:id`, comment và vote. |
+| `backend/src/common/middlewares/auth.middleware.js` | Bổ sung và xuất bản `optionalAuthMiddleware` hỗ trợ đọc bài viết công khai kèm nhận diện người dùng. |
+| `backend/src/modules/forum/forum.routes.js` | Áp dụng `optionalAuthMiddleware` cho các route đọc bài viết `GET /posts` và `GET /posts/:id`. |
+| `backend/src/modules/forum/forum.controller.js` | Truyền ID người dùng đang đăng nhập (nếu có) vào service để trả về trạng thái vote. |
+| `backend/src/modules/forum/forum.service.js` | Tối ưu truy vấn bài viết theo chuyên mục/sắp xếp, xây dựng thuật toán dựng cây bình luận đa cấp không giới hạn độ sâu và hỗ trợ hủy vote (Toggle). |
+| `backend/prisma/seedForum.js` | **(Mới)** Kịch bản nạp dữ liệu bài viết và cây bình luận mẫu thực tế lên Neon Postgres. |
 
 ---
 
-## 3. 🎯 Kế hoạch & Roadmap cho phiên làm việc tiếp theo (Next Steps)
+## 3. 🎯 Kế hoạch & Roadmap cho các phiên làm việc tiếp theo
 
-Khi mở phiên chat mới, bạn có thể copy đoạn này để tiếp tục phát triển ngay:
-
-1. **Phát triển phân hệ Diễn đàn sinh viên UEH (`src/components/forum/ForumPlaceholder.jsx`):**
-   - Thay thế giao diện màn hình chờ (Placeholder) bằng giao diện thảo luận chính thức.
-   - Đấu nối với hệ thống Backend API (`/api/v1/forum`):
-     - Đăng bài viết chia sẻ kinh nghiệm học tập, review môn học/giảng viên.
-     - Cây bình luận đa cấp (Nested comments).
-     - Tính năng Upvote / Downvote tương tác.
-
-2. **Tự động đồng bộ định kỳ (Background Auto-Sync):**
-   - Thiết lập cơ chế tự động đẩy dữ liệu ngầm lên Neon Cloud mỗi khi sinh viên thêm/sửa/xóa môn học hoặc cập nhật ĐRL (Debounced Auto-save).
-
-3. **Trải nghiệm PWA (Progressive Web App):**
+1. **Trải nghiệm PWA (Progressive Web App) & Offline Caching:**
    - Cấu hình file `manifest.json` và Service Worker để sinh viên có thể cài đặt UEH Tracker lên màn hình chính điện thoại và xem bảng điểm offline.
+2. **Xuất báo cáo Bảng điểm & Hồ sơ rèn luyện:**
+   - Tính năng xuất bảng điểm và minh chứng ĐRL thành file PDF / Excel chuẩn mẫu UEH để sinh viên nộp xét học bổng và xét tốt nghiệp.
+3. **Thông báo đẩy (In-app Notifications):**
+   - Thông báo khi có sinh viên khác phản hồi vào bài viết hoặc bình luận của mình trên diễn đàn.

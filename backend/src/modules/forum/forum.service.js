@@ -1,14 +1,14 @@
 import prisma from '../../database/prisma.js';
 
 export class ForumService {
-  async getPosts({ page = 1, limit = 10, category, search, tag }) {
+  async getPosts({ page = 1, limit = 10, category, search, tag, sortBy = 'newest' }, currentUserId = null) {
     const pageNum = Number(page) || 1;
     const limitNum = Number(limit) || 10;
     const skip = (pageNum - 1) * limitNum;
 
     const where = {};
 
-    if (category) {
+    if (category && category !== 'ALL') {
       where.category = category;
     }
 
@@ -23,17 +23,25 @@ export class ForumService {
       where.tags = { has: tag };
     }
 
-    const [total, posts] = await Promise.all([
+    let orderBy = { createdAt: 'desc' };
+    if (sortBy === 'popular') {
+      orderBy = [{ upvotesCount: 'desc' }, { createdAt: 'desc' }];
+    } else if (sortBy === 'views') {
+      orderBy = [{ viewsCount: 'desc' }, { createdAt: 'desc' }];
+    }
+
+    const [total, rawPosts] = await Promise.all([
       prisma.forumPost.count({ where }),
       prisma.forumPost.findMany({
         where,
         skip,
         take: limitNum,
-        orderBy: { createdAt: 'desc' },
+        orderBy,
         include: {
           author: {
             select: {
               id: true,
+              email: true,
               profile: {
                 select: {
                   fullName: true,
@@ -46,9 +54,26 @@ export class ForumService {
           _count: {
             select: { comments: true },
           },
+          ...(currentUserId
+            ? {
+                votes: {
+                  where: { userId: currentUserId },
+                  select: { type: true },
+                },
+              }
+            : {}),
         },
       }),
     ]);
+
+    const posts = rawPosts.map((post) => {
+      const userVote = post.votes && post.votes.length > 0 ? post.votes[0].type : null;
+      const { votes, ...rest } = post;
+      return {
+        ...rest,
+        userVote,
+      };
+    });
 
     return {
       posts,
@@ -74,25 +99,7 @@ export class ForumService {
         author: {
           select: {
             id: true,
-            profile: {
-              select: {
-                fullName: true,
-                cohort: true,
-              },
-            },
-          },
-        },
-      },
-    });
-  }
-
-  async getPostDetail(postId) {
-    const post = await prisma.forumPost.findUnique({
-      where: { id: postId },
-      include: {
-        author: {
-          select: {
-            id: true,
+            email: true,
             profile: {
               select: {
                 fullName: true,
@@ -102,35 +109,23 @@ export class ForumService {
             },
           },
         },
-        comments: {
-          where: { parentId: null },
-          orderBy: { createdAt: 'asc' },
-          include: {
-            author: {
+      },
+    });
+  }
+
+  async getPostDetail(postId, currentUserId = null) {
+    const post = await prisma.forumPost.findUnique({
+      where: { id: postId },
+      include: {
+        author: {
+          select: {
+            id: true,
+            email: true,
+            profile: {
               select: {
-                id: true,
-                profile: {
-                  select: {
-                    fullName: true,
-                    cohort: true,
-                  },
-                },
-              },
-            },
-            replies: {
-              orderBy: { createdAt: 'asc' },
-              include: {
-                author: {
-                  select: {
-                    id: true,
-                    profile: {
-                      select: {
-                        fullName: true,
-                        cohort: true,
-                      },
-                    },
-                  },
-                },
+                fullName: true,
+                cohort: true,
+                major: true,
               },
             },
           },
@@ -144,12 +139,67 @@ export class ForumService {
       throw error;
     }
 
+    // Tăng lượt xem
     await prisma.forumPost.update({
       where: { id: postId },
       data: { viewsCount: { increment: 1 } },
     });
 
-    return post;
+    // Lấy tất cả comment của bài viết để dựng cây phân cấp (Nested Tree)
+    const allComments = await prisma.forumComment.findMany({
+      where: { postId },
+      orderBy: { createdAt: 'asc' },
+      include: {
+        author: {
+          select: {
+            id: true,
+            email: true,
+            profile: {
+              select: {
+                fullName: true,
+                cohort: true,
+                major: true,
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const commentMap = new Map();
+    allComments.forEach((c) => {
+      commentMap.set(c.id, { ...c, replies: [] });
+    });
+
+    const rootComments = [];
+    allComments.forEach((c) => {
+      const item = commentMap.get(c.id);
+      if (c.parentId && commentMap.has(c.parentId)) {
+        commentMap.get(c.parentId).replies.push(item);
+      } else {
+        rootComments.push(item);
+      }
+    });
+
+    let userVote = null;
+    if (currentUserId) {
+      const vote = await prisma.postVote.findUnique({
+        where: {
+          postId_userId: {
+            postId,
+            userId: currentUserId,
+          },
+        },
+      });
+      userVote = vote?.type || null;
+    }
+
+    return {
+      ...post,
+      viewsCount: post.viewsCount + 1,
+      comments: rootComments,
+      userVote,
+    };
   }
 
   async addComment(userId, postId, { content, parentId }) {
@@ -180,10 +230,12 @@ export class ForumService {
         author: {
           select: {
             id: true,
+            email: true,
             profile: {
               select: {
                 fullName: true,
                 cohort: true,
+                major: true,
               },
             },
           },
@@ -200,20 +252,39 @@ export class ForumService {
       throw error;
     }
 
-    await prisma.postVote.upsert({
+    const existingVote = await prisma.postVote.findUnique({
       where: {
         postId_userId: {
           postId,
           userId,
         },
       },
-      update: { type },
-      create: {
-        postId,
-        userId,
-        type,
-      },
     });
+
+    let userVote = null;
+    if (existingVote && existingVote.type === type) {
+      // Nhấn lại cùng loại vote -> Huỷ vote (Toggle)
+      await prisma.postVote.delete({
+        where: { id: existingVote.id },
+      });
+      userVote = null;
+    } else {
+      await prisma.postVote.upsert({
+        where: {
+          postId_userId: {
+            postId,
+            userId,
+          },
+        },
+        update: { type },
+        create: {
+          postId,
+          userId,
+          type,
+        },
+      });
+      userVote = type;
+    }
 
     const [upvotes, downvotes] = await Promise.all([
       prisma.postVote.count({ where: { postId, type: 'UPVOTE' } }),
@@ -232,6 +303,7 @@ export class ForumService {
       postId,
       upvotesCount: updated.upvotesCount,
       downvotesCount: updated.downvotesCount,
+      userVote,
     };
   }
 }

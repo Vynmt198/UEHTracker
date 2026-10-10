@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import drlCriteriaRaw from '../data/drlCriteria.json';
 import activitiesRaw from '../data/uehActivities.json';
 import { calculateCourseFinalScore, convertScore10ToUEH } from '../utils/gpaCalculator';
@@ -276,6 +276,7 @@ export const AppProvider = ({ children }) => {
         setSyncStatus('syncing');
         setSyncMessage('Đang tải dữ liệu từ Neon Cloud Postgres...');
         try {
+            skipNextAutoSync.current = true;
             const res = await syncApi.pullCloud();
             const data = res.data || res;
             if (data.profile) {
@@ -333,6 +334,54 @@ export const AppProvider = ({ children }) => {
             setIsSyncing(false);
         }
     };
+
+    // Auto-Sync Settings & Status
+    const [autoSyncEnabled, setAutoSyncEnabled] = useState(() => {
+        const saved = localStorage.getItem('ueh_tracker_autosync');
+        return saved !== null ? saved === 'true' : true;
+    });
+    const [autoSyncState, setAutoSyncState] = useState('idle'); // 'idle' | 'pending' | 'saving' | 'saved' | 'error'
+
+    const isInitialMount = useRef(true);
+    const skipNextAutoSync = useRef(false);
+
+    useEffect(() => {
+        localStorage.setItem('ueh_tracker_autosync', String(autoSyncEnabled));
+    }, [autoSyncEnabled]);
+
+    // Background Auto-Sync effect (debounced 2.5s)
+    useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        if (!user || !autoSyncEnabled) {
+            return;
+        }
+
+        if (skipNextAutoSync.current) {
+            skipNextAutoSync.current = false;
+            return;
+        }
+
+        setAutoSyncState('pending');
+        const timer = setTimeout(async () => {
+            try {
+                setAutoSyncState('saving');
+                await syncToCloud(true);
+                setAutoSyncState('saved');
+                setTimeout(() => {
+                    setAutoSyncState((prev) => (prev === 'saved' ? 'idle' : prev));
+                }, 3000);
+            } catch (err) {
+                console.warn('Auto-sync background error:', err);
+                setAutoSyncState('error');
+            }
+        }, 2500);
+
+        return () => clearTimeout(timer);
+    }, [courses, semesters, drlSemesters, profile, user, autoSyncEnabled]);
 
     const login = async (email, password) => {
         setIsSyncing(true);
@@ -756,7 +805,10 @@ export const AppProvider = ({ children }) => {
             isSyncing,
             syncStatus,
             syncMessage,
-            lastSyncedAt
+            lastSyncedAt,
+            autoSyncEnabled,
+            setAutoSyncEnabled,
+            autoSyncState
         }}>
       {children}
     </AppContext.Provider>);

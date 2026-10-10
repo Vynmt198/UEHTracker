@@ -39,3 +39,25 @@ export const authMiddleware = async (req, res, next) => {
     });
   }
 };
+
+export const optionalAuthMiddleware = async (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+      const token = authHeader.split(' ')[1];
+      const secret = process.env.JWT_ACCESS_SECRET || 'ueh_tracker_super_secure_access_secret_key_2026';
+      const decoded = jwt.verify(token, secret);
+      const user = await prisma.user.findUnique({
+        where: { id: decoded.sub },
+        include: { profile: true },
+      });
+      if (user) {
+        req.user = user;
+      }
+    }
+  } catch (error) {
+    // Non-blocking: guest user or token expired
+  }
+  next();
+};
+

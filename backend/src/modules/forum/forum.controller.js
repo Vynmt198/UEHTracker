@@ -3,7 +3,7 @@ import forumService from './forum.service.js';
 export class ForumController {
   async getPosts(req, res, next) {
     try {
-      const result = await forumService.getPosts(req.query);
+      const result = await forumService.getPosts(req.query, req.user?.id);
       res.status(200).json({ statusCode: 200, success: true, data: result });
     } catch (err) {
       next(err);
@@ -29,7 +29,7 @@ export class ForumController {
 
   async getPostDetail(req, res, next) {
     try {
-      const result = await forumService.getPostDetail(req.params.id);
+      const result = await forumService.getPostDetail(req.params.id, req.user?.id);
       res.status(200).json({ statusCode: 200, success: true, data: result });
     } catch (err) {
       next(err);

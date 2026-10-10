@@ -30,6 +30,8 @@
    - [3. Quản lý Điểm Rèn Luyện (ĐRL)](#3-quản-lý-điểm-rèn-luyện-đrl)
    - [4. Danh mục 33 Khoa / Viện & Chuyên ngành UEH](#4-danh-mục-33-khoa--viện--chuyên-ngành-ueh)
    - [5. Hệ thống Onboarding & Quản trị dữ liệu](#5-hệ-thống-onboarding--quản-trị-dữ-liệu)
+   - [6. Diễn đàn Sinh viên UEH & Thảo luận Đa cấp](#6-diễn-đàn-sinh-viên-ueh--thảo-luận-đa-cấp-forum-module)
+   - [7. Tự động Đồng bộ ngầm (Debounced Auto-Sync) với Neon Cloud](#7-tự-động-đồng-bộ-ngầm-debounced-auto-sync-với-neon-cloud)
 3. [Quy chế & Công thức tính toán chuẩn UEH](#-quy-chế--công-thức-tính-toán-chuẩn-ueh)
    - [Thang quy đổi Điểm Hệ 10 → Điểm Chữ → Hệ 4](#thang-quy-đổi-điểm-hệ-10--điểm-chữ--hệ-4)
    - [Quy tắc khống chế điểm học phần](#quy-tắc-khống-chế-điểm-học-phần)
@@ -144,6 +146,21 @@ Dữ liệu chuẩn hóa hoàn toàn tại [`src/data/uehFaculties.ts`](file:///
 - **Khảo sát ban đầu tương tác:** Hướng dẫn tân sinh viên hoặc người dùng mới nhập thông tin hồ sơ: Khóa, Khoa, Chuyên ngành, Mục tiêu học bổng, Thói quen học tập, Khung giờ rảnh.
 - **Bảo mật & Cục bộ:** Dữ liệu hoàn toàn được lưu trữ tại `localStorage` của trình duyệt người dùng, bảo mật quyền riêng tư tuyệt đối.
 - **Sao lưu & Phục hồi:** Hỗ trợ tính năng Export/Import toàn bộ hồ sơ, bảng điểm và nhật ký rèn luyện sang định dạng JSON gọn nhẹ.
+
+---
+
+### 6. Diễn đàn Sinh viên UEH & Thảo luận Đa cấp (Forum Module)
+- **Không gian tri thức UEH:** Trao đổi kinh nghiệm học tập, bí quyết săn học bổng Khuyến khích, review môn học/giảng viên và tìm bạn đồng hành NCKH Eureka.
+- **Cây bình luận đa cấp (Nested Threaded Comments):** Hỗ trợ trả lời bình luận đệ quy không giới hạn cấp độ, hiển thị trực quan các nhánh thảo luận.
+- **Tương tác Upvote / Downvote:** Cơ chế vote hai chiều Reddit-style với tính năng hủy vote (Toggle) thông minh.
+- **Bộ lọc & Tìm kiếm:** Lọc theo chuyên mục, hashtag phổ biến (`#HocBongUEH`, `#K49`, `#KinhTeLuong`...) và sắp xếp theo độ phổ biến/thời gian.
+
+---
+
+### 7. Tự động Đồng bộ ngầm (Debounced Auto-Sync) với Neon Cloud
+- **Đồng bộ thời gian thực:** Tự động gom và đẩy mọi thay đổi về điểm số, môn học, học kỳ và ĐRL lên Neon Serverless PostgreSQL Cloud sau 2.5s không thao tác.
+- **Công tắc bật/tắt linh hoạt:** Cho phép sinh viên chủ động chọn bật/tắt tính năng Auto-Sync trong `CloudSyncModal`.
+- **Chống xung đột đa chiều:** Cơ chế `skipNextAutoSync` loại bỏ hoàn toàn vòng lặp ghi đè khi kéo dữ liệu mới từ đám mây về máy.
 
 ---
 
