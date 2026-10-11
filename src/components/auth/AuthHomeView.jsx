@@ -63,11 +63,11 @@ export default function AuthHomeView({ onLoginSuccess }) {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#0B2545] via-[#003B20] to-[#005831] flex items-center justify-center p-4 relative overflow-hidden font-sans select-none">
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#0B2545] via-[#0B2E53] to-[#071B33] flex items-center justify-center p-4 relative overflow-hidden font-sans select-none">
       {/* Background Visual Ambient Glows */}
-      <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#005831]/50 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[#F2A900]/25 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-[#49C8D6]/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-[#49C8D6]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute -bottom-32 -right-32 w-96 h-96 bg-[#F2A900]/20 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[550px] h-[550px] bg-[#49C8D6]/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="w-full max-w-md relative z-10">
         <AnimatePresence mode="wait">
@@ -107,15 +107,15 @@ export default function AuthHomeView({ onLoginSuccess }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.3, duration: 0.8 }}
-                className="mt-3.5 text-emerald-200/90 text-sm font-semibold tracking-wide max-w-xs text-center leading-relaxed"
+                className="mt-3.5 text-[#49C8D6] text-sm font-semibold tracking-wide max-w-xs text-center leading-relaxed"
               >
                 GPA trong tầm tay, tương lai trong tầm với
               </motion.p>
 
               {/* Nhịp Pulse chuyển cảnh */}
               <div className="mt-8 flex items-center gap-2">
-                <span className="w-2.5 h-2.5 bg-[#F2A900] rounded-full animate-ping" />
-                <span className="w-2 h-2 bg-white/40 rounded-full" />
+                <span className="w-2.5 h-2.5 bg-[#49C8D6] rounded-full animate-ping" />
+                <span className="w-2 h-2 bg-[#F2A900] rounded-full" />
                 <span className="w-2 h-2 bg-white/40 rounded-full" />
               </div>
             </motion.div>
@@ -138,7 +138,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                   </div>
                   <div>
                     <h2 className="text-base font-black text-[#0B2545] leading-tight">UEH TRACKER</h2>
-                    <p className="text-[11px] text-[#005831] font-semibold">
+                    <p className="text-[11px] text-[#087F8C] font-semibold">
                       GPA trong tầm tay, tương lai trong tầm với
                     </p>
                   </div>
@@ -161,7 +161,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                   }}
                   className={`py-2 rounded-lg transition-all ${
                     authMode === 'login'
-                      ? 'bg-white text-[#005831] shadow-xs'
+                      ? 'bg-white text-[#0B2545] shadow-xs'
                       : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -175,7 +175,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                   }}
                   className={`py-2 rounded-lg transition-all ${
                     authMode === 'register'
-                      ? 'bg-white text-[#005831] shadow-xs'
+                      ? 'bg-white text-[#0B2545] shadow-xs'
                       : 'text-slate-500 hover:text-slate-800'
                   }`}
                 >
@@ -222,7 +222,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                           value={fullName}
                           onChange={(e) => setFullName(e.target.value)}
                           placeholder="Nguyễn Văn A"
-                          className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#005831]"
+                          className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] focus:border-[#49C8D6]"
                         />
                         <User className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                       </div>
@@ -236,7 +236,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                         <select
                           value={cohort}
                           onChange={(e) => setCohort(e.target.value)}
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#005831]"
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-[#49C8D6] focus:border-[#49C8D6]"
                         >
                           <option value="K48">K48</option>
                           <option value="K49">K49</option>
@@ -255,7 +255,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                           value={major}
                           onChange={(e) => setMajor(e.target.value)}
                           placeholder="CNTT Kinh doanh..."
-                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#005831]"
+                          className="w-full px-3 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] focus:border-[#49C8D6]"
                         />
                       </div>
                     </div>
@@ -273,7 +273,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                       placeholder="student@st.ueh.edu.vn"
-                      className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#005831]"
+                      className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] focus:border-[#49C8D6]"
                     />
                     <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
@@ -290,7 +290,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#005831]"
+                      className="w-full pl-9 pr-3.5 py-2 rounded-xl border border-slate-200 text-sm focus:outline-none focus:ring-2 focus:ring-[#49C8D6] focus:border-[#49C8D6]"
                     />
                     <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
                   </div>
@@ -299,22 +299,22 @@ export default function AuthHomeView({ onLoginSuccess }) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-[#005831] via-[#084b2c] to-[#0B2545] text-white font-bold text-sm shadow-md hover:opacity-95 active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2"
+                  className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-[#0B2545] via-[#102d53] to-[#0B2545] hover:via-[#163a69] text-white font-bold text-sm shadow-md border border-[#49C8D6]/40 hover:border-[#49C8D6] active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 group"
                 >
                   {loading ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <Loader2 className="w-4 h-4 animate-spin text-[#49C8D6]" />
                       <span>Đang xử lý kết nối Neon Cloud...</span>
                     </>
                   ) : authMode === 'login' ? (
                     <>
                       <span>Đăng nhập vào hệ thống</span>
-                      <ArrowRight className="w-4 h-4 text-[#F2A900]" />
+                      <ArrowRight className="w-4 h-4 text-[#49C8D6] group-hover:translate-x-0.5 transition-transform" />
                     </>
                   ) : (
                     <>
                       <span>Tạo tài khoản mới (Khởi tạo trắng)</span>
-                      <ArrowRight className="w-4 h-4 text-[#F2A900]" />
+                      <ArrowRight className="w-4 h-4 text-[#49C8D6] group-hover:translate-x-0.5 transition-transform" />
                     </>
                   )}
                 </button>

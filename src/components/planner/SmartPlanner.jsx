@@ -1,7 +1,22 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import { calculateGPAStats, convertScore10ToUEH, evaluateScholarship } from '../../utils/gpaCalculator';
-import { X } from 'lucide-react';
+import { 
+  X, 
+  Target, 
+  Sparkles, 
+  Sliders, 
+  Edit3, 
+  ArrowRight, 
+  CheckCircle2, 
+  Plus, 
+  Clock, 
+  Compass, 
+  BookOpen,
+  Award,
+  Trophy,
+  Calendar
+} from 'lucide-react';
 import { UEH_FACULTIES } from '../../data/uehFaculties';
 
 export const SmartPlanner = ({ isMainView = false }) => {
@@ -227,119 +242,124 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {/* ========================================================================= */}
       {/* 1. BẢNG TỔNG QUAN TIẾN ĐỘ HỌC BỔNG (GPA + ĐRL)                            */}
       {/* ========================================================================= */}
-      <div className="bg-white rounded-xl border border-slate-200 p-5 sm:p-6">
-        {/* Header Title + Profile Badge */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-slate-100">
-          <div>
-            <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
-              UEH SMART PLANNER
-            </div>
-            <h1 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight mt-0.5">
-              Kế hoạch học tập & rèn luyện
-            </h1>
-          </div>
+      <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-card hover:border-[#49C8D6]/60 transition-all duration-200 relative overflow-hidden group">
+        {/* Background Soft Glows */}
+        <div className="absolute -right-12 -top-12 w-48 h-48 bg-gradient-to-br from-[#49C8D6]/15 via-[#0B2545]/10 to-transparent rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute left-1/3 -bottom-10 w-36 h-36 bg-[#F2A900]/10 rounded-full blur-xl pointer-events-none" />
 
-          <div className="flex items-center gap-2 self-start sm:self-auto text-xs text-slate-600">
-            <span>Hồ sơ:</span>
-            <span className="font-semibold text-slate-900 bg-slate-100 px-2.5 py-1 rounded-lg border border-slate-200">
-              {profile.cohort || 'K49'} • {profile.major || profile.faculty || 'CNTT'}
-            </span>
+        {/* Header Title */}
+        <div className="flex items-center justify-between gap-3 pb-4 border-b border-slate-100 relative z-10">
+          <div className="flex items-center gap-2.5">
+            <div className="p-2 rounded-xl bg-[#0B2545] text-[#49C8D6] shadow-2xs">
+              <Award className="w-4 h-4" />
+            </div>
+            <div>
+              <div className="text-[11px] font-extrabold uppercase tracking-wider text-[#0B2545]">
+                UEH SMART PLANNER
+              </div>
+              <h1 className="text-base sm:text-lg font-extrabold text-[#0B2545] tracking-tight">
+                Kế hoạch học tập & rèn luyện
+              </h1>
+            </div>
           </div>
         </div>
 
         {/* 3 Cột: GPA - ĐRL - Tiêu chuẩn học bổng */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3.5 pt-4 relative z-10">
           {/* Cột 1: GPA */}
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between">
+          <div className="interactive-card-accent group p-4 rounded-xl border border-slate-200/90 bg-white flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <Target className="w-3.5 h-3.5 text-[#49C8D6]" />
                   GPA Tích lũy (Hệ 4)
                 </span>
-                <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                   isGpaOnTrack 
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                    : 'bg-amber-50 text-amber-800 border border-amber-200'
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+                    : 'bg-[#FEF7E6] text-[#B27B00] border-[#F2A900]/50'
                 }`}>
                   {isGpaOnTrack ? 'Đạt chuẩn' : `Thiếu +${gpaDeficit.toFixed(2)}`}
                 </span>
               </div>
               <div className="flex items-baseline gap-2 mt-2">
-                <span className="text-2xl font-bold text-slate-900 font-mono tracking-tight">
+                <span className="text-2xl font-black text-[#0B2545] group-hover:text-[#49C8D6] transition-colors font-mono tracking-tight">
                   {currentGPA.toFixed(2)}
                 </span>
-                <span className="text-xs text-slate-400 font-mono">/ Mục tiêu {targetGPA.toFixed(2)}</span>
+                <span className="text-xs text-slate-400 font-mono font-medium">/ Mục tiêu {targetGPA.toFixed(2)}</span>
               </div>
-              <div className="w-full bg-slate-200 h-2 rounded-full mt-2.5 overflow-hidden">
+              <div className="w-full bg-slate-100 h-2 rounded-full mt-2.5 overflow-hidden">
                 <div 
-                  className="bg-[#0B2545] h-full rounded-full transition-all duration-500" 
+                  className="bg-gradient-to-r from-[#49C8D6] to-[#0B2545] h-full rounded-full transition-all duration-500" 
                   style={{ width: `${Math.min(100, Math.round((currentGPA / targetGPA) * 100))}%` }}
                 />
               </div>
             </div>
-            <p className="text-xs text-slate-500 mt-2.5">
+            <p className="text-xs text-slate-500 mt-2.5 font-medium">
               {isGpaOnTrack ? 'Điểm GPA đang đủ điều kiện xét học bổng.' : `Cần tăng thêm ${gpaDeficit.toFixed(2)} điểm để chạm mốc.`}
             </p>
           </div>
 
           {/* Cột 2: Điểm Rèn Luyện */}
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between">
+          <div className="interactive-card-accent group p-4 rounded-xl border border-slate-200/90 bg-white flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <Award className="w-3.5 h-3.5 text-[#F2A900]" />
                   Điểm rèn luyện
                 </span>
-                <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
                   isDrlOnTrack 
-                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' 
-                    : 'bg-amber-50 text-amber-800 border border-amber-200'
+                    ? 'bg-emerald-50 text-emerald-800 border-emerald-200' 
+                    : 'bg-[#FEF7E6] text-[#B27B00] border-[#F2A900]/50'
                 }`}>
                   {isDrlOnTrack ? 'Đạt chuẩn' : `Thiếu ${drlDeficit}đ`}
                 </span>
               </div>
               <div className="flex items-baseline gap-2 mt-2">
-                <span className="text-2xl font-bold text-slate-900 font-mono tracking-tight">
+                <span className="text-2xl font-black text-[#0B2545] group-hover:text-[#F2A900] transition-colors font-mono tracking-tight">
                   {currentDRL}
                 </span>
-                <span className="text-xs text-slate-400 font-mono">/ Mục tiêu {targetDRL}đ</span>
+                <span className="text-xs text-slate-400 font-mono font-medium">/ Mục tiêu {targetDRL}đ</span>
               </div>
-              <div className="w-full bg-slate-200 h-2 rounded-full mt-2.5 overflow-hidden">
+              <div className="w-full bg-slate-100 h-2 rounded-full mt-2.5 overflow-hidden">
                 <div 
-                  className="bg-[#0B2545] h-full rounded-full transition-all duration-500" 
+                  className="bg-gradient-to-r from-[#F2A900] to-[#FFBF24] h-full rounded-full transition-all duration-500" 
                   style={{ width: `${Math.min(100, Math.round((currentDRL / targetDRL) * 100))}%` }}
                 />
               </div>
             </div>
-            <p className="text-xs text-slate-500 mt-2.5">
+            <p className="text-xs text-slate-500 mt-2.5 font-medium">
               {isDrlOnTrack ? 'ĐRL đã hoàn thành chỉ tiêu kỳ này.' : `Thiếu ${drlDeficit} điểm để đạt mức rèn luyện mục tiêu.`}
             </p>
           </div>
 
           {/* Cột 3: Tiêu chuẩn học bổng */}
-          <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 flex flex-col justify-between">
+          <div className="interactive-card-accent group p-4 rounded-xl border border-slate-200/90 bg-white flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-600 flex items-center gap-1.5">
+                  <Trophy className="w-3.5 h-3.5 text-[#F2A900]" />
                   Tiêu chuẩn học bổng
                 </span>
-                <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${scholarship.badgeBg}`}>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-[#FEF7E6] text-[#B27B00] border border-[#F2A900]/50 shadow-2xs">
                   {scholarship.tier}
                 </span>
               </div>
               <div className="mt-2">
-                <div className="text-xs font-bold text-slate-900">
+                <div className="text-xs font-extrabold text-[#0B2545]">
                   Mục tiêu: {profile.scholarshipTierTarget || 'Xuất sắc'}
                 </div>
-                <div className="text-[11px] text-slate-500 mt-1 leading-relaxed">
+                <div className="text-[11px] text-slate-500 mt-1 leading-relaxed font-medium">
                   Yêu cầu: GPA ≥ {profile.scholarshipTierTarget === 'Xuất sắc' ? '3.6' : '3.2'} • ĐRL ≥ {profile.scholarshipTierTarget === 'Xuất sắc' ? '90' : '80'}
                 </div>
               </div>
             </div>
-            <div className="mt-2.5 pt-2 border-t border-slate-200 flex items-center justify-between text-xs">
-              <span className="text-slate-600">
+            <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
+              <span className="text-slate-500 font-medium">
                 {isGpaOnTrack && isDrlOnTrack ? 'Đủ điều kiện xét duyệt' : 'Chưa đủ điều kiện'}
               </span>
-              <span className="font-semibold text-slate-900">
+              <span className={`font-bold ${isGpaOnTrack && isDrlOnTrack ? 'text-emerald-700' : 'text-amber-800'}`}>
                 {isGpaOnTrack && isDrlOnTrack ? 'Duy trì' : 'Cần bứt phá'}
               </span>
             </div>
@@ -347,28 +367,32 @@ export const SmartPlanner = ({ isMainView = false }) => {
         </div>
 
         {/* Khung lời khuyên hành động */}
-        <div className="mt-4 p-3.5 rounded-xl bg-slate-900 text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-          <div>
-            <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold block">
-              Ưu tiên tuần này
-            </span>
-            <p className="text-xs text-slate-200 mt-0.5 leading-relaxed">
+        <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-[#0B2545] via-[#132E59] to-[#0B2545] border border-[#49C8D6]/30 shadow-card text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative overflow-hidden z-10">
+          <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#49C8D6]/10 to-transparent pointer-events-none" />
+          <div className="relative z-10">
+            <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#49C8D6] font-extrabold">
+              <Sparkles className="w-3.5 h-3.5 text-[#F2A900]" />
+              <span>ƯU TIÊN TUẦN NÀY</span>
+            </div>
+            <p className="text-xs text-slate-100 mt-1 leading-relaxed font-medium">
               {top1PriorityText}
             </p>
           </div>
 
-          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+          <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 relative z-10">
             <button 
               onClick={() => setActiveSubTab('gpa')} 
-              className="text-xs px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-medium transition-colors"
+              className="btn-interactive px-3.5 py-1.5 text-xs bg-white/15 hover:bg-white/25 text-white border border-white/25 shadow-xs font-bold"
             >
-              Xem điểm thi
+              <Target className="w-3.5 h-3.5 text-[#49C8D6]" />
+              <span>Xem điểm thi</span>
             </button>
             <button 
               onClick={() => setActiveSubTab('drl')} 
-              className="text-xs px-3 py-1.5 rounded-lg bg-white text-slate-950 hover:bg-slate-100 font-semibold transition-colors"
+              className="btn-interactive-gold text-xs font-bold px-3.5 py-1.5 shadow-xs"
             >
-              Bù điểm ĐRL
+              <Sparkles className="w-3.5 h-3.5 text-slate-900" />
+              <span>Bù điểm ĐRL</span>
             </button>
           </div>
         </div>
@@ -379,23 +403,25 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {/* ========================================================================= */}
       <div className="flex flex-wrap items-center gap-2 border-b border-slate-200 pb-2.5">
         {[
-          { id: 'gpa', label: 'Dự báo điểm thi cuối kỳ' },
-          { id: 'drl', label: 'Bù điểm rèn luyện theo lịch rảnh' },
-          { id: 'growth', label: 'Định hướng NCKH & Nghề nghiệp' }
+          { id: 'gpa', label: 'Dự báo điểm thi cuối kỳ', icon: Target },
+          { id: 'drl', label: 'Bù điểm rèn luyện theo lịch rảnh', icon: Clock },
+          { id: 'growth', label: 'Định hướng NCKH & Nghề nghiệp', icon: Compass }
         ].map((tab) => {
           const isActive = activeSubTab === tab.id;
+          const TabIcon = tab.icon;
           return (
             <button
               key={tab.id}
               type="button"
               onClick={() => setActiveSubTab(tab.id)}
-              className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-semibold transition-all duration-200 flex items-center gap-1.5 ${
                 isActive
-                  ? 'bg-slate-900 text-white'
-                  : 'bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 border border-slate-200'
+                  ? 'btn-interactive-navy shadow-xs text-white'
+                  : 'btn-interactive-outline text-slate-600 hover:text-[#0B2545]'
               }`}
             >
-              {tab.label}
+              <TabIcon className={`w-3.5 h-3.5 ${isActive ? 'text-[#49C8D6]' : 'text-slate-400'}`} />
+              <span>{tab.label}</span>
             </button>
           );
         })}
@@ -406,23 +432,32 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {/* ========================================================================= */}
       {activeSubTab === 'gpa' && (
         <div className="space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
-              <div>
-                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                  Điểm thi kết thúc học phần cần đạt
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Tính toán điểm thi tối thiểu dựa trên điểm quá trình hiện tại để đạt mục tiêu môn học
-                </p>
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-card p-5 sm:p-6 relative overflow-hidden group">
+            {/* Ambient soft glow */}
+            <div className="absolute -right-12 -top-12 w-44 h-44 bg-gradient-to-br from-[#49C8D6]/15 via-[#0B2545]/10 to-transparent rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-[#0B2545] text-[#49C8D6] shadow-2xs">
+                  <Target className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-extrabold text-[#0B2545] uppercase tracking-wide">
+                    Điểm thi kết thúc học phần cần đạt
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Tính toán điểm thi tối thiểu dựa trên điểm quá trình hiện tại để đạt mục tiêu môn học
+                  </p>
+                </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('gpa')}
-                className="text-xs font-semibold text-slate-700 hover:text-slate-950 transition-colors self-start sm:self-auto"
+                className="btn-interactive-outline text-xs self-start sm:self-auto font-bold"
               >
-                Mở bảng điểm đầy đủ
+                <span>Mở bảng điểm đầy đủ</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#0B2545]" />
               </button>
             </div>
 
@@ -436,26 +471,29 @@ export const SmartPlanner = ({ isMainView = false }) => {
                   return (
                     <div
                       key={course.id}
-                      className="p-4 rounded-xl border border-slate-200 bg-white hover:border-slate-300 transition-all flex flex-col justify-between space-y-3"
+                      className="group relative bg-white border border-slate-200/90 rounded-2xl p-4 sm:p-5 shadow-2xs hover:shadow-card hover:border-[#49C8D6]/70 hover:-translate-y-0.5 transition-all duration-200 flex flex-col justify-between space-y-3 overflow-hidden"
                     >
+                      {/* Left Accent Bar on Hover */}
+                      <div className="absolute left-0 top-3 bottom-3 w-1 bg-transparent group-hover:bg-[#49C8D6] rounded-r transition-colors duration-200" />
+
                       <div>
                         {/* Course Header */}
                         <div className="flex items-start justify-between gap-2">
                           <div>
-                            <div className="text-sm font-bold text-slate-900">{course.name}</div>
-                            <div className="text-xs text-slate-500 mt-0.5">
-                              {course.credits} tín chỉ • {course.status}
+                            <div className="text-sm font-extrabold text-slate-900 group-hover:text-[#0B2545] transition-colors">{course.name}</div>
+                            <div className="text-xs text-slate-500 mt-0.5 font-medium">
+                              {course.credits} tín chỉ • <span className="text-[#0B2545] font-semibold">{course.status}</span>
                             </div>
                           </div>
 
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-semibold shrink-0 border ${
+                          <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0 border ${
                             status === 'impossible'
                               ? 'bg-rose-50 text-rose-700 border-rose-200'
                               : status === 'at_risk'
-                                ? 'bg-amber-50 text-amber-800 border-amber-300'
+                                ? 'bg-[#FEF7E6] text-[#B27B00] border-[#F2A900]/50'
                                 : status === 'moderate'
-                                  ? 'bg-blue-50 text-blue-700 border-blue-200'
-                                  : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                                  ? 'bg-[#E0F7FA] text-[#087F8C] border-[#49C8D6]/40'
+                                  : 'bg-emerald-50 text-emerald-800 border-emerald-200'
                           }`}>
                             {status === 'impossible' && 'Quá tải mục tiêu'}
                             {status === 'at_risk' && 'Cần ưu tiên ôn tập'}
@@ -466,34 +504,34 @@ export const SmartPlanner = ({ isMainView = false }) => {
                         </div>
 
                         {/* 3 Cột điểm */}
-                        <div className="grid grid-cols-3 gap-2 mt-3 p-3 rounded-lg bg-slate-50 border border-slate-100 text-center">
+                        <div className="grid grid-cols-3 gap-2 mt-3 p-3 rounded-xl bg-slate-50/80 border border-slate-200/80 text-center">
                           <div>
-                            <span className="text-[10px] text-slate-400 font-bold uppercase block">
+                            <span className="text-[10px] text-slate-400 font-extrabold uppercase block">
                               Quá trình
                             </span>
-                            <span className="text-sm font-bold text-slate-800 font-mono mt-0.5 block">
+                            <span className="text-sm font-black text-[#0B2545] font-mono mt-0.5 block">
                               {currentProcessScore !== null ? `${currentProcessScore}/10` : 'Chưa có'}
                             </span>
                           </div>
 
                           <div className="border-x border-slate-200">
-                            <span className="text-[10px] text-slate-400 font-bold uppercase block">
+                            <span className="text-[10px] text-slate-400 font-extrabold uppercase block">
                               Mục tiêu
                             </span>
-                            <span className="text-sm font-bold text-slate-800 font-mono mt-0.5 block">
+                            <span className="text-sm font-black text-[#B27B00] font-mono mt-0.5 block">
                               {aimScore.toFixed(1)}/10
                             </span>
                           </div>
 
                           <div>
-                            <span className="text-[10px] text-slate-400 font-bold uppercase block">
+                            <span className="text-[10px] text-slate-400 font-extrabold uppercase block">
                               Cần thi cuối kỳ
                             </span>
-                            <span className={`text-sm font-bold font-mono mt-0.5 block ${
+                            <span className={`text-sm font-black font-mono mt-0.5 block ${
                               requiredFinalScore > 10.0
                                 ? 'text-rose-600'
                                 : requiredFinalScore >= 8.5
-                                  ? 'text-amber-700'
+                                  ? 'text-[#B27B00]'
                                   : 'text-emerald-700'
                             }`}>
                               {requiredFinalScore !== null 
@@ -504,34 +542,36 @@ export const SmartPlanner = ({ isMainView = false }) => {
                         </div>
 
                         {/* Lời khuyên */}
-                        <div className={`mt-3 p-2.5 rounded-lg text-xs leading-relaxed border ${
+                        <div className={`mt-3 p-2.5 rounded-xl text-xs leading-relaxed border ${
                           status === 'impossible'
                             ? 'bg-rose-50/70 border-rose-200 text-rose-900'
                             : status === 'at_risk'
-                              ? 'bg-amber-50/70 border-amber-200 text-amber-950'
-                              : 'bg-emerald-50/70 border-emerald-200 text-emerald-950'
+                              ? 'bg-[#FEF7E6]/70 border-[#F2A900]/40 text-[#8F6300]'
+                              : 'bg-[#E0F7FA]/40 border-[#49C8D6]/30 text-[#0c727d]'
                         }`}>
-                          <strong>Ghi chú: </strong>
+                          <strong className="font-bold">Ghi chú: </strong>
                           {message}
                         </div>
                       </div>
 
                       {/* Nút hành động */}
-                      <div className="flex items-center justify-between pt-2 border-t border-slate-100">
+                      <div className="flex items-center justify-between pt-2.5 border-t border-slate-100">
                         <button
                           type="button"
                           onClick={() => handleOpenAimModal(course)}
-                          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-white border border-slate-200 text-slate-800 hover:bg-slate-50 transition-colors"
+                          className="btn-interactive-outline text-xs px-3 py-1.5 font-bold"
                         >
-                          Đổi mục tiêu môn
+                          <Sliders className="w-3.5 h-3.5 text-slate-500" />
+                          <span>Đổi mục tiêu môn</span>
                         </button>
 
                         <button
                           type="button"
                           onClick={() => setActiveTab('gpa')}
-                          className="text-xs font-medium text-slate-600 hover:text-slate-900 transition-colors"
+                          className="btn-interactive-gold text-xs px-3 py-1.5 font-bold"
                         >
-                          Nhập điểm thành phần
+                          <Edit3 className="w-3.5 h-3.5 text-slate-900" />
+                          <span>Nhập điểm thành phần</span>
                         </button>
                       </div>
                     </div>
@@ -549,29 +589,38 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {activeSubTab === 'drl' && (
         <div className="space-y-4">
           {/* Tình trạng 5 Tiêu chí ĐRL */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
-              <div>
-                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                  Tình trạng 5 tiêu chí ĐRL
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Tổng ĐRL hiện tại: <strong className="text-slate-800">{currentDRL}/100đ</strong> • Mục tiêu:{' '}
-                  <strong className="text-slate-800">{targetDRL}đ</strong> ({isDrlOnTrack ? 'Đã đạt chỉ tiêu' : `Còn thiếu ${drlDeficit}đ`})
-                </p>
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-card p-5 relative overflow-hidden group">
+            {/* Ambient soft glow */}
+            <div className="absolute -right-12 -top-12 w-44 h-44 bg-gradient-to-br from-[#49C8D6]/15 via-[#0B2545]/10 to-transparent rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 mb-4 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-[#0B2545] text-[#49C8D6] shadow-2xs">
+                  <Trophy className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-extrabold text-[#0B2545] uppercase tracking-wide">
+                    Tình trạng 5 tiêu chí ĐRL
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Tổng ĐRL hiện tại: <strong className="text-[#0B2545] font-bold">{currentDRL}/100đ</strong> • Mục tiêu:{' '}
+                    <strong className="text-[#B27B00] font-bold">{targetDRL}đ</strong> ({isDrlOnTrack ? 'Đã đạt chỉ tiêu' : `Còn thiếu ${drlDeficit}đ`})
+                  </p>
+                </div>
               </div>
 
               <button
                 type="button"
                 onClick={() => setActiveTab('drl')}
-                className="text-xs font-semibold text-slate-700 hover:text-slate-950 transition-colors self-start sm:self-auto"
+                className="btn-interactive-outline text-xs self-start sm:self-auto font-bold"
               >
-                Mở bảng tiêu chí ĐRL
+                <span>Mở bảng tiêu chí ĐRL</span>
+                <ArrowRight className="w-3.5 h-3.5 text-[#0B2545]" />
               </button>
             </div>
 
             {/* 5 Hộp tiêu chí */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
               {criteriaList.map((crit) => {
                 const deficit = deficitMap[crit.id.toString()] || 0;
                 const isMax = crit.currentPoints >= crit.maxPoints;
@@ -580,40 +629,44 @@ export const SmartPlanner = ({ isMainView = false }) => {
                 return (
                   <div
                     key={crit.id}
-                    className={`p-3 rounded-lg border transition-all flex flex-col justify-between ${
+                    className={`p-3 rounded-xl border transition-all flex flex-col justify-between ${
                       deficit > 0
-                        ? 'border-amber-300 bg-amber-50/40'
-                        : 'border-slate-200 bg-slate-50/50'
+                        ? 'border-[#F2A900]/40 bg-[#FEF7E6]/40 hover:border-[#F2A900]/80 shadow-2xs'
+                        : 'border-[#49C8D6]/30 bg-[#E0F7FA]/20 hover:border-[#49C8D6]/70 shadow-2xs'
                     }`}
                   >
                     <div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-bold font-mono px-1.5 py-0.5 rounded bg-slate-200 text-slate-800">
+                        <span className="text-[10px] font-extrabold font-mono px-1.5 py-0.5 rounded bg-[#0B2545]/10 text-[#0B2545]">
                           Mục {crit.id}
                         </span>
-                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded ${
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
                           isMax
-                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
-                            : 'bg-amber-100 text-amber-800 border border-amber-300'
+                            ? 'bg-[#E0F7FA] text-[#087F8C] border border-[#49C8D6]/40'
+                            : 'bg-[#FEF7E6] text-[#B27B00] border border-[#F2A900]/50'
                         }`}>
                           {isMax ? 'Đã đủ' : `Thiếu ${deficit}đ`}
                         </span>
                       </div>
-                      <div className="text-xs font-semibold text-slate-900 mt-2 line-clamp-1" title={crit.name}>
+                      <div className="text-xs font-bold text-[#0B2545] mt-2 line-clamp-1" title={crit.name}>
                         {crit.shortName}
                       </div>
                     </div>
 
                     <div className="mt-3 pt-2 border-t border-slate-200/60">
                       <div className="flex items-baseline justify-between text-xs">
-                        <span className="font-bold text-slate-800 font-mono">
+                        <span className="font-black text-[#0B2545] font-mono">
                           {crit.currentPoints} <span className="text-[10px] text-slate-400 font-normal">/ {crit.maxPoints}đ</span>
                         </span>
-                        <span className="text-[10px] text-slate-500 font-mono font-medium">{percent}%</span>
+                        <span className="text-[10px] text-slate-500 font-mono font-bold">{percent}%</span>
                       </div>
-                      <div className="w-full bg-slate-200 h-1.5 rounded-full mt-1.5 overflow-hidden">
+                      <div className="w-full bg-slate-200/80 h-1.5 rounded-full mt-1.5 overflow-hidden">
                         <div
-                          className={`h-full rounded-full transition-all duration-500 ${isMax ? 'bg-emerald-600' : 'bg-slate-700'}`}
+                          className={`h-full rounded-full transition-all duration-500 ${
+                            isMax 
+                              ? 'bg-gradient-to-r from-[#49C8D6] to-[#0B2545]' 
+                              : 'bg-gradient-to-r from-[#F2A900] to-[#FFBF24]'
+                          }`}
                           style={{ width: `${percent}%` }}
                         />
                       </div>
@@ -625,27 +678,37 @@ export const SmartPlanner = ({ isMainView = false }) => {
           </div>
 
           {/* Lọc hoạt động theo lịch rảnh */}
-          <div className="bg-white rounded-xl border border-slate-200 p-5">
-            <div className="mb-4 pb-3 border-b border-slate-100">
-              <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                Lọc hoạt động theo lịch rảnh
-              </h3>
-              <p className="text-xs text-slate-500 mt-0.5">
-                Chọn ngày và buổi rảnh để tìm hoạt động bù đúng mục tiêu chí còn thiếu
-              </p>
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-card p-5 relative overflow-hidden group">
+            {/* Ambient soft glow */}
+            <div className="absolute left-1/3 -bottom-10 w-36 h-36 bg-[#F2A900]/10 rounded-full blur-xl pointer-events-none" />
+
+            <div className="relative z-10 mb-4 pb-3 border-b border-slate-100 flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-[#0B2545] text-[#F2A900] shadow-2xs">
+                  <Calendar className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-extrabold text-[#0B2545] uppercase tracking-wide">
+                    Lọc hoạt động theo lịch rảnh
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Chọn ngày và buổi rảnh để tìm hoạt động bù đúng mục tiêu chí còn thiếu
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Điều khiển bộ lọc */}
-            <div className="p-3.5 rounded-lg bg-slate-50 border border-slate-200 space-y-3">
+            <div className="relative z-10 p-3.5 rounded-xl bg-[#0B2545]/[0.02] border border-slate-200/80 space-y-3">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 <div>
-                  <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block mb-1">
+                  <label className="text-[11px] font-bold text-[#0B2545] uppercase tracking-wider block mb-1">
                     Ngày rảnh
                   </label>
                   <select
                     value={selectedDay}
                     onChange={(e) => setSelectedDay(Number(e.target.value))}
-                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-800 font-medium focus:outline-none focus:border-slate-400"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-800 font-medium focus:outline-none focus:border-[#49C8D6] focus:ring-1 focus:ring-[#49C8D6]"
                   >
                     <option value={0}>Tất cả các ngày</option>
                     <option value={1}>Thứ 2</option>
@@ -659,13 +722,13 @@ export const SmartPlanner = ({ isMainView = false }) => {
                 </div>
 
                 <div>
-                  <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider block mb-1">
+                  <label className="text-[11px] font-bold text-[#0B2545] uppercase tracking-wider block mb-1">
                     Buổi trong ngày
                   </label>
                   <select
                     value={selectedTimeSlot}
                     onChange={(e) => setSelectedTimeSlot(e.target.value)}
-                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-800 font-medium focus:outline-none focus:border-slate-400"
+                    className="w-full px-3 py-1.5 rounded-lg border border-slate-200 bg-white text-xs text-slate-800 font-medium focus:outline-none focus:border-[#49C8D6] focus:ring-1 focus:ring-[#49C8D6]"
                   >
                     <option value="all">Tất cả các buổi</option>
                     <option value="morning">Sáng (07:30 - 11:30)</option>
@@ -681,27 +744,27 @@ export const SmartPlanner = ({ isMainView = false }) => {
                     type="checkbox"
                     checked={onlyDeficitActivities}
                     onChange={(e) => setOnlyDeficitActivities(e.target.checked)}
-                    className="w-4 h-4 rounded text-slate-900 border-slate-300 focus:ring-0"
+                    className="w-4 h-4 rounded text-[#0B2545] border-slate-300 focus:ring-[#49C8D6] accent-[#0B2545]"
                   />
-                  <span className="text-xs text-slate-700">
+                  <span className="text-xs text-slate-700 font-medium">
                     Chỉ hiện hoạt động bù đúng mục còn thiếu ({missingCriteriaIds.map(id => `Mục ${id}`).join(', ') || 'Đã đủ'})
                   </span>
                 </label>
 
                 <span className="text-xs text-slate-500">
-                  Khớp: <strong className="text-slate-900">{filteredGapActivities.length}</strong> hoạt động
+                  Khớp: <strong className="text-[#0B2545] font-bold">{filteredGapActivities.length}</strong> hoạt động
                 </span>
               </div>
             </div>
 
             {/* Danh sách hoạt động */}
-            <div className="mt-4">
+            <div className="relative z-10 mt-4">
               {filteredGapActivities.length === 0 ? (
-                <div className="p-8 text-center border border-slate-200 rounded-lg bg-slate-50/50 text-xs text-slate-500">
+                <div className="p-8 text-center border border-slate-200 rounded-xl bg-slate-50/50 text-xs text-slate-500">
                   Không tìm thấy hoạt động nào phù hợp với bộ lọc ngày và giờ này.
                 </div>
               ) : (
-                <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 overflow-hidden bg-white">
+                <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 overflow-hidden bg-white">
                   {filteredGapActivities.slice(0, 8).map((act) => {
                     const isRegistered = registeredActivityIds.includes(act.id);
                     const dayName = act.dayOfWeek === 1 ? 'Thứ 2' : act.dayOfWeek === 2 ? 'Thứ 3' : act.dayOfWeek === 3 ? 'Thứ 4' : act.dayOfWeek === 4 ? 'Thứ 5' : act.dayOfWeek === 5 ? 'Thứ 6' : act.dayOfWeek === 6 ? 'Thứ 7' : 'Chủ Nhật';
@@ -709,15 +772,15 @@ export const SmartPlanner = ({ isMainView = false }) => {
                     return (
                       <div
                         key={act.id}
-                        className="p-3.5 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
+                        className="p-3.5 hover:bg-slate-50/80 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
                       >
                         <div className="space-y-1.5 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-[10px] text-slate-500 bg-slate-100 font-mono px-1.5 py-0.5 rounded border border-slate-200">
+                            <span className="text-[10px] text-[#087F8C] bg-[#E0F7FA] font-mono px-1.5 py-0.5 rounded border border-[#49C8D6]/30 font-bold">
                               {act.code}
                             </span>
-                            <span className="font-bold text-slate-900">{act.title}</span>
-                            <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                            <span className="font-bold text-[#0B2545]">{act.title}</span>
+                            <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF7E6] text-[#B27B00] border border-[#F2A900]/40">
                               +{act.totalPoints}đ ĐRL
                             </span>
                           </div>
@@ -733,7 +796,7 @@ export const SmartPlanner = ({ isMainView = false }) => {
                           <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
                             {act.allocations.map((alloc, idx) => (
                               <span key={idx} className="text-[10px] font-medium bg-slate-100 text-slate-700 px-2 py-0.5 rounded border border-slate-200">
-                                Bù vào: Mục {alloc.criterionCode} (+{alloc.points}đ)
+                                Bù vào: <strong className="text-[#0B2545] font-bold">Mục {alloc.criterionCode}</strong> (+{alloc.points}đ)
                               </span>
                             ))}
                           </div>
@@ -743,13 +806,23 @@ export const SmartPlanner = ({ isMainView = false }) => {
                           <button
                             type="button"
                             onClick={() => toggleActivityRegistration(act.id)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold ${
                               isRegistered
-                                ? 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'
-                                : 'bg-slate-900 text-white hover:bg-slate-800'
+                                ? 'btn-interactive-outline text-[#087F8C] border-[#49C8D6]/60 bg-[#E0F7FA]/30'
+                                : 'btn-interactive-navy'
                             }`}
                           >
-                            {isRegistered ? 'Đã đăng ký' : 'Đăng ký tham gia'}
+                            {isRegistered ? (
+                              <>
+                                <CheckCircle2 className="w-3.5 h-3.5 text-[#087F8C]" />
+                                <span>Đã đăng ký</span>
+                              </>
+                            ) : (
+                              <>
+                                <Plus className="w-3.5 h-3.5 text-white" />
+                                <span>Đăng ký tham gia</span>
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
@@ -767,22 +840,30 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {/* ========================================================================= */}
       {activeSubTab === 'growth' && (
         <div className="space-y-4">
-          <div className="bg-white rounded-xl border border-slate-200 p-5 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
-              <div>
-                <h2 className="text-sm font-bold text-slate-900 uppercase tracking-wide">
-                  Định hướng NCKH & Nghề nghiệp
-                </h2>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  Khoa/Viện của bạn: <strong className="text-slate-900">{studentFaculty}</strong>
-                </p>
+          <div className="bg-white/95 backdrop-blur-md rounded-2xl border border-slate-200/90 shadow-card p-5 space-y-4 relative overflow-hidden group">
+            {/* Ambient soft glow */}
+            <div className="absolute -right-12 -top-12 w-44 h-44 bg-gradient-to-br from-[#49C8D6]/15 via-[#0B2545]/10 to-transparent rounded-full blur-2xl pointer-events-none" />
+
+            <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-[#0B2545] text-[#49C8D6] shadow-2xs">
+                  <Compass className="w-4 h-4" />
+                </div>
+                <div>
+                  <h2 className="text-sm font-extrabold text-[#0B2545] uppercase tracking-wide">
+                    Định hướng NCKH & Nghề nghiệp
+                  </h2>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Khoa/Viện của bạn: <strong className="text-[#0B2545] font-bold">{studentFaculty}</strong>
+                  </p>
+                </div>
               </div>
 
               <div className="flex items-center gap-2">
                 <select
                   value={facultyFilter}
                   onChange={(e) => setFacultyFilter(e.target.value)}
-                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 bg-white font-medium focus:outline-none focus:border-slate-400 max-w-[240px]"
+                  className="px-3 py-1.5 rounded-lg border border-slate-200 text-xs text-slate-800 bg-white font-medium focus:outline-none focus:border-[#49C8D6] focus:ring-1 focus:ring-[#49C8D6] max-w-[240px]"
                 >
                   <option value="Tất cả">Tất cả Khoa / Viện</option>
                   {UEH_FACULTIES.map((fac) => (
@@ -793,7 +874,7 @@ export const SmartPlanner = ({ isMainView = false }) => {
             </div>
 
             {/* 4 Nhóm định hướng */}
-            <div className="flex flex-wrap items-center gap-2">
+            <div className="relative z-10 flex flex-wrap items-center gap-2">
               {[
                 { id: 'scientific_research', label: 'Nghiên cứu khoa học' },
                 { id: 'career', label: 'Nghề nghiệp & Doanh nghiệp' },
@@ -806,26 +887,26 @@ export const SmartPlanner = ({ isMainView = false }) => {
                     key={pill.id}
                     type="button"
                     onClick={() => setSelectedGoal(pill.id)}
-                    className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                    className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all duration-200 ${
                       isSelected
-                        ? 'bg-slate-900 text-white'
-                        : 'bg-white text-slate-700 border border-slate-200 hover:bg-slate-50'
+                        ? 'btn-interactive-navy shadow-xs text-white'
+                        : 'btn-interactive-outline text-slate-700'
                     }`}
                   >
-                    {pill.label}
+                    <span>{pill.label}</span>
                   </button>
                 );
               })}
             </div>
 
             {/* Danh sách hoạt động */}
-            <div className="mt-3">
+            <div className="relative z-10 mt-3">
               {careerGrowthActivities.length === 0 ? (
-                <div className="p-8 text-center border border-slate-200 rounded-lg bg-slate-50/50 text-xs text-slate-500">
+                <div className="p-8 text-center border border-slate-200 rounded-xl bg-slate-50/50 text-xs text-slate-500">
                   Không tìm thấy hoạt động nào trong nhóm này.
                 </div>
               ) : (
-                <div className="border border-slate-200 rounded-lg divide-y divide-slate-100 overflow-hidden bg-white">
+                <div className="border border-slate-200 rounded-xl divide-y divide-slate-100 overflow-hidden bg-white">
                   {careerGrowthActivities.slice(0, 8).map((act) => {
                     const isRegistered = registeredActivityIds.includes(act.id);
                     const isFacultyMatch = act.facultyTarget.toLowerCase().includes(studentFaculty.toLowerCase()) ||
@@ -834,20 +915,20 @@ export const SmartPlanner = ({ isMainView = false }) => {
                     return (
                       <div
                         key={act.id}
-                        className="p-3.5 hover:bg-slate-50 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
+                        className="p-3.5 hover:bg-slate-50/80 transition-colors flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs"
                       >
                         <div className="space-y-1.5 flex-1">
                           <div className="flex flex-wrap items-center gap-2">
-                            <span className="text-[10px] text-slate-500 bg-slate-100 font-mono px-1.5 py-0.5 rounded border border-slate-200">
+                            <span className="text-[10px] text-[#087F8C] bg-[#E0F7FA] font-mono px-1.5 py-0.5 rounded border border-[#49C8D6]/30 font-bold">
                               {act.code}
                             </span>
-                            <span className="font-bold text-slate-900">{act.title}</span>
+                            <span className="font-bold text-[#0B2545]">{act.title}</span>
                             {isFacultyMatch && (
-                              <span className="px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-800 border border-slate-200">
+                              <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#FEF7E6] text-[#B27B00] border border-[#F2A900]/40">
                                 Đúng chuyên ngành
                               </span>
                             )}
-                            <span className="px-1.5 py-0.5 rounded text-[10px] text-slate-600 bg-slate-50 border border-slate-200">
+                            <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold text-[#0B2545] bg-[#0B2545]/5 border border-[#0B2545]/10">
                               {act.facultyTarget}
                             </span>
                           </div>
@@ -862,7 +943,7 @@ export const SmartPlanner = ({ isMainView = false }) => {
 
                           <div className="flex flex-wrap items-center gap-1.5 pt-0.5 text-[10px] text-slate-500">
                             {act.tags.map((t, idx) => (
-                              <span key={idx} className="bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded">
+                              <span key={idx} className="bg-slate-50 border border-slate-200 px-1.5 py-0.5 rounded font-medium">
                                 #{t}
                               </span>
                             ))}
@@ -870,19 +951,29 @@ export const SmartPlanner = ({ isMainView = false }) => {
                         </div>
 
                         <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-                          <span className="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                          <span className="px-2 py-0.5 rounded text-xs font-bold bg-[#FEF7E6] text-[#B27B00] border border-[#F2A900]/40">
                             +{act.totalPoints}đ
                           </span>
                           <button
                             type="button"
                             onClick={() => toggleActivityRegistration(act.id)}
-                            className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors ${
+                            className={`px-3 py-1.5 rounded-xl text-xs font-bold ${
                               isRegistered
-                                ? 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'
-                                : 'bg-slate-900 text-white hover:bg-slate-800'
+                                ? 'btn-interactive-outline text-[#087F8C] border-[#49C8D6]/60 bg-[#E0F7FA]/30'
+                                : 'btn-interactive-navy'
                             }`}
                           >
-                            {isRegistered ? 'Đã đăng ký' : 'Đăng ký tham gia'}
+                            {isRegistered ? (
+                              <>
+                                <CheckCircle2 className="w-3.5 h-3.5 text-[#087F8C]" />
+                                <span>Đã đăng ký</span>
+                              </>
+                            ) : (
+                              <>
+                                <Plus className="w-3.5 h-3.5 text-white" />
+                                <span>Đăng ký tham gia</span>
+                              </>
+                            )}
                           </button>
                         </div>
                       </div>
@@ -899,29 +990,38 @@ export const SmartPlanner = ({ isMainView = false }) => {
       {/* 6. MODAL: ĐIỀU CHỈNH MỤC TIÊU MÔN HỌC                                      */}
       {/* ========================================================================= */}
       {editingAimCourse && (
-        <div className="fixed inset-0 z-50 bg-slate-900/40 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl border border-slate-200 max-w-md w-full p-5 shadow-xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-              <div>
-                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">
-                  Điều chỉnh mục tiêu môn học
-                </span>
-                <h3 className="text-base font-bold text-slate-900">{editingAimCourse.name}</h3>
+        <div className="fixed inset-0 z-50 bg-slate-900/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl border border-slate-200/90 max-w-md w-full p-5 sm:p-6 shadow-2xl space-y-4 relative overflow-hidden">
+            {/* Ambient soft glow */}
+            <div className="absolute -right-12 -top-12 w-36 h-36 bg-gradient-to-br from-[#49C8D6]/15 via-[#0B2545]/10 to-transparent rounded-full blur-xl pointer-events-none" />
+
+            <div className="relative z-10 flex items-center justify-between pb-3 border-b border-slate-100">
+              <div className="flex items-center gap-2.5">
+                <div className="p-1.5 rounded-lg bg-[#0B2545] text-[#F2A900] shadow-2xs">
+                  <Sliders className="w-4 h-4" />
+                </div>
+                <div>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#0B2545]">
+                    Điều chỉnh mục tiêu môn học
+                  </span>
+                  <h3 className="text-base font-bold text-slate-900">{editingAimCourse.name}</h3>
+                </div>
               </div>
               <button
                 type="button"
                 onClick={() => setEditingAimCourse(null)}
-                className="p-1 rounded hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+                className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors"
+                title="Đóng"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Slider Input */}
-            <div className="space-y-3">
+            <div className="relative z-10 space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold text-slate-700">Mục tiêu điểm hệ 10:</span>
-                <span className="text-base font-bold text-slate-900 font-mono">
+                <span className="text-xs font-bold text-[#0B2545]">Mục tiêu điểm hệ 10:</span>
+                <span className="text-base font-black text-[#B27B00] font-mono">
                   {tempAimScore.toFixed(1)}/10
                 </span>
               </div>
@@ -933,15 +1033,39 @@ export const SmartPlanner = ({ isMainView = false }) => {
                 step="0.1"
                 value={tempAimScore}
                 onChange={(e) => setTempAimScore(parseFloat(e.target.value))}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-slate-900"
+                className="w-full accent-[#49C8D6] cursor-pointer"
               />
 
-              <div className="flex justify-between text-[10px] text-slate-400 font-mono">
+              <div className="flex justify-between text-[10px] text-slate-400 font-mono font-medium">
                 <span>5.0 (C)</span>
                 <span>7.0 (B)</span>
                 <span>8.0 (B+)</span>
                 <span>8.5 (A)</span>
                 <span>10.0 (A+)</span>
+              </div>
+
+              {/* Quick suggestion buttons */}
+              <div className="flex items-center gap-1.5 pt-1">
+                <span className="text-[11px] text-slate-400 font-medium">Gợi ý mốc:</span>
+                {[
+                  { val: 7.0, label: '7.0 (Khá)' },
+                  { val: 8.0, label: '8.0 (Giỏi)' },
+                  { val: 8.5, label: '8.5 (A)' },
+                  { val: 9.0, label: '9.0 (A+)' }
+                ].map((preset) => (
+                  <button
+                    key={preset.val}
+                    type="button"
+                    onClick={() => setTempAimScore(preset.val)}
+                    className={`px-2 py-0.5 rounded-md text-[10px] font-bold transition-all ${
+                      tempAimScore === preset.val
+                        ? 'bg-[#0B2545] text-[#49C8D6] shadow-2xs border border-[#0B2545]'
+                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                    }`}
+                  >
+                    {preset.label}
+                  </button>
+                ))}
               </div>
             </div>
 
@@ -959,22 +1083,22 @@ export const SmartPlanner = ({ isMainView = false }) => {
               const gradeInfo = convertScore10ToUEH(tempAimScore);
 
               return (
-                <div className="p-3 rounded-lg bg-slate-50 border border-slate-200 text-xs space-y-2">
+                <div className="relative z-10 p-3.5 rounded-xl bg-[#0B2545]/[0.02] border border-slate-200/90 text-xs space-y-2">
                   <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Quy đổi hệ 4:</span>
-                    <strong className="text-slate-900">
+                    <span className="text-slate-500 font-medium">Quy đổi hệ 4:</span>
+                    <strong className="text-[#0B2545] font-bold">
                       {gradeInfo.letter} ({gradeInfo.gpa4.toFixed(1)} / 4.0) - {gradeInfo.description}
                     </strong>
                   </div>
 
                   {remainingWeight > 0 && reqFinal !== null && (
                     <div className="flex items-center justify-between pt-1 border-t border-slate-200">
-                      <span className="text-slate-500">Cần thi cuối kỳ ({remainingWeight}%):</span>
-                      <strong className={`font-mono text-sm ${
+                      <span className="text-slate-500 font-medium">Cần thi cuối kỳ ({remainingWeight}%):</span>
+                      <strong className={`font-mono text-sm font-bold ${
                         reqFinal > 10.0
                           ? 'text-rose-600'
                           : reqFinal >= 8.5
-                            ? 'text-amber-700'
+                            ? 'text-[#B27B00]'
                             : 'text-emerald-700'
                       }`}>
                         {reqFinal > 10.0 ? `${reqFinal.toFixed(1)}đ (Quá tải, nên hạ mục tiêu)` : `${reqFinal.toFixed(1)}đ`}
@@ -986,20 +1110,23 @@ export const SmartPlanner = ({ isMainView = false }) => {
             })()}
 
             {/* Nút hành động */}
-            <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+            <div className="relative z-10 flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
               <button
                 type="button"
                 onClick={() => setEditingAimCourse(null)}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                className="btn-interactive-outline text-xs px-3.5 py-1.5 font-medium"
               >
                 Hủy
               </button>
               <button
                 type="button"
                 onClick={handleSaveAimScore}
-                className="px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white hover:bg-slate-800 transition-colors"
+                className="btn-ueh text-xs font-semibold px-4 py-1.5"
               >
-                Lưu mục tiêu mới
+                <div className="svg-wrapper">
+                  <Sparkles className="w-3.5 h-3.5" />
+                </div>
+                <span>Lưu mục tiêu mới</span>
               </button>
             </div>
           </div>

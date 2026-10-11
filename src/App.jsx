@@ -68,7 +68,7 @@ const MainLayout = () => {
 
         {/* Footer Glassmorphism */}
         <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/80 py-4 mt-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-slate-500">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center text-xs text-slate-500">
             <div className="flex items-center gap-2">
               <img 
                 src="/logo.png" 
@@ -78,11 +78,6 @@ const MainLayout = () => {
               <span className="font-bold text-[#0B2545]">UEH Tracker</span>
               <span className="text-slate-400">•</span>
               <span className="text-slate-600 font-medium">Đồng hành cùng sinh viên UEH</span>
-            </div>
-
-            <div className="flex items-center gap-2 text-[11px] font-medium text-slate-500">
-              <span className="px-2 py-0.5 rounded-full bg-slate-100 border border-slate-200 text-slate-600">Thang điểm 4.0</span>
-              <span className="px-2 py-0.5 rounded-full bg-cyan-50 border border-cyan-200/60 text-[#0c727d]">Quy chế ĐRL UEH</span>
             </div>
           </div>
         </footer>
