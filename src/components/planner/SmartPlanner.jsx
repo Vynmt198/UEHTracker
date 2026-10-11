@@ -15,7 +15,8 @@ import {
   BookOpen,
   Award,
   Trophy,
-  Calendar
+  Calendar,
+  AlertTriangle
 } from 'lucide-react';
 import { UEH_FACULTIES } from '../../data/uehFaculties';
 
@@ -218,24 +219,103 @@ export const SmartPlanner = ({ isMainView = false }) => {
     });
   }, [allActivities, selectedGoal, facultyFilter, studentFaculty]);
 
-  // Lời khuyên hành động tuần này
-  const top1PriorityText = useMemo(() => {
+  // Lời khuyên hành động & Cảnh báo tiến độ tuần này
+  const priorityInfo = useMemo(() => {
     const urgentSubject = sortedExamTargets.find(c => c.status === 'at_risk' || c.status === 'impossible');
+    const failingCourse = courses.find(c => (c.finalScore10 !== null && c.finalScore10 !== undefined && c.finalScore10 < 5.0) || c.gradeLetter === 'F');
+    const lowestCourse = [...courses].filter(c => c.finalScore10 !== null && c.finalScore10 !== undefined).sort((a, b) => (a.finalScore10 || 0) - (b.finalScore10 || 0))[0];
+
     const topDeficitId = missingCriteriaIds[0];
     const topDeficitCat = criteriaList.find(c => c.id.toString() === topDeficitId);
-    const topDeficitPoints = deficitMap[topDeficitId] || 0;
+    const topDeficitPoints = deficitMap[topDeficitId] || drlDeficit || 0;
+    const isDrlDeficit = !isDrlOnTrack || topDeficitPoints > 0;
+    const isGpaDeficit = !isGpaOnTrack || gpaDeficit > 0;
 
-    if (urgentSubject && topDeficitPoints > 0) {
-      return `Tập trung ôn thi môn ${urgentSubject.course.name} (cần ${urgentSubject.requiredFinalScore?.toFixed(1) || '8.0'} điểm) và tham gia hoạt động bổ sung cho ${topDeficitCat?.shortName || 'ĐRL'} (đang thiếu ${topDeficitPoints} điểm).`;
+    // CASE 1: CẢ GPA VÀ ĐRL ĐỀU CHƯA ĐẠT (Ví dụ GPA 1.32 / Mục tiêu 3.80 & ĐRL 65 / Mục tiêu 85)
+    if (isGpaDeficit && isDrlDeficit) {
+      let gpaDetails = '';
+      if (urgentSubject) {
+        gpaDetails = `GPA đang thiếu ${gpaDeficit.toFixed(2)} điểm (cần dồn sức ôn thi môn ${urgentSubject.course.name} - mục tiêu ${urgentSubject.requiredFinalScore?.toFixed(1) || '8.0'}đ)`;
+      } else if (failingCourse) {
+        gpaDetails = `GPA đang thiếu ${gpaDeficit.toFixed(2)} điểm (có môn ${failingCourse.name} dưới 5.0 cần học cải thiện/học lại)`;
+      } else if (lowestCourse) {
+        gpaDetails = `GPA hiện tại ${currentGPA.toFixed(2)}/${targetGPA.toFixed(2)} (thiếu ${gpaDeficit.toFixed(2)} điểm, ưu tiên gỡ điểm môn ${lowestCourse.name})`;
+      } else {
+        gpaDetails = `GPA hiện tại ${currentGPA.toFixed(2)}/${targetGPA.toFixed(2)} (thiếu ${gpaDeficit.toFixed(2)} điểm so với mục tiêu)`;
+      }
+
+      const drlDetails = `và ĐRL đang thiếu ${topDeficitPoints} điểm (${topDeficitCat?.shortName || 'mục còn thiếu'})`;
+
+      return {
+        type: 'critical',
+        title: 'CẢNH BÁO TIẾN ĐỘ: GPA & ĐRL CHƯA ĐẠT',
+        badge: `Thiếu ${gpaDeficit.toFixed(2)} GPA • Thiếu ${topDeficitPoints}đ ĐRL`,
+        text: `${gpaDetails} ${drlDetails}. Cần ưu tiên kế hoạch gỡ điểm GPA và đăng ký hoạt động rèn luyện để đủ chuẩn xét học bổng.`,
+        actionGpaHighlight: true,
+        actionDrlHighlight: false,
+      };
     }
-    if (urgentSubject) {
-      return `Dồn sức ôn thi môn ${urgentSubject.course.name} (cần đạt ${urgentSubject.requiredFinalScore?.toFixed(1)} điểm) để giữ mục tiêu GPA ${targetGPA.toFixed(2)}.`;
+
+    // CASE 2: CHỈ GPA CHƯA ĐẠT MỤC TIÊU (ĐRL ĐÃ ĐẠT)
+    if (isGpaDeficit && !isDrlDeficit) {
+      let gpaDetails = '';
+      if (urgentSubject) {
+        gpaDetails = `GPA đang thiếu ${gpaDeficit.toFixed(2)} điểm so với mục tiêu ${targetGPA.toFixed(2)}. Cần dồn toàn lực ôn thi môn ${urgentSubject.course.name} (cần đạt tối thiểu ${urgentSubject.requiredFinalScore?.toFixed(1)} điểm) để nâng GPA.`;
+      } else if (failingCourse) {
+        gpaDetails = `GPA đang thiếu ${gpaDeficit.toFixed(2)} điểm (môn ${failingCourse.name} dưới 5.0). Cần lập kế hoạch học lại/học cải thiện môn này để kéo GPA chạm mốc ${targetGPA.toFixed(2)}.`;
+      } else if (lowestCourse) {
+        gpaDetails = `GPA hiện tại ${currentGPA.toFixed(2)} đang thiếu ${gpaDeficit.toFixed(2)} điểm so với mục tiêu ${targetGPA.toFixed(2)}. Cần tối ưu điểm số môn ${lowestCourse.name} và các học phần kỳ này.`;
+      } else {
+        gpaDetails = `GPA hiện tại ${currentGPA.toFixed(2)}/${targetGPA.toFixed(2)} (thiếu ${gpaDeficit.toFixed(2)} điểm). Hãy kiểm tra dự báo điểm thi và phân bổ thời gian ôn tập để đạt mục tiêu.`;
+      }
+
+      return {
+        type: 'gpa_warning',
+        title: 'CẢNH BÁO: GPA CHƯA ĐẠT MỤC TIÊU',
+        badge: `Thiếu ${gpaDeficit.toFixed(2)} GPA`,
+        text: `ĐRL đã hoàn thành chuẩn (${currentDRL}đ), nhưng ${gpaDetails}`,
+        actionGpaHighlight: true,
+        actionDrlHighlight: false,
+      };
     }
-    if (topDeficitPoints > 0) {
-      return `Đăng ký hoạt động rèn luyện bổ sung cho ${topDeficitCat?.shortName || 'Mục còn thiếu'} để bù ${topDeficitPoints} điểm ĐRL.`;
+
+    // CASE 3: CHỈ ĐRL CHƯA ĐẠT (GPA ĐÃ ĐẠT)
+    if (!isGpaDeficit && isDrlDeficit) {
+      return {
+        type: 'drl_warning',
+        title: 'ƯU TIÊN TUẦN NÀY: BÙ ĐIỂM ĐRL',
+        badge: `Thiếu ${topDeficitPoints}đ ĐRL`,
+        text: `GPA đã đạt chuẩn (${currentGPA.toFixed(2)}/${targetGPA.toFixed(2)}). Hãy đăng ký hoạt động rèn luyện bổ sung cho ${topDeficitCat?.shortName || 'Mục còn thiếu'} để bù ${topDeficitPoints} điểm ĐRL.`,
+        actionGpaHighlight: false,
+        actionDrlHighlight: true,
+      };
     }
-    return `Cả GPA và ĐRL đều đang bám sát tiến độ. Tiếp tục duy trì để đạt chỉ tiêu học kỳ.`;
-  }, [sortedExamTargets, missingCriteriaIds, criteriaList, deficitMap, targetGPA]);
+
+    // CASE 4: CẢ GPA VÀ ĐRL ĐỀU ĐẠT CHUẨN
+    return {
+      type: 'success',
+      title: 'TIẾN ĐỘ TUẦN NÀY: ĐẠT MỤC TIÊU',
+      badge: 'Đạt chuẩn học bổng',
+      text: `Cả GPA (${currentGPA.toFixed(2)}) và ĐRL (${currentDRL}đ) đều đang bám sát tiến độ xuất sắc. Tiếp tục duy trì để đạt chỉ tiêu học bổng ${scholarship.tier}.`,
+      actionGpaHighlight: false,
+      actionDrlHighlight: false,
+    };
+  }, [
+    isGpaOnTrack,
+    gpaDeficit,
+    isDrlOnTrack,
+    drlDeficit,
+    currentGPA,
+    targetGPA,
+    currentDRL,
+    targetDRL,
+    sortedExamTargets,
+    courses,
+    missingCriteriaIds,
+    criteriaList,
+    deficitMap,
+    scholarship.tier,
+  ]);
 
   return (
     <div className="space-y-5">
@@ -366,32 +446,73 @@ export const SmartPlanner = ({ isMainView = false }) => {
           </div>
         </div>
 
-        {/* Khung lời khuyên hành động */}
-        <div className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-[#0B2545] via-[#132E59] to-[#0B2545] border border-[#49C8D6]/30 shadow-card text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative overflow-hidden z-10">
+        {/* Khung lời khuyên hành động & Cảnh báo tiến độ */}
+        <div className={`mt-4 p-4 rounded-2xl border shadow-card text-white flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 relative overflow-hidden z-10 ${
+          priorityInfo.type === 'critical'
+            ? 'bg-gradient-to-r from-[#0B2545] via-[#1a2d48] to-[#0B2545] border-amber-400/50'
+            : priorityInfo.type === 'gpa_warning'
+            ? 'bg-gradient-to-r from-[#0B2545] via-[#163155] to-[#0B2545] border-amber-400/40'
+            : priorityInfo.type === 'drl_warning'
+            ? 'bg-gradient-to-r from-[#0B2545] via-[#132E59] to-[#0B2545] border-[#F2A900]/40'
+            : 'bg-gradient-to-r from-[#0B2545] via-[#132E59] to-[#0B2545] border-[#49C8D6]/30'
+        }`}>
           <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#49C8D6]/10 to-transparent pointer-events-none" />
           <div className="relative z-10">
-            <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider text-[#49C8D6] font-extrabold">
-              <Sparkles className="w-3.5 h-3.5 text-[#F2A900]" />
-              <span>ƯU TIÊN TUẦN NÀY</span>
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="flex items-center gap-1.5 text-[11px] uppercase tracking-wider font-extrabold">
+                {priorityInfo.type === 'critical' || priorityInfo.type === 'gpa_warning' ? (
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                ) : priorityInfo.type === 'success' ? (
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                ) : (
+                  <Sparkles className="w-3.5 h-3.5 text-[#F2A900]" />
+                )}
+                <span className={
+                  priorityInfo.type === 'critical' || priorityInfo.type === 'gpa_warning'
+                    ? 'text-amber-300'
+                    : priorityInfo.type === 'success'
+                    ? 'text-emerald-300'
+                    : 'text-[#49C8D6]'
+                }>
+                  {priorityInfo.title}
+                </span>
+              </div>
+              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${
+                priorityInfo.type === 'critical' || priorityInfo.type === 'gpa_warning'
+                  ? 'bg-amber-500/20 text-amber-300 border-amber-500/40'
+                  : priorityInfo.type === 'success'
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                  : 'bg-[#F2A900]/20 text-[#FFBF24] border-[#F2A900]/40'
+              }`}>
+                {priorityInfo.badge}
+              </span>
             </div>
-            <p className="text-xs text-slate-100 mt-1 leading-relaxed font-medium">
-              {top1PriorityText}
+            <p className="text-xs text-slate-100 mt-1.5 leading-relaxed font-medium">
+              {priorityInfo.text}
             </p>
           </div>
 
           <div className="flex items-center gap-2 self-end sm:self-auto shrink-0 relative z-10">
             <button 
               onClick={() => setActiveSubTab('gpa')} 
-              className="btn-interactive px-3.5 py-1.5 text-xs bg-white/15 hover:bg-white/25 text-white border border-white/25 shadow-xs font-bold"
+              className={`text-xs font-bold px-3.5 py-1.5 shadow-xs ${
+                priorityInfo.actionGpaHighlight
+                  ? 'btn-interactive-gold'
+                  : 'btn-interactive bg-white/15 hover:bg-white/25 text-white border border-white/25'
+              }`}
             >
-              <Target className="w-3.5 h-3.5 text-[#49C8D6]" />
-              <span>Xem điểm thi</span>
+              <Target className={`w-3.5 h-3.5 ${priorityInfo.actionGpaHighlight ? 'text-slate-900' : 'text-[#49C8D6]'}`} />
+              <span>{priorityInfo.actionGpaHighlight ? 'Kế hoạch gỡ GPA' : 'Xem điểm thi'}</span>
             </button>
             <button 
               onClick={() => setActiveSubTab('drl')} 
-              className="btn-interactive-gold text-xs font-bold px-3.5 py-1.5 shadow-xs"
+              className={`text-xs font-bold px-3.5 py-1.5 shadow-xs ${
+                priorityInfo.actionDrlHighlight
+                  ? 'btn-interactive-gold'
+                  : 'btn-interactive bg-white/15 hover:bg-white/25 text-white border border-white/25'
+              }`}
             >
-              <Sparkles className="w-3.5 h-3.5 text-slate-900" />
+              <Sparkles className={`w-3.5 h-3.5 ${priorityInfo.actionDrlHighlight ? 'text-slate-900' : 'text-[#F2A900]'}`} />
               <span>Bù điểm ĐRL</span>
             </button>
           </div>
