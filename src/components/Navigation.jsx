@@ -1,15 +1,9 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { GraduationCap, BookOpen, Award, User, LogOut, RotateCcw, Sliders, ChevronDown } from 'lucide-react';
+import { GraduationCap, BookOpen, Award, User, LogOut, Sliders, ChevronDown } from 'lucide-react';
 export const Navigation = ({ onOpenOnboarding }) => {
-    const { activeTab, setActiveTab, profile, semesters, resetAllData } = useApp();
+    const { activeTab, setActiveTab, profile, semesters } = useApp();
     const [showDropdown, setShowDropdown] = useState(false);
-    const handleReset = () => {
-        if (window.confirm('Bạn có chắc muốn đặt lại dữ liệu về trạng thái ban đầu?')) {
-            resetAllData();
-            setShowDropdown(false);
-        }
-    };
     return (<header className="sticky top-0 z-40 bg-white border-b border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
@@ -100,11 +94,6 @@ export const Navigation = ({ onOpenOnboarding }) => {
             }} className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-lg transition-colors">
                     <Sliders className="w-4 h-4 text-slate-500"/>
                     Cập nhật Onboarding & Mục tiêu
-                  </button>
-
-                  <button onClick={handleReset} className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 rounded-lg transition-colors">
-                    <RotateCcw className="w-4 h-4 text-amber-600"/>
-                    Đặt lại toàn bộ dữ liệu mẫu
                   </button>
 
                   <button onClick={() => {

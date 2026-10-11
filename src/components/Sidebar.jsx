@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, LogOut, LogIn, GraduationCap, BookOpen, Award, Mail } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Menu, X, Sliders, LogOut, LogIn, GraduationCap, BookOpen, Award, Mail } from 'lucide-react';
 
 export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => {
-    const { activeTab, setActiveTab, profile, semesters, resetAllData, user, logout } = useApp();
+    const { activeTab, setActiveTab, profile, semesters, user, logout } = useApp();
     const [mobileOpen, setMobileOpen] = useState(false);
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const navItems = [
@@ -26,12 +26,6 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
             icon: Award
         }
     ];
-    const handleReset = () => {
-        if (window.confirm('Bạn có chắc muốn đặt lại dữ liệu về trạng thái ban đầu?')) {
-            resetAllData();
-            setShowProfileMenu(false);
-        }
-    };
 
     const handleLogout = () => {
         if (window.confirm('Bạn có chắc chắn muốn đăng xuất?')) {
@@ -212,14 +206,6 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
               >
                 <Sliders className="w-3.5 h-3.5 text-slate-500"/>
                 Cập nhật mục tiêu & hồ sơ
-              </button>
-
-              <button 
-                onClick={handleReset} 
-                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-amber-700 hover:bg-amber-50 rounded-xl transition-colors text-left"
-              >
-                <RotateCcw className="w-3.5 h-3.5 text-amber-600"/>
-                Đặt lại dữ liệu mẫu
               </button>
 
               <a 
