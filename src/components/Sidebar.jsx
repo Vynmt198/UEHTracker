@@ -127,10 +127,18 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
           {!isCollapsed && (
             <div className="ml-2.5 min-w-0 flex-1">
               <div className="text-xs font-bold text-[#0B2545] truncate">
-                {profile.name || user?.profile?.fullName || 'Sinh viên UEH'}
+                {profile.name && profile.name !== 'Nguyễn Văn An'
+                  ? profile.name
+                  : (user?.profile?.fullName && user.profile.fullName !== 'Nguyễn Văn An'
+                      ? user.profile.fullName
+                      : (user?.email ? user.email.split('@')[0] : 'Sinh viên UEH'))}
               </div>
               <div className="text-[10px] text-slate-500 truncate font-mono">
-                {profile.studentId ? `MSSV: ${profile.studentId}` : (user?.email || 'Chưa đăng nhập')}
+                {profile.studentId && profile.studentId !== '31231021456'
+                  ? `MSSV: ${profile.studentId}`
+                  : (user?.profile?.studentId && user.profile.studentId !== '31231021456'
+                      ? `MSSV: ${user.profile.studentId}`
+                      : (user?.email || 'Chưa đăng nhập'))}
               </div>
             </div>
           )}
@@ -171,7 +179,13 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
           <div className={`absolute ${isCollapsed ? 'left-full bottom-2 ml-2' : 'left-3 right-3 bottom-full mb-2'} w-64 bg-white rounded-2xl shadow-floating border border-slate-200/90 py-2 z-50 animate-in fade-in zoom-in-95 duration-150`}>
             <div className="px-3.5 py-2.5 border-b border-slate-100">
               <p className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">Hồ sơ sinh viên UEH</p>
-              <p className="text-xs font-bold text-[#0B2545] truncate">{profile.name || user?.profile?.fullName || 'Sinh viên UEH'}</p>
+              <p className="text-xs font-bold text-[#0B2545] truncate">
+                {profile.name && profile.name !== 'Nguyễn Văn An'
+                  ? profile.name
+                  : (user?.profile?.fullName && user.profile.fullName !== 'Nguyễn Văn An'
+                      ? user.profile.fullName
+                      : (user?.email ? user.email.split('@')[0] : 'Sinh viên UEH'))}
+              </p>
               <div className="flex items-center gap-1.5 mt-1">
                 {profile.cohort && (
                   <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-[#FEF7E6] text-[#B27B00]">
@@ -179,7 +193,11 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
                   </span>
                 )}
                 <span className="text-[10px] text-slate-500 font-mono truncate">
-                  {profile.studentId || user?.email || 'Chưa cập nhật MSSV'}
+                  {profile.studentId && profile.studentId !== '31231021456'
+                    ? `MSSV: ${profile.studentId}`
+                    : (user?.profile?.studentId && user.profile.studentId !== '31231021456'
+                        ? `MSSV: ${user.profile.studentId}`
+                        : (user?.email || 'Chưa cập nhật MSSV'))}
                 </span>
               </div>
             </div>

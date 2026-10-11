@@ -6,17 +6,17 @@ import { authApi, syncApi } from '../services/api';
 const drlCriteriaData = drlCriteriaRaw;
 const activitiesData = activitiesRaw;
 const defaultProfile = {
-    name: 'Nguyễn Văn An',
-    studentId: '31231021456',
-    email: 'an.nguyen@ueh.edu.vn',
-    cohort: 'K49',
+    name: '',
+    studentId: '',
+    email: '',
+    cohort: 'K50',
     faculty: 'Công nghệ thông tin kinh doanh',
-    major: 'Hệ thống thông tin quản lý',
+    major: '',
     goals: ['Học bổng', 'Tốt nghiệp đúng hạn', 'Tích lũy ĐRL'],
     scholarshipTierTarget: 'Xuất sắc',
-    strengths: ['Tư duy logic', 'Lập trình', 'Làm việc nhóm'],
-    studyHabits: 'Học buổi sáng & tối, tập trung cao độ',
-    freeTimeSlots: ['Thứ 3 chiều', 'Thứ 6 chiều', 'Thứ 7'],
+    strengths: [],
+    studyHabits: '',
+    freeTimeSlots: [],
     isOnboarded: false
 };
 const defaultSemesters = [
@@ -177,7 +177,37 @@ export const AppProvider = ({ children }) => {
     // Load from localStorage or defaults
     const [profile, setProfile] = useState(() => {
         const saved = localStorage.getItem('ueh_tracker_profile');
-        return saved ? JSON.parse(saved) : defaultProfile;
+        const savedUser = localStorage.getItem('ueh_tracker_user');
+        const parsedUser = savedUser ? JSON.parse(savedUser) : null;
+
+        if (saved) {
+            const parsed = JSON.parse(saved);
+            // Dọn sạch tên mẫu "Nguyễn Văn An" / MSSV mẫu nếu còn sót lại trong localStorage
+            if (parsed.name === 'Nguyễn Văn An' || parsed.studentId === '31231021456') {
+                return {
+                    ...parsed,
+                    name: parsedUser?.profile?.fullName && parsedUser.profile.fullName !== 'Nguyễn Văn An' ? parsedUser.profile.fullName : '',
+                    studentId: parsedUser?.profile?.studentId && parsedUser.profile.studentId !== '31231021456' ? parsedUser.profile.studentId : '',
+                    cohort: parsedUser?.profile?.cohort || parsed.cohort || 'K50',
+                    major: parsedUser?.profile?.major || parsed.major || '',
+                    email: parsedUser?.email || parsed.email || ''
+                };
+            }
+            return parsed;
+        }
+
+        if (parsedUser?.profile) {
+            return {
+                ...defaultProfile,
+                name: parsedUser.profile.fullName && parsedUser.profile.fullName !== 'Nguyễn Văn An' ? parsedUser.profile.fullName : '',
+                studentId: parsedUser.profile.studentId && parsedUser.profile.studentId !== '31231021456' ? parsedUser.profile.studentId : '',
+                cohort: parsedUser.profile.cohort || 'K50',
+                major: parsedUser.profile.major || '',
+                email: parsedUser.email || ''
+            };
+        }
+
+        return defaultProfile;
     });
     const [semesters, setSemesters] = useState(() => {
         const saved = localStorage.getItem('ueh_tracker_semesters');
@@ -476,16 +506,35 @@ export const AppProvider = ({ children }) => {
             try {
                 const cloudCheck = await syncApi.pullCloud();
                 const cloudData = cloudCheck.data || cloudCheck;
+
+                // Cập nhật profile từ cloudData hoặc authData
+                const remoteProfile = cloudData.profile || authData.user?.profile;
+                if (remoteProfile) {
+                    const freshProfile = {
+                        ...defaultProfile,
+                        name: remoteProfile.fullName && remoteProfile.fullName !== 'Nguyễn Văn An' ? remoteProfile.fullName : (authData.user?.profile?.fullName !== 'Nguyễn Văn An' ? (authData.user?.profile?.fullName || '') : ''),
+                        studentId: remoteProfile.studentId && remoteProfile.studentId !== '31231021456' ? remoteProfile.studentId : '',
+                        email: authData.user?.email || '',
+                        cohort: remoteProfile.cohort || authData.user?.profile?.cohort || 'K50',
+                        major: remoteProfile.major || authData.user?.profile?.major || '',
+                        faculty: remoteProfile.faculty?.name || defaultProfile.faculty,
+                        goals: ['Học bổng', 'Tốt nghiệp đúng hạn', 'Tích lũy ĐRL'],
+                        scholarshipTierTarget: (remoteProfile.targetGPA || 3.6) >= 3.6 ? 'Xuất sắc' : 'Giỏi',
+                        targetGPA: remoteProfile.targetGPA || 3.60,
+                        targetDRL: remoteProfile.targetDRL || 85,
+                        totalGraduationCredits: remoteProfile.totalRequiredCredits || 125,
+                        isOnboarded: Boolean(remoteProfile.isOnboarded)
+                    };
+                    setProfile(freshProfile);
+                    localStorage.setItem('ueh_tracker_profile', JSON.stringify(freshProfile));
+                }
+
                 if (cloudData.courses && cloudData.courses.length > 0) {
                     await syncFromCloud();
                 } else if (cloudData.semesters && cloudData.semesters.length > 0) {
                     // Tài khoản đã có học kỳ nhưng chưa có môn (trạng thái sạch)
                     setCourses([]);
                     if (cloudData.semesters) setSemesters(cloudData.semesters);
-                    if (cloudData.profile) setProfile((p) => ({ ...p, ...cloudData.profile }));
-                } else {
-                    // Chưa có dữ liệu trên cloud -> đẩy dữ liệu hiện tại lên
-                    await syncToCloud(true);
                 }
             } catch (syncErr) {
                 console.warn('Initial cloud sync notice:', syncErr);
@@ -516,33 +565,26 @@ export const AppProvider = ({ children }) => {
             localStorage.setItem('ueh_tracker_user', JSON.stringify(authData.user));
             setUser(authData.user);
 
-            // 1. Dọn sạch LocalStorage môn học cũ của máy
+            // 1. Dọn sạch LocalStorage môn học & profile cũ của máy
             localStorage.removeItem('ueh_tracker_courses');
             localStorage.removeItem('ueh_tracker_semesters');
             localStorage.removeItem('drl_semesters');
             localStorage.removeItem('user_target_gpa');
             localStorage.removeItem('ueh_tracker_activities');
             localStorage.removeItem('ueh_tracker_drl_adjustments');
+            localStorage.removeItem('ueh_tracker_profile');
 
             // 2. Thiết lập DỮ LIỆU TRẮNG HOÀN TOÀN (Clean state)
             const cleanSemesters = [
                 { id: 'sem-1', name: 'Năm 1 - HK1', academicYear: '2025-2026', isCurrent: true }
             ];
             const cleanProfile = {
-                name: fullName || 'Sinh viên UEH',
-                studentId: studentId || '',
+                ...defaultProfile,
+                name: fullName?.trim() || '',
+                studentId: studentId?.trim() || '',
                 email: email,
-                cohort: cohort || 'K49',
-                faculty: 'Công nghệ thông tin kinh doanh',
-                major: major || 'Chuyên ngành tổng hợp',
-                goals: ['Học bổng', 'Tốt nghiệp đúng hạn', 'Tích lũy ĐRL'],
-                scholarshipTierTarget: 'Xuất sắc',
-                strengths: [],
-                studyHabits: '',
-                freeTimeSlots: [],
-                targetGPA: 3.60,
-                targetDRL: 85,
-                totalGraduationCredits: 125,
+                cohort: cohort || 'K50',
+                major: major?.trim() || '',
                 isOnboarded: true
             };
             const cleanDrlSemesters = {
@@ -562,6 +604,7 @@ export const AppProvider = ({ children }) => {
             setSemesters(cleanSemesters);
             setSelectedSemesterId('sem-1');
             setProfile(cleanProfile);
+            localStorage.setItem('ueh_tracker_profile', JSON.stringify(cleanProfile));
             setDrlSemesters(cleanDrlSemesters);
             setCurrentDrlSemesterId('sem-1');
 
