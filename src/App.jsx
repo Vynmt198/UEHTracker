@@ -15,9 +15,6 @@ const GPADashboard = lazy(() =>
 const DRLModule = lazy(() =>
   import('./components/drl/DRLModule').then((m) => ({ default: m.DRLModule }))
 );
-const ForumPlaceholder = lazy(() =>
-  import('./components/forum/ForumPlaceholder').then((m) => ({ default: m.ForumPlaceholder }))
-);
 
 const ModuleLoadingFallback = () => (
   <div className="flex flex-col items-center justify-center min-h-[50vh] gap-3 text-slate-500 animate-in fade-in duration-300">
@@ -61,7 +58,6 @@ const MainLayout = () => {
               {activeTab === 'planner' && <SmartPlanner isMainView={true} />}
               {activeTab === 'gpa' && <GPADashboard />}
               {activeTab === 'drl' && <DRLModule />}
-              {activeTab === 'forum' && <ForumPlaceholder />}
             </div>
           </Suspense>
         </main>

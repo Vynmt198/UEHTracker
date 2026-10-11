@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 
 describe('Navigation & Tab Persistence Tests', () => {
-  const VALID_TABS = ['planner', 'gpa', 'drl', 'forum'];
+  const VALID_TABS = ['planner', 'gpa', 'drl'];
 
   // In-memory mock for environments without browser window.localStorage
   const store = {};
@@ -20,18 +20,18 @@ describe('Navigation & Tab Persistence Tests', () => {
   });
 
   it('Lưu và đọc tab hiện tại chính xác từ localStorage', () => {
-    storage.setItem('ueh_tracker_active_tab', 'forum');
-    expect(storage.getItem('ueh_tracker_active_tab')).toBe('forum');
+    storage.setItem('ueh_tracker_active_tab', 'drl');
+    expect(storage.getItem('ueh_tracker_active_tab')).toBe('drl');
 
     storage.setItem('ueh_tracker_active_tab', 'gpa');
     expect(storage.getItem('ueh_tracker_active_tab')).toBe('gpa');
   });
 
-  it('Các tab điều hướng hợp lệ bao gồm đầy đủ 4 phân hệ chính', () => {
+  it('Các tab điều hướng hợp lệ bao gồm đầy đủ 3 phân hệ chính', () => {
     expect(VALID_TABS).toContain('planner');
     expect(VALID_TABS).toContain('gpa');
     expect(VALID_TABS).toContain('drl');
-    expect(VALID_TABS).toContain('forum');
+    expect(VALID_TABS).not.toContain('forum');
   });
 
   it('Lưu và phục hồi học kỳ được chọn chính xác qua localStorage', () => {

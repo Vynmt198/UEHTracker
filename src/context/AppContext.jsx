@@ -116,7 +116,7 @@ const defaultDrlSemesters = {
 };
 const AppContext = createContext(undefined);
 export const AppProvider = ({ children }) => {
-    const VALID_TABS = ['planner', 'gpa', 'drl', 'forum'];
+    const VALID_TABS = ['planner', 'gpa', 'drl'];
 
     const getInitialActiveTab = () => {
         if (typeof window !== 'undefined') {

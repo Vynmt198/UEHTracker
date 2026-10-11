@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, LogOut, LogIn, GraduationCap, BookOpen, Award, MessageSquare } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, LogOut, LogIn, GraduationCap, BookOpen, Award } from 'lucide-react';
 
 export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => {
     const { activeTab, setActiveTab, profile, semesters, resetAllData, user, logout } = useApp();
@@ -24,13 +24,6 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
             label: 'Điểm rèn luyện',
             shortLabel: 'ĐRL',
             icon: Award
-        },
-        {
-            id: 'forum',
-            label: 'Diễn đàn UEH',
-            shortLabel: 'Diễn đàn',
-            icon: MessageSquare,
-            badge: 'Mới'
         }
     ];
     const handleReset = () => {

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { GraduationCap, BookOpen, Award, MessageSquare, User, LogOut, RotateCcw, Sliders, ChevronDown } from 'lucide-react';
+import { GraduationCap, BookOpen, Award, User, LogOut, RotateCcw, Sliders, ChevronDown } from 'lucide-react';
 export const Navigation = ({ onOpenOnboarding }) => {
     const { activeTab, setActiveTab, profile, semesters, resetAllData } = useApp();
     const [showDropdown, setShowDropdown] = useState(false);
@@ -46,17 +46,6 @@ export const Navigation = ({ onOpenOnboarding }) => {
             : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'}`}>
               <Award className="w-4 h-4 text-[#49C8D6]"/>
               <span>Điểm rèn luyện</span>
-            </button>
-
-
-            <button onClick={() => setActiveTab('forum')} className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-colors relative ${activeTab === 'forum'
-            ? 'bg-slate-100 text-slate-900 font-semibold'
-            : 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'}`}>
-              <MessageSquare className="w-4 h-4 text-[#49C8D6]"/>
-              <span>Diễn đàn</span>
-              <span className="ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                Coming Soon
-              </span>
             </button>
           </nav>
 
@@ -145,16 +134,6 @@ export const Navigation = ({ onOpenOnboarding }) => {
             : 'text-slate-600 hover:bg-slate-50'}`}>
           <Award className="w-3.5 h-3.5"/>
           <span>ĐRL</span>
-        </button>
-
-
-
-        <button onClick={() => setActiveTab('forum')} className={`px-2.5 py-1.5 rounded-lg font-medium shrink-0 flex items-center gap-1 ${activeTab === 'forum'
-            ? 'bg-slate-900 text-white font-semibold'
-            : 'text-slate-500 hover:bg-slate-50'}`}>
-          <MessageSquare className="w-3.5 h-3.5"/>
-          <span>Diễn đàn</span>
-          <span className="text-[9px] px-1 py-0.2 rounded bg-amber-100 text-amber-800">Soon</span>
         </button>
       </div>
     </header>);
