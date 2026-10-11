@@ -61,16 +61,26 @@ export const SmartPlanner = ({ isMainView = false }) => {
   const targetGPA = profile.targetGPA || 3.60;
   const targetDRL = profile.targetDRL || 85;
 
-  const currentGPA = overallStats.actualGPA4 > 0 ? overallStats.actualGPA4 : 3.42;
-  const currentDRL = drlProgress.totalDRL > 0 ? drlProgress.totalDRL : 72;
+  // Xác định điểm thực tế hoặc dự kiến, không dùng số giả lập 3.42 / 72
+  const hasGradedCourses = (overallStats.completedCredits > 0 || courses.some(c => c.finalScore10 !== null && c.finalScore10 !== undefined));
+  const currentGPA = hasGradedCourses ? overallStats.actualGPA4 : (overallStats.projectedGPA4 || 0.0);
+  const currentDRL = drlProgress.totalDRL || 0;
 
   const isGpaOnTrack = currentGPA >= targetGPA;
-  const gpaDeficit = Math.max(0, targetGPA - currentGPA);
+  const gpaDeficit = Math.max(0, Math.round((targetGPA - currentGPA) * 100) / 100);
 
   const isDrlOnTrack = currentDRL >= targetDRL;
   const drlDeficit = Math.max(0, targetDRL - currentDRL);
 
-  const scholarship = evaluateScholarship(currentGPA, currentDRL);
+  // Quy chế UEH: Có môn điểm F (< 4.0) thì bị loại khỏi học bổng kỳ đó
+  const hasFailedCourse = courses.some(c => (c.finalScore10 !== null && c.finalScore10 < 4.0) || c.gradeLetter === 'F');
+  const scholarship = evaluateScholarship(currentGPA, currentDRL, { hasFailedCourse });
+
+  // Tiêu chuẩn học bổng theo mục tiêu cá nhân đã chọn
+  const targetScholarshipTier = profile.scholarshipTierTarget || 'Xuất sắc';
+  const tierMinGPA = targetScholarshipTier === 'Xuất sắc' ? 3.6 : targetScholarshipTier === 'Khá' ? 2.5 : 3.2;
+  const tierMinDRL = targetScholarshipTier === 'Xuất sắc' ? 90 : targetScholarshipTier === 'Khá' ? 70 : 80;
+  const isScholarshipEligible = !hasFailedCourse && currentGPA >= tierMinGPA && currentDRL >= tierMinDRL;
 
   // ---------------------------------------------------------------------------
   // 1. TÍNH TOÁN ĐIỂM THI CUỐI KỲ CẦN ĐẠT CHO TỪNG MÔN
@@ -117,9 +127,18 @@ export const SmartPlanner = ({ isMainView = false }) => {
           message = `Cần ${required.toFixed(1)} điểm thi cuối kỳ (${remainingWeight}%). Đang ở ngưỡng an toàn.`;
         }
       } else {
-        status = 'completed';
         const finalScore = course.finalScore10 ?? gradedWeightedScore;
-        message = `Đã hoàn tất điểm học phần: ${finalScore.toFixed(1)}/10.`;
+        const isFailing = finalScore < 5.0 || course.gradeLetter === 'F';
+        if (isFailing) {
+          status = 'failed';
+          message = `Học phần không đạt (${finalScore.toFixed(1)}/10). Cần đăng ký học lại/học cải thiện.`;
+        } else if (finalScore < aimScore) {
+          status = 'under_aim';
+          message = `Đã hoàn tất điểm: ${finalScore.toFixed(1)}/10 (thấp hơn mục tiêu ${aimScore.toFixed(1)}đ).`;
+        } else {
+          status = 'completed';
+          message = `Đã hoàn tất điểm học phần: ${finalScore.toFixed(1)}/10 (đạt mục tiêu).`;
+        }
       }
 
       const currentProcessScore = gradedWeight > 0 ? Math.round((gradedWeightedScore / (gradedWeight / 100)) * 10) / 10 : null;
@@ -135,11 +154,15 @@ export const SmartPlanner = ({ isMainView = false }) => {
         message,
         urgencyScore: status === 'impossible' 
           ? 100 
-          : status === 'at_risk' 
-            ? 80 + (requiredFinalScore || 0) 
-            : status === 'moderate'
-              ? 50 + (requiredFinalScore || 0)
-              : (requiredFinalScore || 0)
+          : status === 'failed'
+            ? 95
+            : status === 'at_risk' 
+              ? 80 + (requiredFinalScore || 0) 
+              : status === 'under_aim'
+                ? 60
+                : status === 'moderate'
+                  ? 50 + (requiredFinalScore || 0)
+                  : (requiredFinalScore || 0)
       };
     });
   }, [currentSemesterCourses]);
@@ -231,6 +254,33 @@ export const SmartPlanner = ({ isMainView = false }) => {
     const isDrlDeficit = !isDrlOnTrack || topDeficitPoints > 0;
     const isGpaDeficit = !isGpaOnTrack || gpaDeficit > 0;
 
+    // CASE 0: CHƯA CÓ MÔN HỌC NÀO ĐƯỢC NHẬP
+    if (courses.length === 0) {
+      return {
+        type: 'info',
+        title: 'BẮT ĐẦU: CHƯA CÓ DỮ LIỆU MÔN HỌC',
+        badge: 'Chưa có môn học',
+        text: 'Bạn chưa thêm môn học nào trong học kỳ này. Hãy vào Quản lý GPA để thêm các học phần và điểm quá trình để Smart Planner tính toán kế hoạch ôn thi và rèn luyện chính xác nhất!',
+        actionGpaHighlight: true,
+        actionDrlHighlight: false,
+      };
+    }
+
+    // CASE 0B: CẢNH BÁO QUY CHẾ HỌC BỔNG UEH - CÓ HỌC PHẦN BỊ ĐIỂM F
+    if (hasFailedCourse) {
+      const failedList = courses
+        .filter(c => (c.finalScore10 !== null && c.finalScore10 !== undefined && c.finalScore10 < 4.0) || c.gradeLetter === 'F')
+        .map(c => c.name);
+      return {
+        type: 'critical',
+        title: 'CẢNH BÁO QUY CHẾ: CÓ HỌC PHẦN BỊ ĐIỂM F',
+        badge: 'Quy chế học bổng UEH',
+        text: `Theo quy chế UEH, học kỳ có môn bị điểm F (${failedList.join(', ') || 'dưới 4.0'}) sẽ không đủ điều kiện xét học bổng khuyến khích học tập dù GPA/ĐRL cao. Bạn cần ưu tiên đăng ký học lại/học cải thiện môn này.`,
+        actionGpaHighlight: true,
+        actionDrlHighlight: false,
+      };
+    }
+
     // CASE 1: CẢ GPA VÀ ĐRL ĐỀU CHƯA ĐẠT (Ví dụ GPA 1.32 / Mục tiêu 3.80 & ĐRL 65 / Mục tiêu 85)
     if (isGpaDeficit && isDrlDeficit) {
       let gpaDetails = '';
@@ -315,6 +365,7 @@ export const SmartPlanner = ({ isMainView = false }) => {
     criteriaList,
     deficitMap,
     scholarship.tier,
+    hasFailedCourse,
   ]);
 
   return (
@@ -428,19 +479,19 @@ export const SmartPlanner = ({ isMainView = false }) => {
               </div>
               <div className="mt-2">
                 <div className="text-xs font-extrabold text-[#0B2545]">
-                  Mục tiêu: {profile.scholarshipTierTarget || 'Xuất sắc'}
+                  Mục tiêu: {targetScholarshipTier}
                 </div>
                 <div className="text-[11px] text-slate-500 mt-1 leading-relaxed font-medium">
-                  Yêu cầu: GPA ≥ {profile.scholarshipTierTarget === 'Xuất sắc' ? '3.6' : '3.2'} • ĐRL ≥ {profile.scholarshipTierTarget === 'Xuất sắc' ? '90' : '80'}
+                  Yêu cầu: GPA ≥ {tierMinGPA.toFixed(1)} • ĐRL ≥ {tierMinDRL}
                 </div>
               </div>
             </div>
             <div className="mt-2.5 pt-2 border-t border-slate-100 flex items-center justify-between text-xs">
               <span className="text-slate-500 font-medium">
-                {isGpaOnTrack && isDrlOnTrack ? 'Đủ điều kiện xét duyệt' : 'Chưa đủ điều kiện'}
+                {hasFailedCourse ? 'Bị loại do có môn F' : (isScholarshipEligible ? 'Đủ điều kiện xét duyệt' : 'Chưa đủ điều kiện')}
               </span>
-              <span className={`font-bold ${isGpaOnTrack && isDrlOnTrack ? 'text-emerald-700' : 'text-amber-800'}`}>
-                {isGpaOnTrack && isDrlOnTrack ? 'Duy trì' : 'Cần bứt phá'}
+              <span className={`font-bold ${hasFailedCourse ? 'text-rose-700' : isScholarshipEligible ? 'text-emerald-700' : 'text-amber-800'}`}>
+                {hasFailedCourse ? 'Quy chế F' : (isScholarshipEligible ? 'Đạt chuẩn' : 'Cần bứt phá')}
               </span>
             </div>
           </div>
@@ -608,16 +659,18 @@ export const SmartPlanner = ({ isMainView = false }) => {
                           </div>
 
                           <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold shrink-0 border ${
-                            status === 'impossible'
+                            status === 'impossible' || status === 'failed'
                               ? 'bg-rose-50 text-rose-700 border-rose-200'
-                              : status === 'at_risk'
+                              : status === 'at_risk' || status === 'under_aim'
                                 ? 'bg-[#FEF7E6] text-[#B27B00] border-[#F2A900]/50'
                                 : status === 'moderate'
                                   ? 'bg-[#E0F7FA] text-[#087F8C] border-[#49C8D6]/40'
                                   : 'bg-emerald-50 text-emerald-800 border-emerald-200'
                           }`}>
                             {status === 'impossible' && 'Quá tải mục tiêu'}
+                            {status === 'failed' && 'Rớt môn (< 5.0)'}
                             {status === 'at_risk' && 'Cần ưu tiên ôn tập'}
+                            {status === 'under_aim' && 'Dưới mục tiêu môn'}
                             {status === 'moderate' && 'Vừa sức'}
                             {status === 'safe' && 'An toàn'}
                             {status === 'completed' && 'Đã hoàn tất'}
@@ -649,24 +702,28 @@ export const SmartPlanner = ({ isMainView = false }) => {
                               Cần thi cuối kỳ
                             </span>
                             <span className={`text-sm font-black font-mono mt-0.5 block ${
-                              requiredFinalScore > 10.0
+                              status === 'failed' || (requiredFinalScore !== null && requiredFinalScore > 10.0)
                                 ? 'text-rose-600'
-                                : requiredFinalScore >= 8.5
+                                : status === 'under_aim' || (requiredFinalScore !== null && requiredFinalScore >= 8.5)
                                   ? 'text-[#B27B00]'
                                   : 'text-emerald-700'
                             }`}>
                               {requiredFinalScore !== null 
                                 ? (requiredFinalScore > 10.0 ? `> 10.0đ` : `${requiredFinalScore.toFixed(1)}đ`) 
-                                : 'Đã xong'}
+                                : status === 'failed'
+                                  ? 'Không đạt'
+                                  : status === 'under_aim'
+                                    ? 'Dưới mục tiêu'
+                                    : 'Đã xong'}
                             </span>
                           </div>
                         </div>
 
                         {/* Lời khuyên */}
                         <div className={`mt-3 p-2.5 rounded-xl text-xs leading-relaxed border ${
-                          status === 'impossible'
+                          status === 'impossible' || status === 'failed'
                             ? 'bg-rose-50/70 border-rose-200 text-rose-900'
-                            : status === 'at_risk'
+                            : status === 'at_risk' || status === 'under_aim'
                               ? 'bg-[#FEF7E6]/70 border-[#F2A900]/40 text-[#8F6300]'
                               : 'bg-[#E0F7FA]/40 border-[#49C8D6]/30 text-[#0c727d]'
                         }`}>
