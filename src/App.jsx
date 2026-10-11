@@ -3,7 +3,7 @@ import { useApp } from './context/AppContext';
 import { Sidebar } from './components/Sidebar';
 import { OnboardingModal } from './components/OnboardingModal';
 import AuthHomeView from './components/auth/AuthHomeView';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Mail } from 'lucide-react';
 
 // Code Splitting & Dynamic Imports for large screens
 const SmartPlanner = lazy(() =>
@@ -64,7 +64,7 @@ const MainLayout = () => {
 
         {/* Footer Glassmorphism */}
         <footer className="bg-white/80 backdrop-blur-md border-t border-slate-200/80 py-4 mt-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-center text-xs text-slate-500">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-2.5 text-xs text-slate-500">
             <div className="flex items-center gap-2">
               <img 
                 src="/logo.png" 
@@ -74,6 +74,18 @@ const MainLayout = () => {
               <span className="font-bold text-[#0B2545]">UEH Tracker</span>
               <span className="text-slate-400">•</span>
               <span className="text-slate-600 font-medium">Đồng hành cùng sinh viên UEH</span>
+            </div>
+
+            <div className="flex items-center gap-1.5 text-xs text-slate-500">
+              <span className="text-slate-400">Góp ý & Báo lỗi:</span>
+              <a 
+                href="mailto:nganmai0609@gmail.com?subject=%5BUEH%20Tracker%5D%20G%C3%B3p%20%C3%BD%20%2F%20B%C3%A1o%20l%E1%BB%97i%20website"
+                className="inline-flex items-center gap-1 font-semibold text-[#0B2545] hover:text-[#49C8D6] transition-colors"
+                title="Gửi email góp ý hoặc báo lỗi website"
+              >
+                <Mail className="w-3.5 h-3.5 text-[#49C8D6]" />
+                <span className="underline underline-offset-2 decoration-slate-300 hover:decoration-[#49C8D6]">nganmai0609@gmail.com</span>
+              </a>
             </div>
           </div>
         </footer>

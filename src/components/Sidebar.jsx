@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
-import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, LogOut, LogIn, GraduationCap, BookOpen, Award } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Menu, X, RotateCcw, Sliders, LogOut, LogIn, GraduationCap, BookOpen, Award, Mail } from 'lucide-react';
 
 export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => {
     const { activeTab, setActiveTab, profile, semesters, resetAllData, user, logout } = useApp();
@@ -203,6 +203,15 @@ export const Sidebar = ({ isCollapsed, onToggleCollapse, onOpenOnboarding }) => 
                 <RotateCcw className="w-3.5 h-3.5 text-amber-600"/>
                 Đặt lại dữ liệu mẫu
               </button>
+
+              <a 
+                href="mailto:nganmai0609@gmail.com?subject=%5BUEH%20Tracker%5D%20G%C3%B3p%20%C3%BD%20%2F%20B%C3%A1o%20l%E1%BB%97i%20website"
+                className="w-full flex items-center gap-2 px-3 py-2 text-xs font-medium text-slate-700 hover:bg-slate-50 rounded-xl transition-colors text-left"
+                onClick={() => setShowProfileMenu(false)}
+              >
+                <Mail className="w-3.5 h-3.5 text-[#49C8D6]"/>
+                Góp ý & Báo lỗi
+              </a>
 
               <div className="my-1 border-t border-slate-100" />
 
