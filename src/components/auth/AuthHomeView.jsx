@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '../../context/AppContext';
-import { Loader2, ArrowRight, Sparkles, Mail, Lock, User, GraduationCap, BookOpen } from 'lucide-react';
+import { Loader2, ArrowRight, Mail, Lock, User, GraduationCap, BookOpen } from 'lucide-react';
 
 export default function AuthHomeView({ onLoginSuccess }) {
   const { login, register } = useApp();
@@ -24,12 +24,6 @@ export default function AuthHomeView({ onLoginSuccess }) {
     }, 1600);
     return () => clearTimeout(timer);
   }, []);
-
-  const handleFillDemo = () => {
-    setEmail('vymainguyen1908@gmail.com');
-    setPassword('12345678');
-    setErrorMsg('');
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,10 +50,6 @@ export default function AuthHomeView({ onLoginSuccess }) {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGuestContinue = () => {
-    onLoginSuccess?.();
   };
 
   return (
@@ -183,23 +173,6 @@ export default function AuthHomeView({ onLoginSuccess }) {
                 </button>
               </div>
 
-              {/* Nút điền nhanh tài khoản test ở chế độ login */}
-              {authMode === 'login' && (
-                <div className="mb-4 p-2.5 rounded-xl bg-[#FEF7E6] border border-[#F2A900]/40 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-1.5 text-slate-700 font-medium">
-                    <Sparkles className="w-3.5 h-3.5 text-[#F2A900]" />
-                    <span>Dùng tài khoản test có sẵn</span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={handleFillDemo}
-                    className="px-2 py-1 rounded-lg bg-[#F2A900] text-slate-950 font-bold hover:bg-[#e09b00] transition-colors text-[11px]"
-                  >
-                    Điền nhanh
-                  </button>
-                </div>
-              )}
-
               {/* Thông báo lỗi */}
               {errorMsg && (
                 <div className="mb-4 p-2.5 rounded-xl bg-rose-50 text-rose-600 text-xs font-medium border border-rose-100">
@@ -319,17 +292,6 @@ export default function AuthHomeView({ onLoginSuccess }) {
                   )}
                 </button>
               </form>
-
-              {/* Tùy chọn trải nghiệm nhanh không bắt buộc đăng nhập */}
-              <div className="mt-4 pt-3 border-t border-slate-100 text-center">
-                <button
-                  type="button"
-                  onClick={handleGuestContinue}
-                  className="text-xs text-slate-400 hover:text-slate-700 transition-colors font-medium"
-                >
-                  Trải nghiệm nhanh không cần đăng nhập ➔
-                </button>
-              </div>
             </motion.div>
           )}
         </AnimatePresence>
