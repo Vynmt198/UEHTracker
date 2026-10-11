@@ -299,7 +299,7 @@ export default function AuthHomeView({ onLoginSuccess }) {
                 <button
                   type="submit"
                   disabled={loading}
-                  className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-[#0B2545] via-[#102d53] to-[#0B2545] hover:via-[#163a69] text-white font-bold text-sm shadow-md border border-[#49C8D6]/40 hover:border-[#49C8D6] active:scale-[0.99] transition-all disabled:opacity-50 flex items-center justify-center gap-2 group"
+                  className="w-full mt-2 py-3 rounded-xl bg-gradient-to-r from-[#0B2545] via-[#102d53] to-[#0B2545] hover:via-[#163a69] text-white font-bold text-sm shadow-md border border-[#49C8D6]/40 hover:border-[#49C8D6] transition-colors disabled:opacity-50 flex items-center justify-center gap-2 group"
                 >
                   {loading ? (
                     <>

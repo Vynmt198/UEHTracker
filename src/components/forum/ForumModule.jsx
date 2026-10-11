@@ -184,7 +184,7 @@ export const ForumModule = () => {
               if (!user) setShowAuthModal(true);
               else setShowCreateModal(true);
             }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl shadow-xs transition-all hover:scale-[1.01]"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold rounded-xl shadow-xs transition-colors"
           >
             <PlusCircle className="w-3.5 h-3.5 text-[#49C8D6]" />
             <span>Đăng bài mới</span>

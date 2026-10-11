@@ -655,7 +655,7 @@ export const GPADashboard = () => {
                                                     <button 
                                                         onClick={() => handleToggleStatus(course)} 
                                                         title="Bấm để đổi trạng thái" 
-                                                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-all duration-200 hover:scale-105 active:scale-95 ${
+                                                        className={`px-2.5 py-1 rounded-full text-[10px] font-bold border transition-colors duration-150 ${
                                                             course.status === 'Đã hoàn thành'
                                                                 ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
                                                                 : course.status === 'Đang học'
@@ -691,7 +691,7 @@ export const GPADashboard = () => {
                                                     <div className="flex items-center gap-1.5 ml-1">
                                                         <button 
                                                             onClick={() => setActiveGradeModalCourse(course)} 
-                                                            className="group/btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200/90 hover:bg-[#49C8D6] hover:text-white hover:border-[#49C8D6] hover:shadow-xs hover:scale-105 active:scale-95 transition-all duration-200"
+                                                            className="group/btn flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200/90 hover:bg-[#49C8D6] hover:text-white hover:border-[#49C8D6] transition-colors duration-150"
                                                             title="Nhập điểm thành phần"
                                                         >
                                                             <Edit3 className="w-3.5 h-3.5 text-slate-500 group-hover/btn:text-white transition-colors" />
@@ -704,7 +704,7 @@ export const GPADashboard = () => {
                                                                     deleteCourse(course.id);
                                                                 }
                                                             }} 
-                                                            className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200 hover:scale-110 active:scale-95" 
+                                                            className="p-1.5 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors duration-150" 
                                                             title="Xóa môn"
                                                         >
                                                             <Trash2 className="w-3.5 h-3.5"/>
